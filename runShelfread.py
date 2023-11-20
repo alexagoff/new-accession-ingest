@@ -141,8 +141,3 @@ errors_file.close()
 errors_csv.close()
 app_log.close()
 
-
-# if the shelfcode doesn't exist, then I can just pass it through like normal, and then
-# try to change the barcode to the shelfcode and if that doesn't work, I will determine
-# that the shelf doesn't exist (because it could exist and have 0 items).
-# this theory only works if by posting on a invalid shelf it doesn't work.

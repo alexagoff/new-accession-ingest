@@ -1,0 +1,38 @@
+{
+    "jsonmodel_type": "accession",
+    "is_slug_auto": true,
+    "accession_date": "2023-11-19",
+    "extents": [
+        {
+            "jsonmodel_type": "extent",
+            "portion": "whole",
+            "number": "{{Estimated physical extent (linear feet):}}",
+            "extent_type": "linear feet",
+            "container_summary": "Before rehousing: {{Number and type of containers (e.g. 2 record storage boxes):}}"
+        }
+    ],
+    "restrictions_apply": "{{legalRestrict}}",
+    "access_restrictions": false,
+    "use_restrictions": false,
+    "id_0": "23",
+    "id_1": 90,
+    "id_2": "M",
+    "title": "{{Collection name:}}",
+    "content_description": "{{Descriptive summary of content:}}",
+    "condition_description": "{{condition}}",
+    "general_note": "Record created by API ingest in {{year}}--not yet reviewed for accuracy. Related resource: {{resourceIdentifer}}.",
+    "provenance": "Gift/purchase of {{Donor or vendor name:}}, {{year}}.",
+    "created_by": "scuaapi",
+    "acquisition_type": "gift",
+    "resource_type": "papers",
+    "dates": [
+        {
+            "expression": "{{Estimated creation dates:}}",
+            "created_by": "scuaapi",
+            "last_modified_by": "scuaapi",
+            "date_type": "inclusive",
+            "label": "creation",
+            "jsonmodel_type": "date"
+        }
+    ]
+}

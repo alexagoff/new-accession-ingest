@@ -9,10 +9,14 @@ how to use:
 
 - create a config.py file using the template from config_example.txt, 
   updating with your own information 
-- run check_existing_accessions.py to output a csv of 'yes' or 'no's to 
-  check if accession(s) from form(s) already exist. this outputs a .csv in out/output_existing.csv
+- you will need the pandas module, so if you haven't installed it already,
+  you can by following the instructions here https://pandas.pydata.org/docs/getting_started/install.html
+- go onto UO vpn
+- run check_existing_accessions.py 
+  - do : python check_existing_accessions.py ~/path/to/csv (e.g. ~/Desktop/folder/input.csv) with form.csv input, or without argument if path to form.csv is manually entered in check_existing_accessions.py (line 33).
+  - output: one csv of 'yes' and one of 'no's if repositories connected to accession(s) already exist. Both sent to Alexa. Both in out folder.
 - run new_accessions.py, optionally enter "name".csv as an argument
-  (in this case, edit file inputcsv path, line 29).
+  (in this case, edit file inputcsv path, line 33).
   python3 new_accessions.py 
   or
   python3 new_accessions.py input.csv 

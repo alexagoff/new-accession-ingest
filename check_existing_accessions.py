@@ -11,6 +11,13 @@ import os
 import functions
 import sys
 from datetime import date 
+import pandas as pd
+import find_id1
+import shutil
+
+# getting today's year
+todays_date = date.today() 
+str_year = str(todays_date.year)
 
 ''' this is a possible way to turn .xlsx to .csv:
   import  jpype     
@@ -22,41 +29,74 @@ from datetime import date
   jpype.shutdownJVM()
 '''
 
-# new accession numbers -- you actually don't need this!
-newid = functions.latest_accession() + 1
-
 # edit line below to manually enter a .csv 
-formInFilePath = './shelfread_input_test_data.csv' 
+filename = './New Accession Intake Form copy.csv' 
 if len(sys.argv) > 1:
-    formInFilePath = sys.argv[1]
+    filename = sys.argv[1]
 csvOutyes = "./out/accessions_yes.csv"
 csvOutno = "./out/accessions_no.csv"
 
-# open form file
-with open(formInFilePath, 'r') as file:
-    # output lists
-    out_yes = open(csvOutyes, 'w')
-    out_no = open(csvOutno, 'w')
-    yes_writer = csv.writer(out_yes)
-    no_writer = csv.writer(out_no)
+outy = open(csvOutyes, 'w')
+outn = open(csvOutno, 'w')
+yes_writer = csv.writer(outy)
+no_writer = csv.writer(outn)
 
-    # I need to split this some other way because there are newlines inside of 
-    # the data as well as commas. Maybe use pandas?
-    data = file.read()
-    dataArray = data.split('\n')
-    # finding index location of collection identifier in row in .csv
-    firstrow = dataArray[0]
-    ident_index = firstrow.index("Collection identifier (e.g. Coll 100, for additions only):")
 
-    # parse through form lines, looking for keywords
-    for i in range(1, (len(dataArray))):
-        row = dataArray[i].split(',')
-        
-        print(i, row)
-        
+# columns of first row - right now I'm writing them out manually
+usecols = ["ID","Start time","Completion time","Email","Name","Collection name:","New or addition?","Donor or vendor name:","Date of donation/purchase:","Creator (if different from donor):","Estimated creation dates:","Descriptive summary of content:","Estimated physical extent (linear feet):","Estimated digital extent (MB):","Number and type of containers (e.g. 2 record storage boxes):","Legal restrictions or donor restrictions specified in the gift agreement?","Preservation concerns?","Please select gift agreement (or invoice) status:","Optional: attach gift agreement or invoice here","Have the materials been delivered to Knight Library?","Where is the collection currently located? (Room 38, Room 303, mailbox, etc)","Collection identifier (e.g. Coll 100, for additions only):"]
+df = pd.read_csv(filename, names=usecols)
+
+
+# curr id_1 number
+id_1 = find_id1.main()
+id_1 += 1 
+
+# going through each line of form, if blank then == 'NaN'/'nan'
+for index, row in df.iterrows():
+    # if first line (column headers)
+    if row["ID"] == "ID" and row["Start time"] == "Start time":
+        yes_writer.writerow(row)
+        no_writer.writerow(row)
+        continue
+
+    # copying old .json template to new .json file that we are editing
+    shutil.copy('jsontemplate.json', 'newaccession.json')
+    
+    # getting json Data from template
+    jsonData = None
+    with open("jsontemplate.json", "r") as file:
+        jsonData = json.load(file)
+    
+    # updating information with info from .csv and id_1 num
+    for name in jsonData:  
+        if name == "accession_date":
+            jsonData[name] = str_year+'-'+str(todays_date.month)+'-'+str(todays_date.day)
+        if name == "id_0":
+            jsonData[name] = str_year[-2:]
+        elif name == "id_1":
+            jsonData[name] = id_1
+            id_1+=1 # one more accession added
+        elif name == "id_2":
+            jsonData[name] = "M"
+    
+    # copying to new .json file
+    with open("newaccession.json", "w") as file:
+        json.dump(jsonData, file, indent = 4 ) 
+    
+    break
+'''  
+
+    #print(row["Start time"])
+
+    
+
+outy.close()
+outn.close()
+
+
         # if the row has a collection identifier section
-        if ident_index < len(row):
-            print(i, row[3], row[ident_index])
+        #if ident_index < len(row):
+        #    print(i, row[3], row[ident_index])
     #   store info (in variables) if found type of accession
     #   functions.accessions_exist(stuff, curSession)
     #   if yes:
@@ -65,6 +105,4 @@ with open(formInFilePath, 'r') as file:
     #       writer.writerow(stuff)
 
 # send notification with output.csv to Alexa (through email?)
-
-out_yes.close()
-out_no.close()
+'''
