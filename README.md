@@ -12,6 +12,7 @@ how to use:
 - you will need the pandas module, so if you haven't installed it already,
   you can by following the instructions here https://pandas.pydata.org/docs/getting_started/install.html
 - go onto UO vpn
+- make sure the new accession intake form that you want to run is ordered by ID number! (smallest to largest)
 - run check_existing_accessions.py 
   - do either:
     - python check_existing_accessions.py ~/path/to/csv (e.g. ~/Desktop/folder/input.csv) with form.csv input
