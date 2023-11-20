@@ -19,7 +19,7 @@ how to use:
   - output: one csv of 'yes' and one of 'no's if repositories connected to accession(s) already exist. Both sent to Alexa. Both in out folder.
 - run new_accessions.py
   - do either:
-    - python new_accessions.py ~/path/to/csv (e.g. ~/Desktop/folder/input.csv) ~/path/to/csv (e.g. ~/Desktop/folder/input.csv) with 'yes' and 'no' csv's as the arguments.
+    - python new_accessions.py ~/path/to/csv ~/path/to/csv (e.g. ~/Desktop/folder/yes_input.csv ~/Desktop/folder/no_input.csv) with 'yes' and 'no' csv's as the arguments.
     - python new_accessions.py (no arguments) if paths to csvs are already manually entered in new_accessions.py.
   - output: logs in the out file as well as updating aspace with information (add more)
 - check out/log and out/output_existing.csv 
