@@ -13,12 +13,12 @@ how to use:
   you can by following the instructions here https://pandas.pydata.org/docs/getting_started/install.html
 - go onto UO vpn
 - run check_existing_accessions.py 
-  - do :
+  - do either:
     - python check_existing_accessions.py ~/path/to/csv (e.g. ~/Desktop/folder/input.csv) with form.csv input
     - python check_existing_accessions.py (without argument) if path to form.csv is manually entered in check_existing_accessions.py (line 33).
   - output: one csv of 'yes' and one of 'no's if repositories connected to accession(s) already exist. Both sent to Alexa. Both in out folder.
 - run new_accessions.py
-  - do:
+  - do either:
     - python new_accessions.py ~/path/to/csv (e.g. ~/Desktop/folder/input.csv) ~/path/to/csv (e.g. ~/Desktop/folder/input.csv) with 'yes' and 'no' csv's as the arguments.
     - python new_accessions.py (no arguments) if paths to csvs are already manually entered in new_accessions.py.
   - output: logs in the out file as well as updating aspace with information (add more)
