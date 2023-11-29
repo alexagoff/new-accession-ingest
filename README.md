@@ -17,7 +17,8 @@ how to use:
   - do either:
     - python check_existing_accessions.py ~/path/to/csv (e.g. ~/Desktop/folder/input.csv) with form.csv input
     - python check_existing_accessions.py (without argument) if path to form.csv is manually entered in check_existing_accessions.py (line 33).
-  - output: one csv of 'yes' and one of 'no's if repositories connected to accession(s) already exist. Both sent to Alexa. Both in out folder.
+  - output: one csv of 'yes' and one of 'no's if repositories connected to accession(s) already exist. Both sent to Alexa. 
+            Also two logs of errors and updates
 - run new_accessions.py
   - do either:
     - python new_accessions.py ~/path/to/csv ~/path/to/csv (e.g. ~/Desktop/folder/yes_input.csv ~/Desktop/folder/no_input.csv) with 'yes' and 'no' csv's as the arguments.
