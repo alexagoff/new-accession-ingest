@@ -1,38 +1,150 @@
 {
-    "jsonmodel_type": "accession",
-    "is_slug_auto": true,
-    "accession_date": "2023-11-19",
-    "extents": [
-        {
-            "jsonmodel_type": "extent",
-            "portion": "whole",
-            "number": "{{Estimated physical extent (linear feet):}}",
-            "extent_type": "linear feet",
-            "container_summary": "Before rehousing: {{Number and type of containers (e.g. 2 record storage boxes):}}"
-        }
-    ],
-    "restrictions_apply": "{{legalRestrict}}",
+    "lock_version": 31,
+    "suppressed": false,
+    "title": "API TEST ACCESSION 20",
+    "display_string": "",
+    "publish": false,
+    "content_description": "One photograph of Representative Ulmann standing with a large group of Native American youth on the steps of the US Capitol. ",
+    "condition_description": "",
+    "provenance": "Gift/purchase of Matt Ely, State Historical Society of North Dakota, 2023.",
+    "accession_date": "2023-12-2",
+    "restrictions_apply": false,
     "access_restrictions": false,
     "use_restrictions": false,
-    "id_0": "23",
-    "id_1": 90,
-    "id_2": "M",
-    "title": "{{Collection name:}}",
-    "content_description": "{{Descriptive summary of content:}}",
-    "condition_description": "{{condition}}",
-    "general_note": "Record created by API ingest in {{year}}--not yet reviewed for accuracy. Related resource: {{resourceIdentifer}}.",
-    "provenance": "Gift/purchase of {{Donor or vendor name:}}, {{year}}.",
     "created_by": "scuaapi",
+    "last_modified_by": "scuaapi",
+    "create_time": "",
+    "system_mtime": "",
+    "user_mtime": "",
+    "is_slug_auto": false,
+    "id_0": "25",
+    "id_1": 90,
+    "id_2": "P",
     "acquisition_type": "gift",
-    "resource_type": "papers",
-    "dates": [
+    "resource_type": "collection",
+    "jsonmodel_type": "accession",
+    "external_ids": [],
+    "related_accessions": [],
+    "classifications": [],
+    "subjects": [
         {
-            "expression": "{{Estimated creation dates:}}",
+            "ref": "/subjects/751"
+        }
+    ],
+    "linked_events": [
+        {
+            "ref": "/repositories/2/events/46526"
+        }
+    ],
+    "extents": [
+        {
+            "lock_version": 0,
+            "number": 0.1,
+            "container_summary": "",
+            "physical_details": "",
             "created_by": "scuaapi",
             "last_modified_by": "scuaapi",
+            "create_time": "",
+            "system_mtime": "",
+            "user_mtime": "",
+            "portion": "partial",
+            "extent_type": "linear feet",
+            "jsonmodel_type": "extent"
+        },
+        {
+            "lock_version": 0,
+            "number": 0.0,
+            "container_summary": "",
+            "physical_details": "",
+            "created_by": "scuaapi",
+            "last_modified_by": "scuaapi",
+            "create_time": "",
+            "system_mtime": "",
+            "user_mtime": "",
+            "portion": "partial",
+            "extent_type": "megabyte(s)",
+            "jsonmodel_type": "extent"
+        }
+    ],
+    "lang_materials": [],
+    "dates": [
+        {
+            "lock_version": 0,
+            "expression": "1970-1980's",
+            "begin": "1970",
+            "end": "1989",
+            "created_by": "scuaapi",
+            "last_modified_by": "scuaapi",
+            "create_time": "",
+            "system_mtime": "",
+            "user_mtime": "",
             "date_type": "inclusive",
             "label": "creation",
             "jsonmodel_type": "date"
         }
-    ]
+    ],
+    "external_documents": [
+        {
+            "lock_version": 0,
+            "title": "Coll927_Dealer's invoice",
+            "location": "J:\\technical_services\\processing_unit\\collection_files\\Manuscripts\\Coll_927_Crater Lake\\Coll927_Dealer's invoice.pdf",
+            "publish": false,
+            "created_by": "alexagoff",
+            "last_modified_by": "alexagoff",
+            "create_time": "2023-03-20T21:20:11Z",
+            "system_mtime": "2023-03-20T21:20:11Z",
+            "user_mtime": "2023-03-20T21:20:11Z",
+            "jsonmodel_type": "external_document"
+        }
+    ],
+    "rights_statements": [],
+    "deaccessions": [],
+    "related_resources": [
+        {
+            "ref": "/repositories/2/resources/9605"
+        }
+    ],
+    "component_links": [],
+    "linked_agents": [
+        {
+            "role": "source",
+            "terms": [],
+            "ref": "/agents/corporate_entities/4111"
+        },
+        {
+            "role": "creator",
+            "terms": [],
+            "ref": "/agents/corporate_entities/2900"
+        },
+        {
+            "role": "creator",
+            "terms": [],
+            "ref": "/agents/people/33516"
+        }
+    ],
+    "instances": [],
+    "metadata_rights_declarations": [],
+    "uri": "/repositories/2/accessions/8283",
+    "repository": {
+        "ref": "/repositories/2"
+    },
+    "collection_management": {
+        "lock_version": 0,
+        "rights_determined": false,
+        "created_by": "scuaapi",
+        "last_modified_by": "scuaapi",
+        "create_time": "",
+        "system_mtime": "",
+        "user_mtime": "",
+        "processing_status": "Unprocessed",
+        "jsonmodel_type": "collection_management",
+        "external_ids": [],
+        "uri": "/repositories/2/collection_management/29528",
+        "repository": {
+            "ref": "/repositories/2"
+        },
+        "parent": {
+            "ref": "/repositories/2/accessions/8283"
+        }
+    }
 }

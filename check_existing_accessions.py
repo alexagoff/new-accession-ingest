@@ -31,6 +31,11 @@ import shutil
 import re
 
 
+### IDEA ::: possibly make inputs, so that you can do check_existing_accessions.py -s 150 (meaning that 150 is the starting accession (not 151)) 
+# and if you run it with nothing, it runs all of the accessions in the file. or you can do -s 150 -e 151 to only run 150 and 151. and if you do -s 150 -e 150 it will only run 150. 
+# I think that would get rid of the sketchy problem with this program. 
+
+# maybe make anotehr file that you can run to see which one's you've run with this program. (that would be extra though)
 
 # getting today's date
 todays_date = date.today() 
@@ -39,7 +44,7 @@ str_month = str(todays_date.month)
 str_day = str(todays_date.day)
 
 # edit line below to manually enter a .csv 
-filename = './New Accession Intake Form copy.csv' 
+filename = './test2.csv' 
 if len(sys.argv) > 1:
     filename = sys.argv[1]
 csvOutyes = "./out/accessions_yes.csv"
@@ -51,9 +56,9 @@ yes_writer = csv.writer(outy)
 no_writer = csv.writer(outn)
 
 # the current accession # from file we're on
-curr_n = open("DONT_EDIT.txt", 'r') # change value in DONT_EDIT.txt !!
+curr_n = open("DONT_EDIT.txt", 'r') # if you want it to read the whole csv, make number in DONT_EDIT == 0
 curr_num = int(curr_n.read())
-curr_num+=1
+curr_n.close()
 
 
 
@@ -124,11 +129,17 @@ def match_dates(match_string):
 # make a log after running this that writes the errors and created accessions (like first project)
 # make another column for the # of results found for looking up item
 
+
 def main():
     ''' main loop going through lines of new form input CSV. Creates new .json file
     for every new accession form, fills it with information and then posts it onto 
     Aspace. 
     '''
+    # list of ID's that were run
+    run_list = []
+
+    accessions_created = 0 # add to curr_num
+
     #usecols = ["ID","Start time","Completion time","Email","Name","Collection name:","New or addition?","Donor or vendor name:","Date of donation/purchase:","Creator (if different from donor):","Estimated creation dates:","Descriptive summary of content:","Estimated physical extent (linear feet):","Estimated digital extent (MB):","Number and type of containers (e.g. 2 record storage boxes):","Legal restrictions or donor restrictions specified in the gift agreement?","Preservation concerns?","Please select gift agreement (or invoice) status:","Optional: attach gift agreement or invoice here","Have the materials been delivered to Knight Library?","Where is the collection currently located? (Room 38, Room 303, mailbox, etc)","Collection identifier (e.g. Coll 100, for additions only):"]
     df = pd.read_csv(filename)
     print(df)
@@ -136,7 +147,7 @@ def main():
     # writing new column headers to output csv's
     data_top = list(df.head())
     data_top.append("Found Dates? (extracted from estimated creation dates)") # if begin and end could be extracted from "Estimated creation dates:"
-    data_top.append("Number of found results (if collection exists):") # if repo for accession exists n>0
+    data_top.append("Number of found results:") # if repo for accession exists n>0
     data_top.append("Found Collection Title:") # the title of existing collection of first match 
     data_top.append("Found Collection Identifier:") # if repo exists
     data_top.append("Found Collection URI (of first match):") # if repo exists
@@ -148,75 +159,135 @@ def main():
     id_1 = find_id1.main()
     id_1 += 1 
 
-    ex = open("example.txt", "w")
-    ex2 = open("exampleans.txt", "w")
-    # going through each line of form, if blank then == 'NaN'/'nan'
+    ex = open("testacc_num.txt", 'r')
+    curr_acc = int(ex.read())
+    ex.close()
+
+    # going through each line of csv
     for index, row in df.iterrows():
         # if this ID has already been visited--ignore
-        if int(row["ID"]) < curr_num:
+        if int(row["ID"]) <= curr_num:
             continue
-        '''
-        # copying old .json template to new .json file that we are editing
-        shutil.copy('jsontemplate.json', 'newaccession.json')
         
-        # getting json Data from template
+        run_list.append(int(row["ID"]))
+        # copying old .json template to new .json file that we are editing
+        #shutil.copy('jsontemplate.json', 'newaccession.json')
+        
+        # getting jsonData from template .json file
         jsonData = None
         with open("jsontemplate.json", "r") as file:
             jsonData = json.load(file)
         
-        # updating information with info from .csv and id_1 num
+        # going through each line of .json file 
+        # filling out with info from current line of csv
         for name in jsonData:  
-            if name == "accession_date":
-                jsonData[name] = str_year+'-'+str_month+'-'+str_day
-            if name == "id_0":
-                jsonData[name] = str_year[-2:]
-            elif name == "id_1":
-                jsonData[name] = id_1
-                id_1+=1 # one more accession added
-            elif name == "id_2":
-                jsonData[name] = "M"
-            # publish is always FALSE
+
+            # commented out because testing with title as "API TEST"
+            #if (name == "title") and ((row["Collection name:"]).lower() != "nan"):
+            #    jsonData[name] = row["Collection name:"]
+            if name == "title":
+                jsonData[name] = 'API TEST ACCESSION ' + str(curr_acc)
+                curr_acc+=1
+            
             elif name == "content_description":
                 if (row["Descriptive summary of content:"]).lower() != "nan":
                     jsonData[name] = row["Descriptive summary of content:"]
+            
             elif name == "condition_description":
                 # EDIT: with what alexa says on teams
                 if (row["Preservation concerns?"]).lower() == "yes":
                     jsonData[name] = "Alexa's note on yes conditions"
-                else:
-                    jsonData[name] = ""
+            
             elif name == "provenance":
                 if (row["Donor or vendor name:"]).lower() != "nan":
-                    jsonData[name] = "Gift/purchase of " + row["Donor or vendor name:"] + ", "+ row["Date of donation/purchase:"][-4:] + "."
-            # is this and the condition_description the same
+                    jsonData[name] = "Gift/purchase of " + row["Donor or vendor name:"] + ", "+ row["Year of donation/purchase:"][-4:] + "."
+            
+            elif name == "accession_date":
+                jsonData[name] = str_year+'-'+str_month+'-'+str_day
+            
             elif name == "restrictions_apply":
-                if row["Legal restrictions or donor restrictions specified in the gift agreement?"]).lower() == "yes":
+                if (row["Legal restrictions or donor restrictions specified in the gift agreement?"]).lower() == "yes":
                     jsonData[name] = "yes"
+            
+            elif name == "id_0":
+                #jsonData[name] = str_year[-2:] commented out for testing files
+                jsonData[name] = "25"
+            
+            elif name == "id_1":
+                jsonData[name] = id_1
+                id_1+=1 # one more accession added
+            
+            elif name == "id_2":
+                if row["Curatorial area?"] == "Visual Materials":
+                    jsonData[name] = "P"
+                elif row["Curatorial area?"] == "Manuscripts":
+                    jsonData[name] = "M"
+                elif row["Curatiorial area?"] == "University Archives":
+                    jsonData[name] = "A"
+                # default to M
+                else:
+                    jsonData[name] = "M"
+            
+            elif name == "acquisition_type":
+                if (row["Acquisition type?:2"]).lower() != "nan":
+                    jsonData[name] = (row["Acquisition type?:2"]).lower()
+            
+            elif name == "resource_type":
+                if (row["Resource type?"]).lower() != "nan":
+                    jsonData[name] = row["Resource type?"].lower()
+            
+            elif name == "extents":
+                # if its a physical item
+                if (str(row["Estimated physical extent (linear feet):"])).lower() != "nan":
+                    jsonData[name][0]["number"] = row["Estimated physical extent (linear feet):"]
+                    jsonData[name][0]["extent_type"] = "linear feet"
+                    jsonData[name][0]["physical_details"] = row["Number and type of containers (e.g. 2 record storage boxes):"]
+                    jsonData[name][0]["portion"] = "whole"
+                
+                # if its a digital item 
+                if (str(row["Estimated digital extent (MB):"])).lower() != "nan":
+                    # if its also a physical item
+                    if (str(row["Estimated physical extent (linear feet):"])).lower() != "nan":
+                        # creating new dict item
+                        copy1 = jsonData[name][0].copy()
+                        jsonData[name].append(copy1)
+                        jsonData[name][1]["number"] = row["Estimated digital extent (MB):"]
+                        jsonData[name][1]["extent_type"] = "megabyte(s)"
+                        # if two types, physical details for both are none
+                        jsonData[name][1]["physical_details"] = ""
+                        jsonData[name][0]["physical_details"] = ""
+                        # making both portions partial
+                        jsonData[name][0]["portion"] = "partial"
+                        jsonData[name][1]["portion"] = "partial"
+                    # if its only digital
+                    else: 
+                        jsonData[name][0]["number"] = row["Estimated digital extent (MB):"]
+                        jsonData[name][0]["extent_type"] = "megabyte(s)"
+                        jsonData[name][0]["physical_details"] = row["Number and type of containers (e.g. 2 record storage boxes):"]
+                        jsonData[name][0]["portion"] = "whole"
+            
             elif name == "dates":
-                jsonData[name]["expression"] = row["Estimated creation dates:"]
+                jsonData[name][0]["expression"] = row["Estimated creation dates:"]
                 # making string into estimated begin and end dates
-                begin, end = None
                 begin_end = match_dates(row["Estimated creation dates:"])
                 if begin_end != 0:
                     if len(begin_end)==2:
-                        begin = begin_end[0]
-                        end = begin_end[1]
+                        jsonData[name][0]["begin"] = begin_end[0]
+                        jsonData[name][0]["end"] = begin_end[1]
+                        jsonData[name][0]["date_type"] = "inclusive"
                     elif len(begin_end)==1:
-                        begin = begin_end[0]
+                        jsonData[name][0]["begin"] = begin_end[0]
+                        jsonData[name][0]["date_type"] = "single"
                 # could not separate into start and end dates
                 else:
-                    pass
-                
-                # date_type -- "inclusive" , unless theres only a begin date its "single" (if theres only one date its begin type)
-                   
-
-            # if extents, if estimated pysical extent in csv is filled out then "number" = estimated physical...  then do extent_type "linear feet" then get number and type of contaniers and make physical_details in .json = number and type , if its estimated digital extent then "number" = estimated digital and "extend_type" = "megabyte(s)" and populate physical details too with number and type if only digital is filled out but if both are filled out then physical details is blank:: if there were physical and digital then make two objects (dictionaries) in the "extents" list and make "portion" = "partial"
-            # if collection management, then processing status = "Unprocessed"
-            # make the test title "TEST FILE ACCESSION FROM API"
+                    jsonData[name][0]["date_type"] = "inclusive"                
 
         # copying to new .json file - just post it onto aspace. 
         with open("newaccession.json", "w") as file:
             json.dump(jsonData, file, indent = 4 ) 
+
+        accessions_created +=1
+        break
         
         # after posting, check if resource exists by:
             # collection identifier key in csv. If its populated check it. do regex to remove any () after. ONly pull something like "Col 188"
@@ -229,31 +300,34 @@ def main():
                 # Collection Title: is results[0][title]
                 # Colleciton identifier: is results[0][identifier]
                 # Collection URI: is results[0][uri]
-
+        # add to accessions_created (+=1)
         # make id_0 = 2025 for testing
         # make id_1 = 001 for testing (but it will end up being 001 with my code anyways)
-        # new CSV columns::: curatorial area: if Manuscripts id_2 = M , Visual Materials = P, University Archives = A; "resource type": resource_type = lowercase resoure type; Aquisition type: aquisition_type = lowercase aquisition type (change the values in the CSV to make sure Gift, Purchase and Transfer work)
-        break
-        '''
+        # Aquisition type: aquisition_type = lowercase aquisition type (change the values in the CSV to make sure Gift, Purchase and Transfer work)
+    
+    # add accessions_created to curr_num and write this number to DONT_EDIT.txt
+    new_id = curr_num + accessions_created
+    d = open('DONT_EDIT.txt', 'w')
+    d.seek(0)
+    d.write(str(new_id))
+    d.truncate()
+    d.close()
+
+    # *TEST* writing the number of tests already done in testacc_num.txt
+    f = open('testacc_num.txt', 'w')
+    f.seek(0)
+    f.write(str(curr_acc))
+    f.truncate()
+    f.close()
+
+    if accessions_created == 0:
+        print("\nNo outputs! start and end ID number might not be valid.\n\trun 'check_existing_accessions.py -h' for help on how to use this program.\n")
+    else:
+        run_list.sort()
+        print("\nRan successfully!\n\tOutput 'yes' and 'no' csv's are in out folder and logs from this run are in out/logs.\n\n\tRAN ID's:", run_list, "\n")
+
     return 0
 
-    # check if already posted onto Aspace()
-        
-
-    '''
-
-            # if the row has a collection identifier section
-            #if ident_index < len(row):
-            #    print(i, row[3], row[ident_index])
-        #   store info (in variables) if found type of accession
-        #   functions.accessions_exist(stuff, curSession)
-        #   if yes:
-        #       writer.writerow(stuff)
-        #   if no:
-        #       writer.writerow(stuff)
-
-    # send notification with output.csv to Alexa (through email?)
-    '''
 
 # running main without calling it
 if __name__ == "__main__":
