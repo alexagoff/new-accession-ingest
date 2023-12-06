@@ -134,10 +134,11 @@ def change_shelf(x, y):
 
 # --------------------------------------------------------
 
-# function to create new accessions
-def create_accession(x):
+# function to create a new accession (post) with data from a jsonData variable
+def jsonpost(x):
     url = '/repositories/2/accessions'
-    response = client.post(url)
+    payload = json.dumps(x)
+    response = client.post(url, json=x)
     res_object = response.json()
     
     return res_object
@@ -150,13 +151,49 @@ def update_accession(x):
 
     return res_object
 
-# function to see ID of latest accession
-def latest_accession():
+# function to see ID_1 of latest 5 accessions
+def latest_id1(curr_yr):
     url = 'repositories/2/accessions'
+    # finding last id number (on uri)
     response = client.get(url, params={"all_ids": True})
     res_object = response.json()
-    # return last ID number
-    return res_object[-1]
+    
+    # not looping through just doing it manually for now
+    response1 = client.get(url+"/"+str(res_object[-1]))
+    response2 = client.get(url+"/"+str(res_object[-2]))
+    response3 = client.get(url+"/"+str(res_object[-3]))
+    response4 = client.get(url+"/"+str(res_object[-4]))
+    response5 = client.get(url+"/"+str(res_object[-5]))
+    res_obj1 = response1.json()
+    res_obj2 = response2.json()
+    res_obj3 = response3.json()
+    res_obj4 = response4.json()
+    res_obj5 = response5.json()
+
+    # if the last 5 accessions are not in the current year:
+    if (res_obj1["id_0"] != curr_yr[-2:]) and (res_obj2["id_0"] != curr_yr[-2:]) and (res_obj3["id_0"] != curr_yr[-2:]) and (res_obj4["id_0"] != curr_yr[-2:]) and (res_obj5["id_0"] != curr_yr[-2:]):
+        latest_id = "000"
+    # else, count the id_1 numbers
+    else:
+        tmplist = [res_obj5, res_obj4, res_obj3, res_obj2, res_obj1]
+        latest_id = 0
+        for resobj in tmplist:
+            # only checking id_1's of current year
+            if resobj["id_0"] == curr_yr[-2:]:
+                latest = int(resobj["id_1"])
+                # if its not one greater, return error
+                if ((latest_id+1) != latest) and (latest_id != 0): 
+                    return -1
+                latest_id = latest
+        latest_id+=1
+        tmp = ""
+        if 10 <= latest_id < 999:
+            tmp = "0" + str(latest_id)
+        elif latest_id < 10:
+            tmp = "00" + str(latest_id)
+        latest_id = tmp
+
+    return latest_id
 
 # create function to add detailed info about a accession
 def add_accessioninfo(x):

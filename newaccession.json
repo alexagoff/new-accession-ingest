@@ -1,13 +1,12 @@
 {
-    "lock_version": 31,
     "suppressed": false,
-    "title": "API TEST ACCESSION 20",
+    "title": "API TEST ACCESSION 1",
     "display_string": "",
     "publish": false,
     "content_description": "One photograph of Representative Ulmann standing with a large group of Native American youth on the steps of the US Capitol. ",
     "condition_description": "",
     "provenance": "Gift/purchase of Matt Ely, State Historical Society of North Dakota, 2023.",
-    "accession_date": "2023-12-2",
+    "accession_date": "2023-12-06",
     "restrictions_apply": false,
     "access_restrictions": false,
     "use_restrictions": false,
@@ -18,29 +17,22 @@
     "user_mtime": "",
     "is_slug_auto": false,
     "id_0": "25",
-    "id_1": 90,
+    "id_1": "000",
     "id_2": "P",
+    "general_note": "Record created by API ingest in 2023--not yet reviewed for accuracy.",
     "acquisition_type": "gift",
     "resource_type": "collection",
     "jsonmodel_type": "accession",
     "external_ids": [],
     "related_accessions": [],
     "classifications": [],
-    "subjects": [
-        {
-            "ref": "/subjects/751"
-        }
-    ],
-    "linked_events": [
-        {
-            "ref": "/repositories/2/events/46526"
-        }
-    ],
+    "subjects": [],
+    "linked_events": [],
     "extents": [
         {
             "lock_version": 0,
             "number": 0.1,
-            "container_summary": "",
+            "container_summary": "1 envelope",
             "physical_details": "",
             "created_by": "scuaapi",
             "last_modified_by": "scuaapi",
@@ -54,7 +46,7 @@
         {
             "lock_version": 0,
             "number": 0.0,
-            "container_summary": "",
+            "container_summary": "1 envelope",
             "physical_details": "",
             "created_by": "scuaapi",
             "last_modified_by": "scuaapi",
@@ -83,48 +75,15 @@
             "jsonmodel_type": "date"
         }
     ],
-    "external_documents": [
-        {
-            "lock_version": 0,
-            "title": "Coll927_Dealer's invoice",
-            "location": "J:\\technical_services\\processing_unit\\collection_files\\Manuscripts\\Coll_927_Crater Lake\\Coll927_Dealer's invoice.pdf",
-            "publish": false,
-            "created_by": "alexagoff",
-            "last_modified_by": "alexagoff",
-            "create_time": "2023-03-20T21:20:11Z",
-            "system_mtime": "2023-03-20T21:20:11Z",
-            "user_mtime": "2023-03-20T21:20:11Z",
-            "jsonmodel_type": "external_document"
-        }
-    ],
+    "external_documents": [],
     "rights_statements": [],
     "deaccessions": [],
-    "related_resources": [
-        {
-            "ref": "/repositories/2/resources/9605"
-        }
-    ],
+    "related_resources": [],
     "component_links": [],
-    "linked_agents": [
-        {
-            "role": "source",
-            "terms": [],
-            "ref": "/agents/corporate_entities/4111"
-        },
-        {
-            "role": "creator",
-            "terms": [],
-            "ref": "/agents/corporate_entities/2900"
-        },
-        {
-            "role": "creator",
-            "terms": [],
-            "ref": "/agents/people/33516"
-        }
-    ],
+    "linked_agents": [],
     "instances": [],
     "metadata_rights_declarations": [],
-    "uri": "/repositories/2/accessions/8283",
+    "uri": "",
     "repository": {
         "ref": "/repositories/2"
     },
@@ -139,12 +98,10 @@
         "processing_status": "Unprocessed",
         "jsonmodel_type": "collection_management",
         "external_ids": [],
-        "uri": "/repositories/2/collection_management/29528",
+        "uri": "",
         "repository": {
             "ref": "/repositories/2"
         },
-        "parent": {
-            "ref": "/repositories/2/accessions/8283"
-        }
+        "parent": {}
     }
 }

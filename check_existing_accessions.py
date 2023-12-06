@@ -26,7 +26,6 @@ import functions
 import sys
 from datetime import date 
 import pandas as pd
-import find_id1
 import shutil
 import re
 
@@ -60,6 +59,39 @@ curr_n = open("DONT_EDIT.txt", 'r') # if you want it to read the whole csv, make
 curr_num = int(curr_n.read())
 curr_n.close()
 
+
+def find_inputs():
+    ''' this function takes inputs... if begin < the begining ID in the form, 
+    it will just begin at the beginning of the form, similarly if end > the last
+    ID number in the form, it will just run to the last ID number in the form.
+    If beginning ID is > the last number in the form, nothing will be run.
+
+    Right now this relies on the user knowing what ID's are in the form. It doesn't
+    count what the biggest and smallest ID numbers are. 
+    '''
+    x = 0
+    y = 0
+
+    print("\nThis program runs any amount of *consecutive* IDs on an inputted 'new accessions' form file.\nEnter the start and end ID's of the accessions you would like to create.\n   ----->  If start = 150 and end = 151, 150 and 151 will be ran--even if 150 and 151 are not next to each other.\n")
+    while(1):
+        begin = input("\nStart ID:")
+        if not begin.strip().isdigit():
+            print("please enter a number containing characters 1-9.")
+        else:
+            x = int(begin.strip())
+            break
+        
+    while(1):
+        endd = input("\nEnd ID:")
+        if not endd.strip().isdigit():
+            print("please enter a number containing characters 1-9.")
+        elif int(endd.strip()) < int(begin.strip()):
+            print("ending ID must be greater or equal to beginning ID.")
+        else:
+            y = int(endd.strip())
+            break
+    
+    return x, y
 
 
 def match_dates(match_string):
@@ -125,48 +157,29 @@ def match_dates(match_string):
     # if match_string didn't match any of the patterns
     if found == False:
         return 0
-    
-# make a log after running this that writes the errors and created accessions (like first project)
-# make another column for the # of results found for looking up item
 
 
-def main():
-    ''' main loop going through lines of new form input CSV. Creates new .json file
-    for every new accession form, fills it with information and then posts it onto 
-    Aspace. 
+def fill_and_post(pandas_csv, start_num, end_num, id_1_num):
+    ''' this function does most of the work, it goes through each line 
+    of the input .csv, then creates jsonData from the data of each line, then 
+    attempts to post that jsonData as a new accession to Aspace.
+    returns the number of new accessions created and a list of ID's that were run..
     '''
-    # list of ID's that were run
-    run_list = []
-
-    accessions_created = 0 # add to curr_num
-
-    #usecols = ["ID","Start time","Completion time","Email","Name","Collection name:","New or addition?","Donor or vendor name:","Date of donation/purchase:","Creator (if different from donor):","Estimated creation dates:","Descriptive summary of content:","Estimated physical extent (linear feet):","Estimated digital extent (MB):","Number and type of containers (e.g. 2 record storage boxes):","Legal restrictions or donor restrictions specified in the gift agreement?","Preservation concerns?","Please select gift agreement (or invoice) status:","Optional: attach gift agreement or invoice here","Have the materials been delivered to Knight Library?","Where is the collection currently located? (Room 38, Room 303, mailbox, etc)","Collection identifier (e.g. Coll 100, for additions only):"]
-    df = pd.read_csv(filename)
-    print(df)
-
-    # writing new column headers to output csv's
-    data_top = list(df.head())
-    data_top.append("Found Dates? (extracted from estimated creation dates)") # if begin and end could be extracted from "Estimated creation dates:"
-    data_top.append("Number of found results:") # if repo for accession exists n>0
-    data_top.append("Found Collection Title:") # the title of existing collection of first match 
-    data_top.append("Found Collection Identifier:") # if repo exists
-    data_top.append("Found Collection URI (of first match):") # if repo exists
-    data_top.append("Created Accession URI:")
-    yes_writer.writerow(data_top)
-    no_writer.writerow(data_top)
-
-    # curr id_1 number
-    id_1 = find_id1.main()
-    id_1 += 1 
-
     ex = open("testacc_num.txt", 'r')
     curr_acc = int(ex.read())
     ex.close()
 
+    run_list = []
+    errors_list = []
+    accessions_created = 0
+
     # going through each line of csv
-    for index, row in df.iterrows():
-        # if this ID has already been visited--ignore
-        if int(row["ID"]) <= curr_num:
+    for index, row in pandas_csv.iterrows():
+        # checking if start_num < visiting < end_num
+        if int(row["ID"]) < start_num:
+            continue
+        
+        elif int(row["ID"]) > end_num:
             continue
         
         run_list.append(int(row["ID"]))
@@ -203,7 +216,13 @@ def main():
                     jsonData[name] = "Gift/purchase of " + row["Donor or vendor name:"] + ", "+ row["Year of donation/purchase:"][-4:] + "."
             
             elif name == "accession_date":
-                jsonData[name] = str_year+'-'+str_month+'-'+str_day
+                strdate = str_day
+                strmonth = str_month
+                if int(str_day) < 10:
+                    strdate = "0" + str_day
+                if int(str_month) < 10:
+                    strmonth = "0" + str_month
+                jsonData[name] = str_year+'-'+str_month+'-'+strdate
             
             elif name == "restrictions_apply":
                 if (row["Legal restrictions or donor restrictions specified in the gift agreement?"]).lower() == "yes":
@@ -214,8 +233,13 @@ def main():
                 jsonData[name] = "25"
             
             elif name == "id_1":
-                jsonData[name] = id_1
-                id_1+=1 # one more accession added
+                jsonData[name] = id_1_num
+                # increasing id_1
+                tmp_id_1 = int(id_1_num) + 1
+                if 10 <= tmp_id_1 < 999:
+                    id_1_num = "0" + str(tmp_id_1)
+                elif tmp_id_1 < 10:
+                    id_1_num = "00" + str(tmp_id_1)
             
             elif name == "id_2":
                 if row["Curatorial area?"] == "Visual Materials":
@@ -228,6 +252,9 @@ def main():
                 else:
                     jsonData[name] = "M"
             
+            elif name == "general_note":
+                jsonData[name] = "Record created by API ingest in "+str_year+"--not yet reviewed for accuracy."
+
             elif name == "acquisition_type":
                 if (row["Acquisition type?:2"]).lower() != "nan":
                     jsonData[name] = (row["Acquisition type?:2"]).lower()
@@ -242,6 +269,7 @@ def main():
                     jsonData[name][0]["number"] = row["Estimated physical extent (linear feet):"]
                     jsonData[name][0]["extent_type"] = "linear feet"
                     jsonData[name][0]["physical_details"] = row["Number and type of containers (e.g. 2 record storage boxes):"]
+                    jsonData[name][0]["container_summary"] = row["Number and type of containers (e.g. 2 record storage boxes):"]
                     jsonData[name][0]["portion"] = "whole"
                 
                 # if its a digital item 
@@ -282,12 +310,14 @@ def main():
                 else:
                     jsonData[name][0]["date_type"] = "inclusive"                
 
-        # copying to new .json file - just post it onto aspace. 
+        # copying to new .json file - not necessary, just post it onto aspace. 
         with open("newaccession.json", "w") as file:
             json.dump(jsonData, file, indent = 4 ) 
 
+        #returned_out = functions.jsonpost(jsonData)
+        #print(returned_out)
         accessions_created +=1
-        break
+             
         
         # after posting, check if resource exists by:
             # collection identifier key in csv. If its populated check it. do regex to remove any () after. ONly pull something like "Col 188"
@@ -319,6 +349,47 @@ def main():
     f.write(str(curr_acc))
     f.truncate()
     f.close()
+
+    return accessions_created, run_list
+
+# make a log after running this that writes the errors and created accessions (like first project)
+# make another column for the # of results found for looking up item
+
+
+def main():
+    ''' main loop going through lines of new form input CSV. Creates new .json file
+    for every new accession form, fills it with information and then posts it onto 
+    Aspace. 
+    '''
+    # input loop for asking user what ID they would like to start and end on. 
+    retstartend = find_inputs()
+    start, end = retstartend
+
+    #usecols = ["ID","Start time","Completion time","Email","Name","Collection name:","New or addition?","Donor or vendor name:","Date of donation/purchase:","Creator (if different from donor):","Estimated creation dates:","Descriptive summary of content:","Estimated physical extent (linear feet):","Estimated digital extent (MB):","Number and type of containers (e.g. 2 record storage boxes):","Legal restrictions or donor restrictions specified in the gift agreement?","Preservation concerns?","Please select gift agreement (or invoice) status:","Optional: attach gift agreement or invoice here","Have the materials been delivered to Knight Library?","Where is the collection currently located? (Room 38, Room 303, mailbox, etc)","Collection identifier (e.g. Coll 100, for additions only):"]
+    df = pd.read_csv(filename)
+    print(df)
+
+    # writing new column headers to output csv's
+    data_top = list(df.head())
+    data_top.append("Found Dates? (extracted from estimated creation dates)") # if begin and end could be extracted from "Estimated creation dates:"
+    data_top.append("Number of found results:") # if repo for accession exists n>0
+    data_top.append("Found Collection Title:") # the title of existing collection of first match 
+    data_top.append("Found Collection Identifier:") # if repo exists
+    data_top.append("Found Collection URI (of first match):") # if repo exists
+    data_top.append("Created Accession URI:")
+    yes_writer.writerow(data_top)
+    no_writer.writerow(data_top)
+
+    # curr id_1 number -- newest ID_1 in 2023 is supposed to be 83 (running testing will messs this up.)
+    id_1 = functions.latest_id1("2025") # supposed to be (str_year) as parameter but testing with something else.
+    if id_1 == -1: # if finding id didn't work, quit program!
+        print("Error finding id_1 from last five accessions. Can not run. \n\tThe function latest_id1() in functions.py throws an error when the last 5 id_1's\n\tin the current year are not consecutive.\n")
+        exit(1)
+
+
+    final_returns = fill_and_post(df, start, end, id_1)
+    accessions_created = final_returns[0]
+    run_list = final_returns[1]
 
     if accessions_created == 0:
         print("\nNo outputs! start and end ID number might not be valid.\n\trun 'check_existing_accessions.py -h' for help on how to use this program.\n")

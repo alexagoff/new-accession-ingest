@@ -1,5 +1,4 @@
 {
-    "lock_version": 31,
     "suppressed": false,
     "title": "",
     "display_string": "",
@@ -20,22 +19,15 @@
     "id_0": "",
     "id_1": "",
     "id_2": "",
+    "general_note": "",
     "acquisition_type": "",
     "resource_type": "",
     "jsonmodel_type": "accession",
     "external_ids": [],
     "related_accessions": [],
     "classifications": [],
-    "subjects": [
-        {
-            "ref": "/subjects/751"
-        }
-    ],
-    "linked_events": [
-        {
-            "ref": "/repositories/2/events/46526"
-        }
-    ],
+    "subjects": [],
+    "linked_events": [],
     "extents": [
         {
             "lock_version": 0,
@@ -69,48 +61,15 @@
             "jsonmodel_type": "date"
         }
     ],
-    "external_documents": [
-        {
-            "lock_version": 0,
-            "title": "Coll927_Dealer's invoice",
-            "location": "J:\\technical_services\\processing_unit\\collection_files\\Manuscripts\\Coll_927_Crater Lake\\Coll927_Dealer's invoice.pdf",
-            "publish": false,
-            "created_by": "alexagoff",
-            "last_modified_by": "alexagoff",
-            "create_time": "2023-03-20T21:20:11Z",
-            "system_mtime": "2023-03-20T21:20:11Z",
-            "user_mtime": "2023-03-20T21:20:11Z",
-            "jsonmodel_type": "external_document"
-        }
-    ],
+    "external_documents": [],
     "rights_statements": [],
     "deaccessions": [],
-    "related_resources": [
-        {
-            "ref": "/repositories/2/resources/9605"
-        }
-    ],
+    "related_resources": [],
     "component_links": [],
-    "linked_agents": [
-        {
-            "role": "source",
-            "terms": [],
-            "ref": "/agents/corporate_entities/4111"
-        },
-        {
-            "role": "creator",
-            "terms": [],
-            "ref": "/agents/corporate_entities/2900"
-        },
-        {
-            "role": "creator",
-            "terms": [],
-            "ref": "/agents/people/33516"
-        }
-    ],
+    "linked_agents": [],
     "instances": [],
     "metadata_rights_declarations": [],
-    "uri": "/repositories/2/accessions/8283",
+    "uri": "",
     "repository": {
         "ref": "/repositories/2"
     },
@@ -125,12 +84,10 @@
         "processing_status": "Unprocessed",
         "jsonmodel_type": "collection_management",
         "external_ids": [],
-        "uri": "/repositories/2/collection_management/29528",
+        "uri": "",
         "repository": {
             "ref": "/repositories/2"
         },
-        "parent": {
-            "ref": "/repositories/2/accessions/8283"
-        }
+        "parent": {}
     }
 }
