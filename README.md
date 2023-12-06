@@ -11,10 +11,10 @@ Please also read the important notes section!!
 
 
 IMPORTANT NOTES:
-- check_existing_accessions.py runs ID's in chronological order. It will start at the ID of the form input one number greater than the number in DONT_EDIT.txt and create accessions for all ID form input numbers after that until the end of the form input csv. 
-- for this reason, if there is ever a need to create a new accession record 
-manually, please use the form input from the ID one larger than the number in DONT_EDIT.txt and edit DONT_EDIT.txt afterwards to be one larger.
-- in the case that an accession is manually made and it was from the form input that was not and ID number one larger than the number in DONT_EDIT.txt, dont change the number in DONT_EDIT.txt. It will create a copy of the accession that was made manually, but will avoid missing form inputs. 
+- The "start" and "end" inputs that you put in on check_existing_accessions.py can be any real number, so if the start number is < the
+  actual start id, it will start at the lowest ID# and if start is > the largest id #, it won't run any id's. This is the same for "end".
+- Start and end only relate to the range of ID's that will run. If start = 166 and end = 168, then only 166, 167 and 168 will run. This goes
+  even if the csv is unordered by ID number.
 
 -------------------------------------------------------
 how to use:
@@ -25,7 +25,7 @@ how to use:
   you can by following the instructions here https://pandas.pydata.org/docs/getting_started/install.html
 - go onto UO vpn
 - run check_existing_accessions.py 
-  - NOTE: the title/column header line on the .csv file must all be on the first line! If its spread into two lines the program will error.
+  - NOTE: the title/column header line on the input .csv file must all be on the first line! If its spread into two lines the program will error.
   - do either:
     - python check_existing_accessions.py ~/path/to/csv (e.g. ~/Desktop/folder/input.csv) with form.csv input
     - python check_existing_accessions.py (without argument) if path to form.csv is manually entered in check_existing_accessions.py (line 33).
