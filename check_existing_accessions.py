@@ -30,17 +30,7 @@ import shutil
 import re
 
 
-### IDEA ::: possibly make inputs, so that you can do check_existing_accessions.py -s 150 (meaning that 150 is the starting accession (not 151)) 
-# and if you run it with nothing, it runs all of the accessions in the file. or you can do -s 150 -e 151 to only run 150 and 151. and if you do -s 150 -e 150 it will only run 150. 
-# I think that would get rid of the sketchy problem with this program. 
-
 # maybe make anotehr file that you can run to see which one's you've run with this program. (that would be extra though)
-
-# getting today's date
-todays_date = date.today() 
-str_year = str(todays_date.year)
-str_month = str(todays_date.month)
-str_day = str(todays_date.day)
 
 # edit line below to manually enter a .csv 
 filename = './test2.csv' 
@@ -54,10 +44,11 @@ outn = open(csvOutno, 'w')
 yes_writer = csv.writer(outy)
 no_writer = csv.writer(outn)
 
-# the current accession # from file we're on
-curr_n = open("DONT_EDIT.txt", 'r') # if you want it to read the whole csv, make number in DONT_EDIT == 0
-curr_num = int(curr_n.read())
-curr_n.close()
+# getting today's date
+todays_date = date.today() 
+str_year = str(todays_date.year)
+str_month = str(todays_date.month)
+str_day = str(todays_date.day)
 
 
 def find_inputs():
@@ -90,7 +81,8 @@ def find_inputs():
         else:
             y = int(endd.strip())
             break
-    
+    print("\n\n")
+
     return x, y
 
 
@@ -159,11 +151,12 @@ def match_dates(match_string):
         return 0
 
 
-def fill_and_post(pandas_csv, start_num, end_num, id_1_num):
+def fill_data(pandas_csv, start_num, end_num, id_1_num):
     ''' this function does most of the work, it goes through each line 
     of the input .csv, then creates jsonData from the data of each line, then 
     attempts to post that jsonData as a new accession to Aspace.
     returns the number of new accessions created and a list of ID's that were run..
+    or it returns (-1, *ID of failed post*) if posting failed for a specific ID.
     '''
     ex = open("testacc_num.txt", 'r')
     curr_acc = int(ex.read())
@@ -266,7 +259,7 @@ def fill_and_post(pandas_csv, start_num, end_num, id_1_num):
             elif name == "extents":
                 # if its a physical item
                 if (str(row["Estimated physical extent (linear feet):"])).lower() != "nan":
-                    jsonData[name][0]["number"] = row["Estimated physical extent (linear feet):"]
+                    jsonData[name][0]["number"] = str(row["Estimated physical extent (linear feet):"])
                     jsonData[name][0]["extent_type"] = "linear feet"
                     jsonData[name][0]["physical_details"] = row["Number and type of containers (e.g. 2 record storage boxes):"]
                     jsonData[name][0]["container_summary"] = row["Number and type of containers (e.g. 2 record storage boxes):"]
@@ -279,17 +272,17 @@ def fill_and_post(pandas_csv, start_num, end_num, id_1_num):
                         # creating new dict item
                         copy1 = jsonData[name][0].copy()
                         jsonData[name].append(copy1)
-                        jsonData[name][1]["number"] = row["Estimated digital extent (MB):"]
+                        jsonData[name][1]["number"] = str(row["Estimated digital extent (MB):"])
                         jsonData[name][1]["extent_type"] = "megabyte(s)"
                         # if two types, physical details for both are none
                         jsonData[name][1]["physical_details"] = ""
                         jsonData[name][0]["physical_details"] = ""
                         # making both portions partial
-                        jsonData[name][0]["portion"] = "partial"
-                        jsonData[name][1]["portion"] = "partial"
+                        jsonData[name][0]["portion"] = "part"
+                        jsonData[name][1]["portion"] = "part"
                     # if its only digital
                     else: 
-                        jsonData[name][0]["number"] = row["Estimated digital extent (MB):"]
+                        jsonData[name][0]["number"] = str(row["Estimated digital extent (MB):"])
                         jsonData[name][0]["extent_type"] = "megabyte(s)"
                         jsonData[name][0]["physical_details"] = row["Number and type of containers (e.g. 2 record storage boxes):"]
                         jsonData[name][0]["portion"] = "whole"
@@ -314,34 +307,25 @@ def fill_and_post(pandas_csv, start_num, end_num, id_1_num):
         with open("newaccession.json", "w") as file:
             json.dump(jsonData, file, indent = 4 ) 
 
+        # post jsonData to Aspace
         #returned_out = functions.jsonpost(jsonData)
-        #print(returned_out)
-        accessions_created +=1
-             
+        #if "error" in returned_out:
+        #    return -1, row["ID"]
         
-        # after posting, check if resource exists by:
-            # collection identifier key in csv. If its populated check it. do regex to remove any () after. ONly pull something like "Col 188"
-            # collection name: search this up too. 
-            # if collection identifier and colletion name are both filled out combine the two " name + identifier "
-            # 'repositories/2/search?q=' + str(x) + "&page=1&type[]=resource" --- str(x) is either of the things above
-            
-            # when searching the resource record:
-                # total_hits is number of results ( if == 0 then don't fill out bottom 3 )
-                # Collection Title: is results[0][title]
-                # Colleciton identifier: is results[0][identifier]
-                # Collection URI: is results[0][uri]
-        # add to accessions_created (+=1)
-        # make id_0 = 2025 for testing
-        # make id_1 = 001 for testing (but it will end up being 001 with my code anyways)
-        # Aquisition type: aquisition_type = lowercase aquisition type (change the values in the CSV to make sure Gift, Purchase and Transfer work)
-    
-    # add accessions_created to curr_num and write this number to DONT_EDIT.txt
-    new_id = curr_num + accessions_created
-    d = open('DONT_EDIT.txt', 'w')
-    d.seek(0)
-    d.write(str(new_id))
-    d.truncate()
-    d.close()
+        #accession_uri = returned_out['uri']
+        accessions_created +=1
+
+        # checking if repository relating to accession exists
+        repo_true = functions.repo_exists(row["Collection name:"], row["Collection identifier (e.g. Coll 100, for accruals only):"])
+        
+        # write to accessions_yes.csv
+        if repo_true != 0:
+            print("repo found")
+            colltitle, collident, colluri = repo_true
+            print(colltitle, collident, colluri)
+        # write to accessions_no.csv
+        else:
+            print("not repo found :(")
 
     # *TEST* writing the number of tests already done in testacc_num.txt
     f = open('testacc_num.txt', 'w')
@@ -367,7 +351,7 @@ def main():
 
     #usecols = ["ID","Start time","Completion time","Email","Name","Collection name:","New or addition?","Donor or vendor name:","Date of donation/purchase:","Creator (if different from donor):","Estimated creation dates:","Descriptive summary of content:","Estimated physical extent (linear feet):","Estimated digital extent (MB):","Number and type of containers (e.g. 2 record storage boxes):","Legal restrictions or donor restrictions specified in the gift agreement?","Preservation concerns?","Please select gift agreement (or invoice) status:","Optional: attach gift agreement or invoice here","Have the materials been delivered to Knight Library?","Where is the collection currently located? (Room 38, Room 303, mailbox, etc)","Collection identifier (e.g. Coll 100, for additions only):"]
     df = pd.read_csv(filename)
-    print(df)
+    #print(df)
 
     # writing new column headers to output csv's
     data_top = list(df.head())
@@ -382,22 +366,25 @@ def main():
 
     # curr id_1 number -- newest ID_1 in 2023 is supposed to be 83 (running testing will messs this up.)
     id_1 = functions.latest_id1("2025") # supposed to be (str_year) as parameter but testing with something else.
-    if id_1 == -1: # if finding id didn't work, quit program!
+    if id_1 == -1: # if finding id didn't work
         print("Error finding id_1 from last five accessions. Can not run. \n\tThe function latest_id1() in functions.py throws an error when the last 5 id_1's\n\tin the current year are not consecutive.\n")
         exit(1)
 
-
-    final_returns = fill_and_post(df, start, end, id_1)
+    final_returns = fill_data(df, start, end, id_1)
+    if final_returns[0] == -1: # if there was an error in posting
+        print("Failed in posting new accession from input csv line with ID", final_returns[1], ".\n")
+        exit(1)
     accessions_created = final_returns[0]
     run_list = final_returns[1]
 
     if accessions_created == 0:
-        print("\nNo outputs! start and end ID number might not be valid.\n\trun 'check_existing_accessions.py -h' for help on how to use this program.\n")
+        print("\nNo outputs! start and end ID number might not be valid.\n")
     else:
         run_list.sort()
         print("\nRan successfully!\n\tOutput 'yes' and 'no' csv's are in out folder and logs from this run are in out/logs.\n\n\tRAN ID's:", run_list, "\n")
 
     return 0
+
 
 
 # running main without calling it

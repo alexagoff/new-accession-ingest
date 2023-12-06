@@ -2,6 +2,7 @@ import json
 from login_materials import config
 from asnake.client import ASnakeClient
 from aspace_sess import client
+import re # for repo_exists
 
 
 #API to get the shelf from the barcode:
@@ -140,16 +141,9 @@ def jsonpost(x):
     payload = json.dumps(x)
     response = client.post(url, json=x)
     res_object = response.json()
-    
-    return res_object
-
-# update an accession that already exists
-def update_accession(x):
-    url = '/repositories/:repo_id/accessions/' + str(x)
-    response = client.post(url)
-    res_object = response.json()
 
     return res_object
+
 
 # function to see ID_1 of latest 5 accessions
 def latest_id1(curr_yr):
@@ -195,14 +189,40 @@ def latest_id1(curr_yr):
 
     return latest_id
 
-# create function to add detailed info about a accession
-def add_accessioninfo(x):
-    url = 'repositories/2/accessions/search?q=' + str(x)
+
+# check if repository exists with info from an accession
+def repo_exists(name, identifier):
+    if (str(name).lower() != "nan") and (str(identifier).lower() != "nan"):
+        # extracting only something like "col 188" 
+        patternmatch = re.findall("[a-zA-Z]{2,4}\s?\d{3}", identifier)
+        if len(patternmatch) == 0:
+            return 0
+        finder = name + patternmatch[0]
+
+    elif (str(name).lower() != "nan") and (str(identifier).lower() == "nan"):
+        finder = name
+    
+    else:
+        return 0
+    
+    url = 'repositories/2/search?q=' + str(finder) + "&page=1&type[]=resource"
     response = client.get(url)
     res_object = response.json()
-    # if barcode doesn't exist (in the runShelfread.py code, we'll never need this condition)
-    if res_object['response']['numFound'] == 0:
+    # if shelf doesn't exist (in the runShelfread.py code, we'll never need this condition)
+    if res_object['total_hits'] == 0:
         return 0
-    uri_loc = (res_object['response']['docs'][0]['id']).replace('/repositories/2/top_containers/', '')
+    return res_object["results"][0]["title"], res_object["results"][0]["identifier"], res_object["results"][0]["uri"]
     
-    return uri_loc
+
+            # after posting, check if resource exists by:
+            # collection identifier key in csv. If its populated check it. do regex to remove any () after. ONly pull something like "Col 188"
+            # collection name: search this up too. 
+            # if collection identifier and colletion name are both filled out combine the two " name + identifier "
+            # 'repositories/2/search?q=' + str(x) + "&page=1&type[]=resource" --- str(x) is either of the things above
+            
+            # when searching the resource record:
+                # total_hits is number of results ( if == 0 then don't fill out bottom 3 )
+                # Collection Title: is results[0][title]
+                # Colleciton identifier: is results[0][identifier]
+                # Collection URI: is results[0][uri]
+
