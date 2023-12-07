@@ -151,6 +151,9 @@ def latest_id1(curr_yr):
     # finding last id number (on uri)
     response = client.get(url, params={"all_ids": True})
     res_object = response.json()
+
+    if "error" in res_object:
+        return -2, res_object
     
     # not looping through just doing it manually for now
     response1 = client.get(url+"/"+str(res_object[-1]))
@@ -166,7 +169,7 @@ def latest_id1(curr_yr):
 
     # if the last 5 accessions are not in the current year:
     if (res_obj1["id_0"] != curr_yr[-2:]) and (res_obj2["id_0"] != curr_yr[-2:]) and (res_obj3["id_0"] != curr_yr[-2:]) and (res_obj4["id_0"] != curr_yr[-2:]) and (res_obj5["id_0"] != curr_yr[-2:]):
-        latest_id = "000"
+        latest_id = "001"
     # else, count the id_1 numbers
     else:
         tmplist = [res_obj5, res_obj4, res_obj3, res_obj2, res_obj1]
@@ -197,32 +200,21 @@ def repo_exists(name, identifier):
         patternmatch = re.findall("[a-zA-Z]{2,4}\s?\d{3}", identifier)
         if len(patternmatch) == 0:
             return 0
-        finder = name + patternmatch[0]
+        finder = name + " " + patternmatch[0]
 
     elif (str(name).lower() != "nan") and (str(identifier).lower() == "nan"):
         finder = name
     
     else:
         return 0
-    
     url = 'repositories/2/search?q=' + str(finder) + "&page=1&type[]=resource"
     response = client.get(url)
     res_object = response.json()
+    if "error" in res_object:
+        return -1
+
     # if shelf doesn't exist (in the runShelfread.py code, we'll never need this condition)
     if res_object['total_hits'] == 0:
         return 0
-    return res_object["results"][0]["title"], res_object["results"][0]["identifier"], res_object["results"][0]["uri"]
+    return res_object["results"][0]["title"], res_object["results"][0]["identifier"], res_object["results"][0]["uri"], res_object["total_hits"]
     
-
-            # after posting, check if resource exists by:
-            # collection identifier key in csv. If its populated check it. do regex to remove any () after. ONly pull something like "Col 188"
-            # collection name: search this up too. 
-            # if collection identifier and colletion name are both filled out combine the two " name + identifier "
-            # 'repositories/2/search?q=' + str(x) + "&page=1&type[]=resource" --- str(x) is either of the things above
-            
-            # when searching the resource record:
-                # total_hits is number of results ( if == 0 then don't fill out bottom 3 )
-                # Collection Title: is results[0][title]
-                # Colleciton identifier: is results[0][identifier]
-                # Collection URI: is results[0][uri]
-
