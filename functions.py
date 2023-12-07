@@ -184,7 +184,9 @@ def latest_id1(curr_yr):
                 latest_id = latest
         latest_id+=1
         tmp = ""
-        if 10 <= latest_id < 999:
+        if 100 <= latest_id:
+            tmp = str(latest_id)
+        if 10 <= latest_id < 100:
             tmp = "0" + str(latest_id)
         elif latest_id < 10:
             tmp = "00" + str(latest_id)
