@@ -182,6 +182,7 @@ def latest_id1(curr_yr):
                 if ((latest_id+1) != latest) and (latest_id != 0): 
                     return -1
                 latest_id = latest
+        
         latest_id+=1
         tmp = ""
         if 100 <= latest_id:
@@ -197,26 +198,32 @@ def latest_id1(curr_yr):
 
 # check if repository exists with info from an accession
 def repo_exists(name, identifier):
+    ''' this function returns a few different types...
+    '''
+    found_issues = False # to check for errors in "name" and "identifier" fields.
     if (str(name).lower() != "nan") and (str(identifier).lower() != "nan"):
-        # extracting only something like "col 188" 
-        patternmatch = re.findall("[a-zA-Z]{2,4}\s?\d{3}", identifier)
+        # extracting only something like "coll 188" 
+        patternmatch = re.findall("[a-zA-Z]{2,4}\s\s?\d{3}", identifier)
         if len(patternmatch) == 0:
-            return 0
-        finder = name + " " + patternmatch[0]
+            finder = name
+            found_issues = True
+        else:
+            finder = name + " " + patternmatch[0]
+            print(finder)
 
     elif (str(name).lower() != "nan") and (str(identifier).lower() == "nan"):
         finder = name
-    
+    # if theres no collection name, no name or identifier, or just an identifier
     else:
-        return 0
+        return -2
+
     url = 'repositories/2/search?q=' + str(finder) + "&page=1&type[]=resource"
     response = client.get(url)
-    res_object = response.json()
+    res_object = response.json()  
     if "error" in res_object:
-        return -1
+        return -1  
 
-    # if shelf doesn't exist (in the runShelfread.py code, we'll never need this condition)
-    if res_object['total_hits'] == 0:
-        return 0
-    return res_object["results"][0]["title"], res_object["results"][0]["identifier"], res_object["results"][0]["uri"], res_object["total_hits"]
+    elif res_object["total_hits"] == 0:
+        return 0, found_issues
+    return res_object["results"][0]["title"], res_object["results"][0]["identifier"], res_object["results"][0]["uri"], res_object["total_hits"], found_issues
     

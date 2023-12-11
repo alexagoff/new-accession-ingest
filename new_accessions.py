@@ -1,13 +1,3 @@
-''' 
-this is the first part in the development picture. This scans over 
-all of the new accession forms and checks if the accession already 
-exist in aspace and outputs a csv of 'yes' and 'no''s. These can be
-resource records, events, server updates, gifts and general applications.
-
-DONT_EDIT.txt holds the ID (not the line in the csv) of the last accession from "New Accession Intake Form.csv" that was created.
-you don't need to interact with this file, unless you want to update the last ID that was run (if you did one manually, etc). 
-(if DONT_EDIT.txt = 160, it will run ID's: 161, 162, 163, ...)
-'''
 
 ''' this is a possible way to turn .xlsx to .csv:
   import  jpype     
@@ -31,16 +21,14 @@ import shutil
 import re
 
 
-# maybe make anotehr file that you can run to see which one's you've run with this program. (that would be extra though)
-
 # edit line below to manually enter a .csv 
 filename = './test2.csv' 
 if len(sys.argv) > 1:
     filename = sys.argv[1]
 csvOutyes = "./out/accessions_yes.csv"
 csvOutno = "./out/accessions_no.csv"
-err = "./out/logs/errorlog.txt"
-app = "./out/logs/applog.txt"
+err = "./out/new_accessions_logs/errorlog.txt"
+app = "./out/new_accessions_logs/applog.txt"
 
 err_true = True
 app_true = True
@@ -70,18 +58,18 @@ str_day = str(todays_date.day)
 
 
 def find_inputs():
-    ''' this function takes inputs... if begin < the begining ID in the form, 
-    it will just begin at the beginning of the form, similarly if end > the last
-    ID number in the form, it will just run to the last ID number in the form.
-    If beginning ID is > the last number in the form, nothing will be run.
+    ''' this function takes inputs dictating the constraints of what 
+    ID's in the input csv will be run.
 
-    Right now this relies on the user knowing what ID's are in the form. It doesn't
-    count what the biggest and smallest ID numbers are. 
+    Input: none
+    output:
+        x = the lower constraint x <= lowest ID #
+        y = the higher constraint y >= highest ID #
     '''
     x = 0
     y = 0
 
-    print("\nThis program runs any amount of *consecutive* IDs on an inputted 'new accessions' form file.\nEnter the start and end ID's of the accessions you would like to create.\n   ----->  If start = 150 and end = 151, 150 and 151 will be ran--even if 150 and 151 are not next to each other.\n")
+    print("\nThis program runs any amount of *consecutive* IDs on an inputted 'new accessions' form file.\n\n   ----->  If start = 150 and end = 151, only ID # 150 and 151 will be ran.\n")
     while(1):
         begin = input("\nStart ID: ")
         if not begin.strip().isdigit():
@@ -109,9 +97,10 @@ def match_dates(match_string):
     Right now it only will detect 4 number years just to make sure mistakes aren't made.
     if theres a year like "19" or "80", it will return 0. 
     
-    input: the string from the csv column "Estimated creation dates:"
-    output: If successfully removed, then return a list [start, end]. 
-            If date could not be found from the patterns, then returns 0.
+    input: str, the string from the csv column "Estimated creation dates:"
+    output: list, a list [start, end] of the starting and ending date in the timeframe. 
+            
+    Errors: If date could not be found from the patterns, then returns 0.
     '''
     # regex patterns 
     pattern1 = "\d{4}'?\s?s.*\d{4}'?\s?s" 
@@ -170,10 +159,20 @@ def match_dates(match_string):
 
 
 def fill_data(pandas_csv, start_num, end_num, id_1_num):
-    ''' this function does most of the work, it goes through each line 
-    of the input .csv, then creates jsonData from the data of each line, then 
-    attempts to post that jsonData as a new accession to Aspace.
-    returns the number of new accessions created and a list of ID's that were run and an list of ID's that coldn't post.
+    ''' this function fills a json file for each line from 
+    the input csv. 
+    For each json file that has been filled it
+    calls post_and_check to attempt to post the data and check if a 
+    correlating repository exists. 
+    
+    Input:
+        pandas_csv: file, the input csv
+        start_num, end_num: int, the constraints for what ID's to run
+        id_1_num: int, the starting id_1 number
+    Output: 
+        lines_looped: int, the amount of lines in the input csv that were parsed
+        run_list: list, the row ID's of the lines in the csv that were parsed
+        errors_list: list, the row ID's of lines in the csv that gave 'post' or 'get' errors
     '''
     ex = open("testacc_num.txt", 'r')
     curr_acc = int(ex.read())
@@ -199,6 +198,8 @@ def fill_data(pandas_csv, start_num, end_num, id_1_num):
         
         # getting jsonData from template .json file
         jsonData = None
+        found_dates = "No"
+
         with open("jsontemplate.json", "r") as file:
             jsonData = json.load(file)
         
@@ -308,6 +309,7 @@ def fill_data(pandas_csv, start_num, end_num, id_1_num):
                 # making string into estimated begin and end dates
                 begin_end = match_dates(row["Estimated creation dates:"])
                 if begin_end != 0:
+                    found_dates = "Yes"
                     if len(begin_end)==2:
                         jsonData[name][0]["begin"] = begin_end[0]
                         jsonData[name][0]["end"] = begin_end[1]
@@ -323,37 +325,9 @@ def fill_data(pandas_csv, start_num, end_num, id_1_num):
         with open("newaccession.json", "w") as file:
             json.dump(jsonData, file, indent = 4 ) 
 
-        # post jsonData to Aspace
-        returned_out = functions.jsonpost(jsonData)
-
-        # couldn't post
-        if "error" in returned_out:
-           errors_list.append(row["ID"])
-           curr_acc -= 1 # can get rid of this after testing
-           errorlog.write("LINE " + str(rownum) + ", ID " + str(row["ID"]) + ": Unable to post. Error message below:\n")
-           errorlog.write("\t\t" + str(returned_out) + "\n")
-        # posted successfully
-        else:
-            accession_uri = returned_out['uri']
-            applog.write("LINE " +str(rownum) + ", ID " + str(row["ID"]) + ": Posted new accession with URI " + str(accession_uri) + ".\n")
-
-            # checking if repository relating to accession exists
-            repo_true = functions.repo_exists(row["Collection name:"], row["Collection identifier (e.g. Coll 100, for accruals only):"])
-            
-            # if there were repositories
-            if repo_true != 0:
-                print("repo found")
-                colltitle, collident, colluri, totalhits = repo_true
-                applog.write("                 - " + str(totalhits) + " matching repository(s) found.\n")
-            # if no repositories were found
-            elif repo_true == 0:
-                print("not repo found :(")
-                applog.write("                 - No repositories found.\n")
-            # if using "get" failed (system error)
-            elif repo_true == -1:
-                errorlog.write("LINE " + str(rownum) + ", ID " + str(row["ID"]) + ": Error in trying to use 'get' to find repo. Error message below:\n")
-                errorlog.write("\t\t" + str(repo_true) + "\n")
-
+        # posting to aspace and checking if repo exists
+        errors_list = post_and_check(jsonData, row, rownum, found_dates, errors_list)
+    
         lines_looped +=1
         rownum+=1
 
@@ -366,30 +340,107 @@ def fill_data(pandas_csv, start_num, end_num, id_1_num):
 
     return lines_looped, run_list, errors_list
 
+
+def post_and_check(tmpjson, curr_row, curr_num, found_tf, curr_errors):
+    ''' this function posts a jsonData variable of an accession into Aspace and checks if the
+    repository connected to the accession exists. This function also writes to the 
+    output "yes" and "no" csv's as well as the output logs. 
+
+    Input:
+        tmpjson: Dict/json(?), jsonData (contents of a .json file)
+        curr_row: Sequence, the current row contents from the input csv
+        curr_num: int, the current line number from the input csv
+        found_tf: str, "Yes" or "No" whether a date was found from the input date string
+        curr_errors: list, a list of ID's of the row's with errors.
+    Output:
+        curr_errors: list, updated curr_errors
+    '''
+    # post jsonData to Aspace
+    returned_out = functions.jsonpost(tmpjson)
+
+    # couldn't post
+    if "error" in returned_out:
+        curr_errors.append(curr_row["ID"])
+        curr_acc -= 1 # can get rid of this after testing
+        errorlog.write("LINE " + str(curr_num) + ", ID " + str(curr_row["ID"]) + ": Unable to post. Error message below:\n")
+        errorlog.write("\t\t" + str(returned_out) + "\n")
+    # posted successfully
+    else:
+        accession_uri = returned_out['uri']
+        applog.write("LINE " +str(curr_num) + ", ID " + str(curr_row["ID"]) + ": Posted new accession with URI " + str(accession_uri) + ".\n")
+
+        # checking if repository relating to accession exists
+        repo_true = functions.repo_exists(curr_row["Collection name:"], curr_row["Collection identifier (e.g. Coll 100, for accruals only):"])
+
+        # right now I have it so that the only time it doesn't write to the output csv's is if there is an 
+        # error using the "get" method. 
+
+        # if there was no error in "get" API
+        if repo_true != -1:
+            tmprow = curr_row.tolist()
+            tmprow.append(found_tf)
+            tmprow.append(str(accession_uri))
+
+            # if repo was able to search 
+            if type(repo_true) == tuple:
+                # if > 0 found:
+                if len(repo_true) == 5:
+                    colltitle, collident, colluri, totalhits, foundissues = repo_true
+                    applog.write("                 - " + str(totalhits) + " matching repository(s) found.\n")  
+                    tmprow.append(str(totalhits))
+                    tmprow.append(str(colltitle))
+                    tmprow.append(str(collident))
+                    tmprow.append(str(colluri))
+                    yes_writer.writerow(tmprow)
+                # if totalhits == 0
+                elif len(repo_true) == 2:
+                    totalhits, foundissues = repo_true
+                    applog.write("                 - No repositories found.\n")
+                    tmprow.append(str(totalhits))
+                    no_writer.writerow(tmprow)
+                # if errors in coll name or coll id
+                if foundissues == True:
+                    errorlog.write("LINE " + str(curr_num) + ", ID " + str(curr_row["ID"]) + ": Repo searched with only collection name. Error in collection identifier.\n")
+
+            # if error in coll name or coll id and couldn't search repo
+            else:
+                errorlog.write("LINE " + str(curr_num) + ", ID " + str(curr_row["ID"]) + ": Unable to search for a repo. Insufficient information (collection name or identifier).\n")
+                applog.write("                 - No repositories found.\n")
+                tmprow.append("0")
+                no_writer.writerow(tmprow)
+
+        # if using "get" failed (system error)
+        else:
+            curr_errors.append(curr_row["ID"])
+            errorlog.write("LINE " + str(curr_num) + ", ID " + str(curr_row["ID"]) + ": Error in trying to use 'get' to find repo. Error message below:\n")
+            errorlog.write("\t\t" + str(repo_true) + "\n")
+
+    return curr_errors
+
 # work on "yes" on the second section if done with this..
 # for the event record, do Executing program and SCUA api calls as the other one -->"role":"executing_program", "linked_records":"ref":*resource uri*
 
 def main():
-    ''' main loop going through lines of new form input CSV. Creates new .json file
-    for every new accession form, fills it with information and then posts it onto 
-    Aspace. 
+    ''' Program to go through lines of an input csv of new acceession forms 
+    and create a json file for each line, then posting a new accession to aspace
+    from each file and checking if corresponding repositories exist. 
+
+    Errors: exit with failure if id_1 number can't be found.  
     '''
     # input loop for asking user what ID they would like to start and end on. 
     retstartend = find_inputs()
     start, end = retstartend
 
-    #usecols = ["ID","Start time","Completion time","Email","Name","Collection name:","New or addition?","Donor or vendor name:","Date of donation/purchase:","Creator (if different from donor):","Estimated creation dates:","Descriptive summary of content:","Estimated physical extent (linear feet):","Estimated digital extent (MB):","Number and type of containers (e.g. 2 record storage boxes):","Legal restrictions or donor restrictions specified in the gift agreement?","Preservation concerns?","Please select gift agreement (or invoice) status:","Optional: attach gift agreement or invoice here","Have the materials been delivered to Knight Library?","Where is the collection currently located? (Room 38, Room 303, mailbox, etc)","Collection identifier (e.g. Coll 100, for additions only):"]
     df = pd.read_csv(filename)
-    #print(df)
 
     # writing new column headers to output csv's
     data_top = list(df.head())
     data_top.append("Found Dates? (extracted from estimated creation dates)") # if begin and end could be extracted from "Estimated creation dates:"
+    data_top.append("Created Accession URI:")
     data_top.append("Number of found results:") # if repo for accession exists n>0
     data_top.append("Found Collection Title:") # the title of existing collection of first match 
     data_top.append("Found Collection Identifier:") # if repo exists
     data_top.append("Found Collection URI (of first match):") # if repo exists
-    data_top.append("Created Accession URI:")
     yes_writer.writerow(data_top)
     no_writer.writerow(data_top)
 
@@ -399,6 +450,7 @@ def main():
 
     # finding id_1 number -- newest ID_1 in 2023 is supposed to be 83 (running testing will messs this up.)
     id_1 = functions.latest_id1("2025") # supposed to be (str_year) as parameter but testing with something else.
+    
     tmp = ""
     # an error in 'get' API is the only time latest_id1 returns a tuple type
     if type(id_1) == tuple:
@@ -421,11 +473,11 @@ def main():
     else:
         run_list.sort()
         if len(errorlis) != 0:
-            print("\nRan program successfully!\n\tLook for more information on this run in accessions_no.csv, accessions_yes.csv, errorlog.txt and applog.txt.\n\n\tRAN ID's:", run_list, "\n\tUNABLE TO POST:", errorlis, "\n")
+            print("\nRan program successfully!\n\tLook for more information on this run in accessions_no.csv, accessions_yes.csv, errorlog.txt and applog.txt.\n\n\tRAN ID's:", run_list, "\n\tERROR ID's (not on output csv):", errorlis, "\n")
         else:
-            print("\nRan program successfully!\n\tLook for more information on this run in accessions_no.csv, accessions_yes.csv, errorlog.txt and applog.txt.\n\n\tRAN ID's:", run_list, "\n\tNo errors in posting.\n")
+            print("\nRan program successfully!\n\tLook for more information on this run in accessions_no.csv, accessions_yes.csv, errorlog.txt and applog.txt.\n\n\tRAN ID's:", run_list, "\n\tNo errors in posting or getting.\n")
+    
     return 0
-
 
 
 # running main without calling it
@@ -433,3 +485,5 @@ if __name__ == "__main__":
     main()
     outy.close()
     outn.close()
+    errorlog.close()
+    applog.close()
