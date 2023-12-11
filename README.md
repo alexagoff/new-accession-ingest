@@ -5,16 +5,14 @@ Working files and outlines for creating automating new accessions in ArchivesSpa
 [Workflow](https://uoregon.sharepoint.com/:u:/s/O365_SCUAprocessing/ES8hGWg_DoJEkE4B2ViETJ4B7sYGi2O9DMJI8LQb5HFwIQ?e=uI8MBR)
 
 # Description:
-This program goes through lines of an input csv of new acceession forms 
+This program creates accessions, posts them onto Aspace, and creates corresponding repositories
+or updates existing repositories with new accssions.
+It has two parts: 
+- new_accessions.py: goes through lines of an input csv of new acceession forms 
 and creates a json file for each line, then posting a new accession to Aspace
 from each json file and checking if a corresponding repository exists in Aspace. 
 
-This program outputs: 
-accessions_no.csv -- the accessions that didn't find a corresponding repository.
-acceessions_yes.csv -- the accessions that found a corresponding repository.
-applog.txt -- a log of the new accessions created in Aspace.
-errorrlog.txt -- a log of all of the errors found while running.
-
+- update_repositories.py:
 
 IMPORTANT NOTES:
 - The title/column header line on the input .csv file must all be on the first line/one line! If its spread into two lines the program will error.
