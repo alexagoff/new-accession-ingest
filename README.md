@@ -32,10 +32,9 @@ How To Use:
   - do either:
     - python new_accessions.py ~/path/to/form.csv (e.g. ~/Desktop/folder/input.csv) with form.csv input
     - python new_accessions.py (without argument) if path to form.csv is manually entered in new_accessions.py (line 25).
-  - output: accessions_no.csv and accessions_yes.csv if repositories connected to accession(s) already exist. Both sent to Alexa. Also two logs of errors and updates in out/new_accessoins_logs.
+  - output: accessions_no.csv and accessions_yes.csv if repositories connected to accession(s) already exist. Both sent to Alexa. Also two logs of errors and updates in out/new_accessions_logs.
 - run update_repositories.py
   - do either:
     - python update_repositories.py ~/path/to/csv ~/path/to/csv (e.g. ~/Desktop/folder/yes_input.csv ~/Desktop/folder/no_input.csv) with 'yes' and 'no' csv's as the arguments.
     - python update_repositories.py (no arguments) if paths to csvs are already manually entered in new_accessions.py.
   - output: logs in out/update_repos_logs 
-- check out/log and out/output_existing.csv 
