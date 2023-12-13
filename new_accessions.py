@@ -14,6 +14,7 @@ import csv
 import os 
 import functions
 import sys
+import time
 from datetime import date 
 import datetime
 import pandas as pd
@@ -181,7 +182,8 @@ def fill_data(pandas_csv, start_num, end_num, id_1_num):
     run_list = []
     errors_list = []
     lines_looped = 0
-    rownum = 2
+    extents_message = ""
+
 
     # going through each line of csv
     for index, row in pandas_csv.iterrows():
@@ -211,21 +213,24 @@ def fill_data(pandas_csv, start_num, end_num, id_1_num):
             #if (name == "title") and ((row["Collection name:"]).lower() != "nan"):
             #    jsonData[name] = row["Collection name:"]
             if name == "title":
-                jsonData[name] = 'API TEST ACCESSION ' + str(curr_acc)
+                jsonData[name] = 'NEW ROUND TEST ACCESIONS ' + str(curr_acc)
                 curr_acc+=1
             
             elif name == "content_description":
-                if (row["Descriptive summary of content:"]).lower() != "nan":
+                if (str(row["Descriptive summary of content:"])).lower() != "nan":
                     jsonData[name] = row["Descriptive summary of content:"]
             
             elif name == "condition_description":
-                if (row["Preservation concerns?"]).lower() == "yes":
+                if (str(row["Preservation concerns?"])).lower() == "yes":
                     jsonData[name] = "Curator indicated presence of preservation concerns."
-            
+
             elif name == "provenance":
-                if (row["Donor or vendor name:"]).lower() != "nan":
-                    jsonData[name] = row["Acquisition type?:2"] + " of " + row["Donor or vendor name:"] + ", "+ row["Year of donation/purchase:"][-4:] + "."
-            
+                if (str(row["Donor or vendor name:"])).lower() != "nan":
+                    if str(row["Acquisition type?:2"]).lower() != "nan":
+                        jsonData[name] = str(row["Acquisition type?:2"]) + " of " + str(row["Donor or vendor name:"]) + ", "+ str(row["Year of donation/purchase:"])[-4:] + "."
+                    else:
+                        jsonData[name] = "Gift/Purchase/Transfer of " + str(row["Donor or vendor name:"]) + ", "+ str(row["Year of donation/purchase:"])[-4:] + "."
+
             elif name == "accession_date":
                 strdate = str_day
                 strmonth = str_month
@@ -236,7 +241,7 @@ def fill_data(pandas_csv, start_num, end_num, id_1_num):
                 jsonData[name] = str_year+'-'+str_month+'-'+strdate
             
             elif name == "restrictions_apply":
-                if (row["Legal restrictions or donor restrictions specified in the gift agreement?"]).lower() == "yes":
+                if (str(row["Legal restrictions or donor restrictions specified in the gift agreement?"])).lower() == "yes":
                     jsonData[name] = True
             
             elif name == "id_0":
@@ -257,7 +262,7 @@ def fill_data(pandas_csv, start_num, end_num, id_1_num):
                     jsonData[name] = "P"
                 elif row["Curatorial area?"] == "Manuscripts":
                     jsonData[name] = "M"
-                elif row["Curatiorial area?"] == "University Archives":
+                elif row["Curatorial area?"] == "University Archives":
                     jsonData[name] = "A"
                 # default to M
                 else:
@@ -267,47 +272,89 @@ def fill_data(pandas_csv, start_num, end_num, id_1_num):
                 jsonData[name] = "Record created by API ingest in "+str_year+"--not yet reviewed for accuracy."
 
             elif name == "acquisition_type":
-                if (row["Acquisition type?:2"]).lower() != "nan":
-                    jsonData[name] = (row["Acquisition type?:2"]).lower()
-            
+                if (str(row["Acquisition type?:2"])).lower() != "nan":
+                    jsonData[name] = (str(row["Acquisition type?:2"])).lower()
+      
             elif name == "resource_type":
-                if (row["Resource type?"]).lower() != "nan":
-                    jsonData[name] = row["Resource type?"].lower()
-            
+                if (str(row["Resource type?"])).lower() != "nan":
+                    jsonData[name] = (str(row["Resource type?"])).lower()
+       
             elif name == "extents":
-                # if its a physical item
-                if ((str(row["Estimated physical extent (linear feet):"])).lower() != "nan") and (row["Estimated physical extent (linear feet):"] != 0):
-                    jsonData[name][0]["number"] = str(row["Estimated physical extent (linear feet):"])
-                    jsonData[name][0]["extent_type"] = "linear feet"
-                    jsonData[name][0]["physical_details"] = row["Number and type of containers (e.g. 2 record storage boxes):"]
-                    jsonData[name][0]["portion"] = "whole"
-                
+                # if its a physical item 
+                if ((str(row["Estimated physical extent (linear feet):"])).lower() != "nan"):
+                    # if the string is just a numerical character
+                    if str(row["Estimated physical extent (linear feet):"]).replace('.', '', 1).isdigit() == True:
+                        if float((row["Estimated physical extent (linear feet):"]).replace('.', '', 1)) != 0:
+                            jsonData[name][0]["number"] = str(row["Estimated physical extent (linear feet):"])
+                            jsonData[name][0]["extent_type"] = "linear feet"
+                            jsonData[name][0]["physical_details"] = row["Number and type of containers (e.g. 2 record storage boxes):"]
+                            jsonData[name][0]["portion"] = "whole"
+                    # if the string is a valid non-numerical string (something like str(int) + 'linear feet')
+                    elif ("linear feet" in str(row["Estimated physical extent (linear feet):"]).lower()) or ("linear foot" in str(row["Estimated physical extent (linear feet):"]).lower()) or (" lf" in str(row["Estimated physical extent (linear feet):"]).lower()) or (" ft" in str(row["Estimated physical extent (linear feet):"]).lower()):
+                        patterns = re.findall("\d\d?\,?\d?\d?\d?\.?\d?\d?\d?", str(row["Estimated physical extent (linear feet):"])) 
+                        if len(patterns) > 0:
+                            if float(patterns[0]) != 0:
+                                jsonData[name][0]["number"] = patterns[0]
+                                jsonData[name][0]["extent_type"] = "linear feet"
+                                jsonData[name][0]["physical_details"] = row["Number and type of containers (e.g. 2 record storage boxes):"]
+                                jsonData[name][0]["portion"] = "whole"
                 # if its a digital item 
-                if (str(row["Estimated digital extent (MB):"])).lower() != "nan" and (row["Estimated digital extent (MB):"] != 0):
-                    # if its also a physical item
-                    if (str(row["Estimated physical extent (linear feet):"])).lower() != "nan":
-                        # creating new dict item
-                        copy1 = jsonData[name][0].copy()
-                        jsonData[name].append(copy1)
-                        jsonData[name][1]["number"] = str(row["Estimated digital extent (MB):"])
-                        jsonData[name][1]["extent_type"] = "megabyte(s)"
-                        # if two types, physical details for both are none
-                        jsonData[name][1]["physical_details"] = ""
-                        jsonData[name][0]["physical_details"] = ""
-                        # making both portions partial
-                        jsonData[name][0]["portion"] = "part"
-                        jsonData[name][1]["portion"] = "part"
-                    # if its only digital
-                    else: 
-                        jsonData[name][0]["number"] = str(row["Estimated digital extent (MB):"])
-                        jsonData[name][0]["extent_type"] = "megabyte(s)"
-                        jsonData[name][0]["physical_details"] = row["Number and type of containers (e.g. 2 record storage boxes):"]
-                        jsonData[name][0]["portion"] = "whole"
+                if (str(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"])).lower() != "nan": 
+                    # if its just a numerical string
+                    if str(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"]).replace('.', '', 1).isdigit() == True:
+                        if float(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"]) != 0:
+                            # if its also a valid physical item
+                            if jsonData[name][0]["number"] != "":
+                                # creating new dict item
+                                copy1 = jsonData[name][0].copy()
+                                jsonData[name].append(copy1)
+                                jsonData[name][1]["number"] = str(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"])
+                                jsonData[name][1]["extent_type"] = "megabyte(s)"
+                                # if two types, physical details for both are none
+                                jsonData[name][1]["physical_details"] = ""
+                                jsonData[name][0]["physical_details"] = ""
+                                # making both portions partial
+                                jsonData[name][0]["portion"] = "part"
+                                jsonData[name][1]["portion"] = "part"
+                            # if its only digital
+                            else:
+                                jsonData[name][0]["number"] = str(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"])
+                                jsonData[name][0]["extent_type"] = "megabyte(s)"
+                                jsonData[name][0]["physical_details"] = str(row["Number and type of containers (e.g. 2 record storage boxes):"])
+                                jsonData[name][0]["portion"] = "whole"
+                    # if its a valid non-numerical string (something like str(int) + "MB")
+                    elif (" mb" in str(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"]).lower()) or ("megabytes" in str(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"]).lower()) or ("megabyte" in str(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"]).lower()):
+                        patterns = re.findall("\d\d?\,?\d?\d?\d?\.?\d?\d?\d?", str(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"]))
+                        if len(patterns) > 0:
+                            if float(patterns[0]) != 0:
+                                # if its also a valid physical item
+                                if jsonData[name][0]["number"] != "":
+                                    # creating new dict item
+                                    copy1 = jsonData[name][0].copy()
+                                    jsonData[name].append(copy1)
+                                    jsonData[name][1]["number"] = str(patterns[0])
+                                    jsonData[name][1]["extent_type"] = "megabyte(s)"
+                                    # if two types, physical details for both are none
+                                    jsonData[name][1]["physical_details"] = ""
+                                    jsonData[name][0]["physical_details"] = ""
+                                    # making both portions partial
+                                    jsonData[name][0]["portion"] = "part"
+                                    jsonData[name][1]["portion"] = "part"
+                                # if its only digital
+                                else:
+                                    jsonData[name][0]["number"] = str(patterns[0])
+                                    jsonData[name][0]["extent_type"] = "megabyte(s)"
+                                    jsonData[name][0]["physical_details"] = str(row["Number and type of containers (e.g. 2 record storage boxes):"])
+                                    jsonData[name][0]["portion"] = "whole"
+
+                # if neither could be filled (physical or digital)
+                if jsonData[name][0]["number"] == "":
+                    extents_message = "Neither Physical or digital extents are valid. Physical: '" + str(row["Estimated physical extent (linear feet):"]) + "', Digital: '" + str(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"]) + "'"
             
             elif name == "dates":
-                jsonData[name][0]["expression"] = row["Estimated creation dates:"]
+                jsonData[name][0]["expression"] = str(row["Estimated creation dates:"])
                 # making string into estimated begin and end dates
-                begin_end = match_dates(row["Estimated creation dates:"])
+                begin_end = match_dates(str(row["Estimated creation dates:"]))
                 if begin_end != 0:
                     found_dates = "Yes"
                     if len(begin_end)==2:
@@ -319,18 +366,29 @@ def fill_data(pandas_csv, start_num, end_num, id_1_num):
                         jsonData[name][0]["date_type"] = "single"
                 # could not separate into start and end dates
                 else:
-                    jsonData[name][0]["date_type"] = "inclusive"                
-
+                    jsonData[name][0]["date_type"] = "inclusive"  
+                    errorlog.write("ID " + str(row["ID"]) + ": Unable to match date.\n")
+        
         # copying to new .json file - not necessary, just post it onto aspace. 
         with open("newaccession.json", "w") as file:
             json.dump(jsonData, file, indent = 4 ) 
 
-        # posting to aspace and checking if repo exists
-        errors_list = post_and_check(jsonData, row, rownum, found_dates, errors_list)
-    
+        # checking if it won't be able to post because of 'extents'field
+        if extents_message != "":
+            errorlog.write("ID " + str(row["ID"]) + ": " + extents_message + "\n")
+        errors_list, id_1_num = post_and_check(jsonData, row, found_dates, errors_list, int(id_1_num))
+        
+        # making id_1 a str again
+        tmp_id_1 = id_1_num
+        if 10 <= tmp_id_1 < 999:
+            id_1_num = "0" + str(tmp_id_1)
+        elif tmp_id_1 < 10:
+            id_1_num = "00" + str(tmp_id_1)
+        
+        time.sleep(1)
+        extents_message = ""
         lines_looped +=1
-        rownum+=1
-
+        
     # *TEST* writing the number of tests already done in testacc_num.txt
     f = open('testacc_num.txt', 'w')
     f.seek(0)
@@ -341,7 +399,7 @@ def fill_data(pandas_csv, start_num, end_num, id_1_num):
     return lines_looped, run_list, errors_list
 
 
-def post_and_check(tmpjson, curr_row, curr_num, found_tf, curr_errors):
+def post_and_check(tmpjson, curr_row, found_tf, curr_errors, curr_id):
     ''' this function posts a jsonData variable of an accession into Aspace and checks if the
     repository connected to the accession exists. This function also writes to the 
     output "yes" and "no" csv's as well as the output logs. 
@@ -349,25 +407,27 @@ def post_and_check(tmpjson, curr_row, curr_num, found_tf, curr_errors):
     Input:
         tmpjson: Dict/json(?), jsonData (contents of a .json file)
         curr_row: Sequence, the current row contents from the input csv
-        curr_num: int, the current line number from the input csv
         found_tf: str, "Yes" or "No" whether a date was found from the input date string
         curr_errors: list, a list of ID's of the row's with errors.
+        curr_id: int, the current id_1 number.
     Output:
         curr_errors: list, updated curr_errors
+        curr_id: int, updated id_1 number (if there was issues posting, subtract 1)
     '''
     # post jsonData to Aspace
     returned_out = functions.jsonpost(tmpjson)
 
     # couldn't post
     if "error" in returned_out:
+        curr_id-=1
         curr_errors.append(curr_row["ID"])
-        curr_acc -= 1 # can get rid of this after testing
-        errorlog.write("LINE " + str(curr_num) + ", ID " + str(curr_row["ID"]) + ": Unable to post. Error message below:\n")
+        #curr_acc -= 1 # can get rid of this after testing
+        errorlog.write("ID " + str(curr_row["ID"]) + ": Unable to post. Error message below:\n")
         errorlog.write("\t\t" + str(returned_out) + "\n")
     # posted successfully
     else:
         accession_uri = returned_out['uri']
-        applog.write("LINE " +str(curr_num) + ", ID " + str(curr_row["ID"]) + ": Posted new accession with URI " + str(accession_uri) + ".\n")
+        applog.write("ID " + str(curr_row["ID"]) + ": Posted new accession with URI " + str(accession_uri) + ".\n")
 
         # checking if repository relating to accession exists
         repo_true = functions.repo_exists(curr_row["Collection name:"], curr_row["Collection identifier (e.g. Coll 100, for accruals only):"])
@@ -386,7 +446,6 @@ def post_and_check(tmpjson, curr_row, curr_num, found_tf, curr_errors):
                 # if > 0 found:
                 if len(repo_true) == 5:
                     colltitle, collident, colluri, totalhits, foundissues = repo_true
-                    applog.write("                 - " + str(totalhits) + " matching repository(s) found.\n")  
                     tmprow.append(str(totalhits))
                     tmprow.append(str(colltitle))
                     tmprow.append(str(collident))
@@ -395,27 +454,25 @@ def post_and_check(tmpjson, curr_row, curr_num, found_tf, curr_errors):
                 # if totalhits == 0
                 elif len(repo_true) == 2:
                     totalhits, foundissues = repo_true
-                    applog.write("                 - No repositories found.\n")
                     tmprow.append(str(totalhits))
                     no_writer.writerow(tmprow)
                 # if errors in coll name or coll id
                 if foundissues == True:
-                    errorlog.write("LINE " + str(curr_num) + ", ID " + str(curr_row["ID"]) + ": Repo searched with only collection name. Error in collection identifier.\n")
+                    errorlog.write("ID " + str(curr_row["ID"]) + ": Repo searched with only collection name. Error in collection identifier.\n")
 
             # if error in coll name or coll id and couldn't search repo
             else:
-                errorlog.write("LINE " + str(curr_num) + ", ID " + str(curr_row["ID"]) + ": Unable to search for a repo. Insufficient information (collection name or identifier).\n")
-                applog.write("                 - No repositories found.\n")
+                errorlog.write("ID " + str(curr_row["ID"]) + ": Unable to search for a repo. Insufficient information (collection name or identifier).\n")
                 tmprow.append("0")
                 no_writer.writerow(tmprow)
 
         # if using "get" failed (system error)
         else:
             curr_errors.append(curr_row["ID"])
-            errorlog.write("LINE " + str(curr_num) + ", ID " + str(curr_row["ID"]) + ": Error in trying to use 'get' to find repo. Error message below:\n")
+            errorlog.write("ID " + str(curr_row["ID"]) + ": Error in trying to use 'get' to find repo. Error message below:\n")
             errorlog.write("\t\t" + str(repo_true) + "\n")
 
-    return curr_errors
+    return curr_errors, curr_id
 
 # work on "yes" on the second section if done with this..
 # for the event record, do Executing program and SCUA api calls as the other one -->"role":"executing_program", "linked_records":"ref":*resource uri*
@@ -448,9 +505,12 @@ def main():
     errorlog.write("\n--------------" + str(now) + "--------------\n")
     applog.write("\n--------------" + str(now) + "--------------\n")
 
-    # finding id_1 number -- newest ID_1 in 2023 is supposed to be 83 (running testing will messs this up.)
+    # finding id_1 number -- newest ID_1 in 2023 is supposed to be 84 (running testing will messs this up.)
     id_1 = functions.latest_id1("2025") # supposed to be (str_year) as parameter but testing with something else.
     
+    # if you would like to manually enter id_1 write the string here:
+    # id_1 = "030" 
+
     tmp = ""
     # an error in 'get' API is the only time latest_id1 returns a tuple type
     if type(id_1) == tuple:
@@ -473,7 +533,7 @@ def main():
     else:
         run_list.sort()
         if len(errorlis) != 0:
-            print("\nRan program successfully!\n\tLook for more information on this run in accessions_no.csv, accessions_yes.csv, errorlog.txt and applog.txt.\n\n\tRAN ID's:", run_list, "\n\tERROR ID's (not on output csv):", errorlis, "\n")
+            print("\nRan program successfully!\n\tLook for more information on this run in accessions_no.csv, accessions_yes.csv, errorlog.txt and applog.txt.\n\n\tRAN ID's:", run_list, "\n\tERROR ID's (not on output csv's):", errorlis, "\n")
         else:
             print("\nRan program successfully!\n\tLook for more information on this run in accessions_no.csv, accessions_yes.csv, errorlog.txt and applog.txt.\n\n\tRAN ID's:", run_list, "\n\tNo errors in posting or getting.\n")
     

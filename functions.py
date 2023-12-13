@@ -209,7 +209,6 @@ def repo_exists(name, identifier):
             found_issues = True
         else:
             finder = name + " " + patternmatch[0]
-            print(finder)
 
     elif (str(name).lower() != "nan") and (str(identifier).lower() == "nan"):
         finder = name
