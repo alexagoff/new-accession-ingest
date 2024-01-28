@@ -32,8 +32,8 @@ How To Use:
     - python new_accessions.py ~/path/to/input (e.g. ~/Desktop/folder/input)
     - python new_accessions.py (without argument) if path to input is manually entered in new_accessions.py (line 15).
   - output: posted_accessions.csv, stored in the out folder. Also two logs of errors and updates in out/new_accessions_logs.
-- run update_repos.py
-  - do either: ('input' can only be .csv type)
+- run update_repos.py ('input' can only be .csv type)
+  - do either: 
     - python update_repos.py ~/path/to/input.csv (e.g. ~/Desktop/folder/input.csv)
     - python update_repos.py (no arguments) if paths to csv is already manually entered in update_repos.py.
   - output: logs in out/update_repos_logs.
