@@ -28,14 +28,15 @@ How To Use:
   updating with your own information 
 - you will need the pandas module, so if you haven't installed it already,
   you can by following the instructions here https://pandas.pydata.org/docs/getting_started/install.html
+- you will need to install openpyxl if you intend to use .xlsx file as input instead of .csv
 - go onto UO vpn
-- run new_accessions.py 
+- run new_accessions.py ('input' can be .csv or .xlsx type)
   - do either:
-    - python new_accessions.py ~/path/to/form.csv (e.g. ~/Desktop/folder/input.csv) with form.csv input
-    - python new_accessions.py (without argument) if path to form.csv is manually entered in new_accessions.py (line 25).
-  - output: accessions_no.csv and accessions_yes.csv if repositories connected to accession(s) already exist. Both sent to Alexa. Also two logs of errors and updates in out/new_accessions_logs.
-- run update_repositories.py
-  - do either:
-    - python update_repositories.py ~/path/to/csv ~/path/to/csv (e.g. ~/Desktop/folder/yes_input.csv ~/Desktop/folder/no_input.csv) with 'yes' and 'no' csv's as the arguments.
-    - python update_repositories.py (no arguments) if paths to csvs are already manually entered in new_accessions.py.
-  - output: logs in out/update_repos_logs 
+    - python new_accessions.py ~/path/to/input (e.g. ~/Desktop/folder/input)
+    - python new_accessions.py (without argument) if path to input is manually entered in new_accessions.py (line 15).
+  - output: posted_accessions.csv, stored in the out folder. Also two logs of errors and updates in out/new_accessions_logs.
+- run update_repos.py
+  - do either: ('input' can only be .csv type)
+    - python update_repos.py ~/path/to/input.csv (e.g. ~/Desktop/folder/input.csv)
+    - python update_repos.py (no arguments) if paths to csv is already manually entered in update_repos.py.
+  - output: logs in out/update_repos_logs.

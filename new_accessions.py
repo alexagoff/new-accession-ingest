@@ -1,14 +1,3 @@
-
-''' this is a possible way to turn .xlsx to .csv:
-  import  jpype     
-  import  asposecells     
-  jpype.startJVM() 
-  from asposecells.api import Workbook
-  workbook = Workbook("input.xlsx")
-  workbook.save("Output.csv")
-  jpype.shutdownJVM()
-'''
-
 import json 
 import csv
 import os 
@@ -26,8 +15,8 @@ import re
 filename = './test2.csv' 
 if len(sys.argv) > 1:
     filename = sys.argv[1]
-csvOutyes = "./out/accessions_yes.csv"
-csvOutno = "./out/accessions_no.csv"
+    print(filename)
+csvOut = "./out/posted_accessions.csv"
 err = "./out/new_accessions_logs/errorlog.txt"
 app = "./out/new_accessions_logs/applog.txt"
 
@@ -40,10 +29,8 @@ if not os.path.exists(app):
 
 errorlog = open(err, "a")
 applog = open(app, "a")
-outy = open(csvOutyes, 'w')
-outn = open(csvOutno, 'w')
-yes_writer = csv.writer(outy)
-no_writer = csv.writer(outn)
+outy = open(csvOut, 'w')
+csv_writer = csv.writer(outy)
 
 # writing first lines of app and err logs if new
 if err_true == False:
@@ -57,6 +44,14 @@ str_year = str(todays_date.year)
 str_month = str(todays_date.month)
 str_day = str(todays_date.day)
 
+# make a new pattern for 4-Nov-23 type and also something like 23-september (do normal matching and then check if any of the months are in the match) and then do a lot of commenting on the matching dates function (what each pattern is) 
+# i can't do patternmatching to 23-september because i don't know what century its in, whetehr thats 1800s, 1900s, 2000s
+
+# should I keep the created accession URI column?
+# send output csv to alexa through email (i don't know if this is something I want to do atm)
+
+# they said something about resource type and aquisition type and i forget what that was that they said?
+# about jsondata
 
 def find_inputs():
     ''' this function takes inputs dictating the constraints of what 
@@ -114,7 +109,7 @@ def match_dates(match_string):
     pattern8 = "\d{4}"
 
     # if adding new patterns, the ORDER of these patterns is important! it goes from 
-    # largest match to smallest (largest being like 2000s-3000s and smallest being just a four digit number)
+    # most specific match to least specific (most specific being something that has to be like 2000s-3000s exactly and least specific just any four digit number)
     patterns_list = [pattern1, pattern2, pattern3, pattern4,
                         pattern5, pattern6, pattern7, pattern8]
     
@@ -122,35 +117,49 @@ def match_dates(match_string):
                         "august", "september", "october", "november", "december", "jan", 
                         "feb", "mar", "apr", "jun", "jul", "aug", "sept", "sep", "oct", "nov", "dec"]
 
+    # X stands for any integer
+    # Y stands for any letter
+
     found = False
+    # going through each regex pattern and seeing if theres a match with one of them
     for pattern in patterns_list:
         find_list = re.findall(pattern, match_string)
+        # if theres a match with a regex pattern 
+        # if there is a match, it will return and not keep looping
         if len(find_list)>0:
             found = True
-            # XXXXs-XXXXs or XXXX-XXXXs
+            # matched with XXXXs-XXXXs or XXXX-XXXXs
             if (pattern == pattern1) or (pattern == pattern3):
-                new_list = re.findall(pattern8, find_list[0])
-                # if its "2020s"
+                # extracting the two four digit numbers
+                new_list = re.findall("\d{4}", find_list[0])
+                # check first three characters of the last four digit number to see if its in this decade
                 if new_list[-1][:3] == str_year[:3]:
+                    # returns with ending at current year
                     return [new_list[0], str_year] 
+                # returns with ending at last four digit number but with 9 at the end
                 return [new_list[0], new_list[-1][:3]+'9'] 
-            # XXXXs-XXXX or XXXX-XXXX
+            # matched with XXXXs-XXXX or XXXX-XXXX
             elif (pattern == pattern2) or (pattern == pattern4):
+                # returns first four and last four characters of matched string
                 return [str(find_list[0])[:4], str(find_list[0])[-4:]]
-            # form 8-Nov-2019 or Nov-2019
+            # matched with form 8-YYY-2019 or YYY-2019
             elif (pattern == pattern5) or (pattern == pattern6):
+                # extracting just the letter parts
                 test_month = re.findall("[a-zA-Z]+", find_list[0])
-                # if the first letters aren't a month
+                # if the letters part isn't a month its not valid
                 if test_month[0].lower() not in months_list:
                     return 0
+                # returning the last four characters
                 return [str(find_list[0])[-4:]]
-            # XXXXs
+            # matched with XXXXs
             elif pattern == pattern7:
+                # extracting just the year without 's'
                 new_year = re.findall("\d{4}", str(find_list[0]))
+                # check first three characters of the four digit number to see if its in this decade
                 if new_year[0][:3] == str_year[:3]:
-                    return [new_year[0][:3], str_year] 
+                    return [new_year[0][:3]+'0', str_year] 
                 return [new_year[0][:3]+'0', new_year[0][:3]+'9']
-            # XXXX
+            # matched with XXXX
             elif pattern == pattern8:
                 return [find_list[0]]
     
@@ -158,7 +167,7 @@ def match_dates(match_string):
     if found == False:
         return 0
 
-
+ 
 def fill_data(pandas_csv, start_num, end_num, id_1_num):
     ''' this function fills a json file for each line from 
     the input csv. 
@@ -184,7 +193,6 @@ def fill_data(pandas_csv, start_num, end_num, id_1_num):
     lines_looped = 0
     extents_message = ""
 
-
     # going through each line of csv
     for index, row in pandas_csv.iterrows():
         # checking if start_num < visiting < end_num
@@ -196,25 +204,37 @@ def fill_data(pandas_csv, start_num, end_num, id_1_num):
         
         run_list.append(int(row["ID"]))
         # copying old .json template to new .json file that we are editing
-        #shutil.copy('jsontemplate.json', 'newaccession.json')
+        #shutil.copy('./extra_materials/jsontemplate.json', 'newaccession.json')
         
         # getting jsonData from template .json file
         jsonData = None
-        found_dates = "No"
+        title_name = '' # stores title name 
 
-        with open("jsontemplate.json", "r") as file:
+        with open("./extra_materials/jsontemplate.json", "r") as file:
             jsonData = json.load(file)
         
         # going through each line of .json file 
         # filling out with info from current line of csv
         for name in jsonData:  
 
-            # commented out because testing with title as "API TEST"
-            #if (name == "title") and ((row["Collection name:"]).lower() != "nan"):
-            #    jsonData[name] = row["Collection name:"]
+            # normal purposes
+            '''
+            if (name == "title") and ((row["Collection name:"]).lower() != "nan"):
+                titlename = row["Collection name:"]
+                if '(' and ')' in titlename:
+                    findlist = re.findall("\([a-zA-Z\s]*\)", titlename)
+                    tmp = titlename.replace(findlist[0], '')
+                    titlename = tmp
+                title_name = titlename 
+                jsonData[name] = titlename
+
+            '''
+            # for testing
             if name == "title":
                 jsonData[name] = 'NEW ROUND TEST ACCESIONS ' + str(curr_acc)
+                title_name = jsonData[name]
                 curr_acc+=1
+        
             
             elif name == "content_description":
                 if (str(row["Descriptive summary of content:"])).lower() != "nan":
@@ -284,7 +304,7 @@ def fill_data(pandas_csv, start_num, end_num, id_1_num):
                 if ((str(row["Estimated physical extent (linear feet):"])).lower() != "nan"):
                     # if the string is just a numerical character
                     if str(row["Estimated physical extent (linear feet):"]).replace('.', '', 1).isdigit() == True:
-                        if float((row["Estimated physical extent (linear feet):"]).replace('.', '', 1)) != 0:
+                        if float(str(row["Estimated physical extent (linear feet):"]).replace('.', '', 1)) != 0:
                             jsonData[name][0]["number"] = str(row["Estimated physical extent (linear feet):"])
                             jsonData[name][0]["extent_type"] = "linear feet"
                             jsonData[name][0]["physical_details"] = row["Number and type of containers (e.g. 2 record storage boxes):"]
@@ -299,16 +319,16 @@ def fill_data(pandas_csv, start_num, end_num, id_1_num):
                                 jsonData[name][0]["physical_details"] = row["Number and type of containers (e.g. 2 record storage boxes):"]
                                 jsonData[name][0]["portion"] = "whole"
                 # if its a digital item 
-                if (str(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"])).lower() != "nan": 
+                if (str(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"])).lower() != "nan": 
                     # if its just a numerical string
-                    if str(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"]).replace('.', '', 1).isdigit() == True:
-                        if float(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"]) != 0:
+                    if str(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"]).replace('.', '', 1).isdigit() == True:
+                        if float(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"]) != 0:
                             # if its also a valid physical item
                             if jsonData[name][0]["number"] != "":
                                 # creating new dict item
                                 copy1 = jsonData[name][0].copy()
                                 jsonData[name].append(copy1)
-                                jsonData[name][1]["number"] = str(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"])
+                                jsonData[name][1]["number"] = str(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"])
                                 jsonData[name][1]["extent_type"] = "megabyte(s)"
                                 # if two types, physical details for both are none
                                 jsonData[name][1]["physical_details"] = ""
@@ -318,13 +338,13 @@ def fill_data(pandas_csv, start_num, end_num, id_1_num):
                                 jsonData[name][1]["portion"] = "part"
                             # if its only digital
                             else:
-                                jsonData[name][0]["number"] = str(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"])
+                                jsonData[name][0]["number"] = str(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"])
                                 jsonData[name][0]["extent_type"] = "megabyte(s)"
                                 jsonData[name][0]["physical_details"] = str(row["Number and type of containers (e.g. 2 record storage boxes):"])
                                 jsonData[name][0]["portion"] = "whole"
                     # if its a valid non-numerical string (something like str(int) + "MB")
                     elif (" mb" in str(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"]).lower()) or ("megabytes" in str(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"]).lower()) or ("megabyte" in str(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"]).lower()):
-                        patterns = re.findall("\d\d?\,?\d?\d?\d?\.?\d?\d?\d?", str(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"]))
+                        patterns = re.findall("\d\d?\,?\d?\d?\d?\.?\d?\d?\d?", str(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"]))
                         if len(patterns) > 0:
                             if float(patterns[0]) != 0:
                                 # if its also a valid physical item
@@ -356,7 +376,6 @@ def fill_data(pandas_csv, start_num, end_num, id_1_num):
                 # making string into estimated begin and end dates
                 begin_end = match_dates(str(row["Estimated creation dates:"]))
                 if begin_end != 0:
-                    found_dates = "Yes"
                     if len(begin_end)==2:
                         jsonData[name][0]["begin"] = begin_end[0]
                         jsonData[name][0]["end"] = begin_end[1]
@@ -370,13 +389,13 @@ def fill_data(pandas_csv, start_num, end_num, id_1_num):
                     errorlog.write("ID " + str(row["ID"]) + ": Unable to match date.\n")
         
         # copying to new .json file - not necessary, just post it onto aspace. 
-        with open("newaccession.json", "w") as file:
-            json.dump(jsonData, file, indent = 4 ) 
+        #with open("newaccession.json", "w") as file:
+        #    json.dump(jsonData, file, indent = 4 ) 
 
         # checking if it won't be able to post because of 'extents'field
         if extents_message != "":
             errorlog.write("ID " + str(row["ID"]) + ": " + extents_message + "\n")
-        errors_list, id_1_num = post_and_check(jsonData, row, found_dates, errors_list, int(id_1_num))
+        errors_list, id_1_num = post_and_check(jsonData, row, errors_list, int(id_1_num), title_name)
         
         # making id_1 a str again
         tmp_id_1 = id_1_num
@@ -399,7 +418,7 @@ def fill_data(pandas_csv, start_num, end_num, id_1_num):
     return lines_looped, run_list, errors_list
 
 
-def post_and_check(tmpjson, curr_row, found_tf, curr_errors, curr_id):
+def post_and_check(tmpjson, curr_row, curr_errors, curr_id, namet):
     ''' this function posts a jsonData variable of an accession into Aspace and checks if the
     repository connected to the accession exists. This function also writes to the 
     output "yes" and "no" csv's as well as the output logs. 
@@ -407,9 +426,9 @@ def post_and_check(tmpjson, curr_row, found_tf, curr_errors, curr_id):
     Input:
         tmpjson: Dict/json(?), jsonData (contents of a .json file)
         curr_row: Sequence, the current row contents from the input csv
-        found_tf: str, "Yes" or "No" whether a date was found from the input date string
         curr_errors: list, a list of ID's of the row's with errors.
         curr_id: int, the current id_1 number.
+        namet: str, the current title name
     Output:
         curr_errors: list, updated curr_errors
         curr_id: int, updated id_1 number (if there was issues posting, subtract 1)
@@ -430,7 +449,7 @@ def post_and_check(tmpjson, curr_row, found_tf, curr_errors, curr_id):
         applog.write("ID " + str(curr_row["ID"]) + ": Posted new accession with URI " + str(accession_uri) + ".\n")
 
         # checking if repository relating to accession exists
-        repo_true = functions.repo_exists(curr_row["Collection name:"], curr_row["Collection identifier (e.g. Coll 100, for accruals only):"])
+        repo_true = functions.repo_exists(namet, curr_row["Collection identifier (e.g. Coll 100, for accruals only):"])
 
         # right now I have it so that the only time it doesn't write to the output csv's is if there is an 
         # error using the "get" method. 
@@ -438,7 +457,6 @@ def post_and_check(tmpjson, curr_row, found_tf, curr_errors, curr_id):
         # if there was no error in "get" API
         if repo_true != -1:
             tmprow = curr_row.tolist()
-            tmprow.append(found_tf)
             tmprow.append(str(accession_uri))
 
             # if repo was able to search 
@@ -450,12 +468,14 @@ def post_and_check(tmpjson, curr_row, found_tf, curr_errors, curr_id):
                     tmprow.append(str(colltitle))
                     tmprow.append(str(collident))
                     tmprow.append(str(colluri))
-                    yes_writer.writerow(tmprow)
+                    tmprow.insert(0, "Yes")
+                    csv_writer.writerow(tmprow)
                 # if totalhits == 0
                 elif len(repo_true) == 2:
                     totalhits, foundissues = repo_true
                     tmprow.append(str(totalhits))
-                    no_writer.writerow(tmprow)
+                    tmprow.insert(0, "No")
+                    csv_writer.writerow(tmprow)
                 # if errors in coll name or coll id
                 if foundissues == True:
                     errorlog.write("ID " + str(curr_row["ID"]) + ": Repo searched with only collection name. Error in collection identifier.\n")
@@ -464,7 +484,8 @@ def post_and_check(tmpjson, curr_row, found_tf, curr_errors, curr_id):
             else:
                 errorlog.write("ID " + str(curr_row["ID"]) + ": Unable to search for a repo. Insufficient information (collection name or identifier).\n")
                 tmprow.append("0")
-                no_writer.writerow(tmprow)
+                tmprow.insert(0, "No")
+                csv_writer.writerow(tmprow)
 
         # if using "get" failed (system error)
         else:
@@ -474,11 +495,9 @@ def post_and_check(tmpjson, curr_row, found_tf, curr_errors, curr_id):
 
     return curr_errors, curr_id
 
-# work on "yes" on the second section if done with this..
-# for the event record, do Executing program and SCUA api calls as the other one -->"role":"executing_program", "linked_records":"ref":*resource uri*
 
 def main():
-    ''' Program to go through lines of an input csv of new acceession forms 
+    ''' Program to go through lines of an input csv of new accession forms 
     and create a json file for each line, then posting a new accession to aspace
     from each file and checking if corresponding repositories exist. 
 
@@ -488,35 +507,37 @@ def main():
     retstartend = find_inputs()
     start, end = retstartend
 
+    # checking if input file is .xlsx type
+    global filename
+    if (filename)[-4:] == 'xlsx':
+        df1 = pd.read_excel(filename, sheet_name=0, header=0)
+        df1.to_csv('./newfile.csv', index=False)
+        filename = './newfile.csv'
     df = pd.read_csv(filename)
 
     # writing new column headers to output csv's
     data_top = list(df.head())
-    data_top.append("Found Dates? (extracted from estimated creation dates)") # if begin and end could be extracted from "Estimated creation dates:"
-    data_top.append("Created Accession URI:")
+    data_top.insert(0, "Repo Found?")
+    data_top.append("Created Accession URI:") # should i have this?
     data_top.append("Number of found results:") # if repo for accession exists n>0
     data_top.append("Found Collection Title:") # the title of existing collection of first match 
     data_top.append("Found Collection Identifier:") # if repo exists
     data_top.append("Found Collection URI (of first match):") # if repo exists
-    yes_writer.writerow(data_top)
-    no_writer.writerow(data_top)
-
+    csv_writer.writerow(data_top)
     now = datetime.datetime.now()
     errorlog.write("\n--------------" + str(now) + "--------------\n")
     applog.write("\n--------------" + str(now) + "--------------\n")
 
-    # finding id_1 number -- newest ID_1 in 2023 is supposed to be 84 (running testing will messs this up.)
-    id_1 = functions.latest_id1("2025") # supposed to be (str_year) as parameter but testing with something else.
-    
+    # finding id_1 number 
+    # newest ID_1 in 2023 is supposed to be 84 (running testing will mess this up.)
+    id_1 = functions.latest_id1("2025") # supposed to be (str_year) as parameter but testing with something else.  
     # if you would like to manually enter id_1 write the string here:
     # id_1 = "030" 
-
     tmp = ""
-    # an error in 'get' API is the only time latest_id1 returns a tuple type
-    if type(id_1) == tuple:
+    # handling errors in finding id_1 below -- more info in functions.py
+    if type(id_1) == tuple: # an error in 'get' API is the only time latest_id1 returns a tuple type
         tmp = id_1
         id_1 = id_1[0]
-    # if finding id didn't work
     if id_1 == -1 or id_1 == -2: 
         print("Error finding id_1 from last five accessions. Can not run--check errorlog.txt\n")
         if id_1 == -1:
@@ -524,10 +545,12 @@ def main():
         if id_1 == -2:
             errorlog.write("Error finding id_1 from last five accessions. Using 'get' method failed. Error message below:\t\t" + str(tmp[1]) + "\n")
         exit(1)
-
+    
+    # running program that fills and posts json data, updates csv and checks if repo exists
     final_returns = fill_data(df, start, end, id_1)
     lines_looped, run_list, errorlis = final_returns
 
+    # print output statements
     if lines_looped == 0:
         print("\nUnable to run! start and end ID number might not be valid.\n")
     else:
@@ -544,6 +567,6 @@ def main():
 if __name__ == "__main__":
     main()
     outy.close()
-    outn.close()
     errorlog.close()
     applog.close()
+
