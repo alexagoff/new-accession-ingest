@@ -16,10 +16,7 @@ from each json file and checking if a corresponding repository exists in Aspace.
 
 IMPORTANT NOTES:
 - The title/column header line on the input .csv file must all be on the first line/one line! If its spread into two lines the program will error.
-- The "start" and "end" inputs that you put in on new_accessions.py can be any real number, so if the start number is < the actual start id, it will start at the lowest ID# and 
-if start is > the largest id #, it won't run any id's. This is the same for "end".
-- Start and end only relate to the range of ID's (not lines)that will run. If start = 166 and end = 168, then only 166, 167 and 168 will run. This goes even if the csv is unordered by ID number.
-- If you keep getting errors that say it can't fetch ID_1, you can manually enter the id_1 number you would like to start on in line 504.
+- Start and end only relate to the range of ID's (not lines) that will run. If start = 166 and end = 168, then only 166, 167 and 168 will run. This applies *even if the csv is unordered by ID number*.
 
 -------------------------------------------------------
 How To Use:
