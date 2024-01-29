@@ -15,7 +15,6 @@ import re
 filename = './test2.csv' 
 if len(sys.argv) > 1:
     filename = sys.argv[1]
-    print(filename)
 csvOut = "./out/posted_accessions.csv"
 err = "./out/new_accessions_logs/errorlog.txt"
 app = "./out/new_accessions_logs/applog.txt"

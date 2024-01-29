@@ -5,138 +5,12 @@ from aspace_sess import client
 import re # for repo_exists
 
 
-#API to get the shelf from the barcode:
-def get_shelf(x):
-    ''' 
-    input: barcode string
-    output: shelf code string that barcode is at (in Aspace)
-    errors: returns 0 when barcode doesn't exist in Aspace
-    '''
-    url = 'repositories/2/top_containers/search?q=' + str(x)
-    response = client.get(url)
-    res_object = response.json()
-    
-    # if barcode doesn't exist
-    if res_object['response']['numFound'] == 0:
-        return 0
-    
-    tmp = res_object['response']['docs'][0]["title"].split(",")
-    shelf_code = "4SCUA"
-    foundword = False
-
-    # finding shelf code in tmp
-    for phrase in tmp:
-        if foundword == True:
-            break
-        # only parsing through the phrase where shelf code is
-        if "4SCUA" in phrase:
-            tmpword = "" # stores all letters of phrase
-            add_num = False
-            for letter in phrase:
-                tmpword += letter
-                # not adding to shelf_code until 4SCUA type confirmed
-                if add_num == True:
-                    if letter.isnumeric(): # if letter is a number still
-                        shelf_code += letter
-                elif "4SCUA" in tmpword:
-                    add_num = True
-            foundword = True
-
-    return shelf_code
-
-#API to get the barcodes in the 'x' shelf:
-def get_barcodes(x):
-    ''' 
-    input: shelf code string
-    output: barcode string(s) that are connected to shelf code (in Aspace)
-    errors: returns 0 when shelf code doesn't exist 
-    '''
-    url = 'repositories/2/top_containers/search?q=' + str(x)
-    response = client.get(url)
-    res_object = response.json()
-    
-    if res_object['response']['numFound'] == 0:
-        return 0
-    retlist = []
-    # going through all docs in shelf
-    for item in res_object['response']['docs']:
-        retlist.extend(item['barcode_u_sstr'])
-    
-    return retlist
-
-# API to see if a shelf exists:
-def shelf_exists(x):
-    '''
-    input: shelf code string
-    outputs True/False if shelf exists in Aspace
-    '''
-    url = 'repositories/2/search?q=' + str(x) + "&page=1&type[]=location"
-    response = client.get(url)
-    res_object = response.json()
-    # if there is no shelf in aspace
-    if res_object['total_hits'] == 0:
-        return False
-    
-    return True
-
-# gets the shelf uri from a shelf string
-def shelf_uri(x):
-    ''' 
-    input: shelf code string
-    output: uri in form of 'location/434343' 
-    errors: returns 0 when shelf code doesn't exist 
-    '''
-    # finding from searching in locations 
-    url = 'repositories/2/search?q=' + str(x) + "&page=1&type[]=location"
-    response = client.get(url)
-    res_object = response.json()
-    # if shelf doesn't exist (in the runShelfread.py code, we'll never need this condition)
-    if res_object['total_hits'] == 0:
-        return 0
-    uri_loc = (json.loads(res_object['results'][0]['json'])['uri'])[1:]
-    
-    return uri_loc
-
-# gets the barcode uri from a barcode string
-def barcode_uri(x):
-    ''' 
-    input: barcode string
-    output: uri number like '343434' 
-    errors: returns 0 when barcode doesn't exist 
-    '''
-    url = 'repositories/2/top_containers/search?q=' + str(x)
-    response = client.get(url)
-    res_object = response.json()
-    # if barcode doesn't exist (in the runShelfread.py code, we'll never need this condition)
-    if res_object['response']['numFound'] == 0:
-        return 0
-    uri_loc = (res_object['response']['docs'][0]['id']).replace('/repositories/2/top_containers/', '')
-    
-    return uri_loc
-
-# API to make barcode belong at shelfcode
-def change_shelf(x, y):
-    ''' 
-    input: x = barcode string, y = shelfcode string
-    output: True/False if was successfully changed
-    '''
-    url = "repositories/2/top_containers/batch/location"
-    buri = barcode_uri(x)
-    suri = config.aspacebaseurl + shelf_uri(y)
-
-    response = client.post(url,
-      params={ 'ids': [int(buri)],
-               'location_uri': str(suri) })
-
-    if response.json()['records_updated'] > 0:
-        return True
-    
-    return False
-
-# --------------------------------------------------------
-
 # function to create a new accession (post) with data from a jsonData variable
 def jsonpost(x):
+    ''' This function posts a new accession filled with data.
+    input: x, jsondata - a jsondata object 
+    output: res_object, json file - the response to posting on aspace
+    '''
     url = '/repositories/2/accessions'
     payload = json.dumps(x)
     response = client.post(url, json=x)
@@ -147,6 +21,14 @@ def jsonpost(x):
 
 # function to see ID_1 of latest 5 accessions
 def latest_id1(curr_yr):
+    ''' This function finds the latest ID_1 number for new_accessions.py.
+    input: curr_yr, str - string of the current year
+    output: latest_id, str - the ID_1 
+    errors:
+        (-2, res_object) - error happens when there was an error when using the 
+                           'get' API. 
+        -1 - error happens when the previous 5 ID_1's were not in order sequentially
+    '''
     url = 'repositories/2/accessions'
     # finding last id number (on uri)
     response = client.get(url, params={"all_ids": True})
@@ -198,7 +80,22 @@ def latest_id1(curr_yr):
 
 # check if repository exists with info from an accession
 def repo_exists(name, identifier):
-    ''' this function returns a few different types...
+    ''' This function identifies if a repository exists matching the keywords from an 
+    accession.
+    input: name, str - the title of an accession
+           identifier, str - the identifier (like 'coll 122') of an accession
+    output: (title, identifier, uri, total_hits, found_issues)
+            title, str - the title of the found repository
+            identifier, str - the found repo identifier
+            uri, str - the found collection uri
+            total_hits, int(?) - the amount of found matching repositories
+            found_issues, bool - True if only searched with title because a valid 
+                            coll identifier couldn't be found from 'identifier' string.
+    errors: -2 - this error happens when there is no valid name input or no valid name
+                  and identifier input
+            -1 - if 'get' API doesn't work when searching name + identifier or just name
+            (0, found_issues) - happens when search was successful but there were no matches
+
     '''
     found_issues = False # to check for errors in "name" and "identifier" fields.
     if (str(name).lower() != "nan") and (str(identifier).lower() != "nan"):
@@ -212,7 +109,7 @@ def repo_exists(name, identifier):
 
     elif (str(name).lower() != "nan") and (str(identifier).lower() == "nan"):
         finder = name
-    # if theres no collection name, no name or identifier, or just an identifier
+    # if theres no collection name or no name and no identifier
     else:
         return -2
 
@@ -224,5 +121,6 @@ def repo_exists(name, identifier):
 
     elif res_object["total_hits"] == 0:
         return 0, found_issues
+    
     return res_object["results"][0]["title"], res_object["results"][0]["identifier"], res_object["results"][0]["uri"], res_object["total_hits"], found_issues
     
