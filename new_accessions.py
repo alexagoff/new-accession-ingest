@@ -43,14 +43,7 @@ str_year = str(todays_date.year)
 str_month = str(todays_date.month)
 str_day = str(todays_date.day)
 
-# make a new pattern for 4-Nov-23 type and also something like 23-september (do normal matching and then check if any of the months are in the match) and then do a lot of commenting on the matching dates function (what each pattern is) 
-# i can't do patternmatching to 23-september because i don't know what century its in, whetehr thats 1800s, 1900s, 2000s
-
-# should I keep the created accession URI column?
-# send output csv to alexa through email (i don't know if this is something I want to do atm)
-
-# they said something about resource type and aquisition type and i forget what that was that they said?
-# about jsondata
+# send output csv to alexa through email (i don't know if this is something I want to do atm) - later
 
 def find_inputs():
     ''' this function takes inputs dictating the constraints of what 
@@ -183,7 +176,7 @@ def fill_data(pandas_csv, start_num, end_num, id_1_num):
         run_list: list, the row ID's of the lines in the csv that were parsed
         errors_list: list, the row ID's of lines in the csv that gave 'post' or 'get' errors
     '''
-    ex = open("testacc_num.txt", 'r')
+    ex = open("testacc_num.txt", 'r') #CHANGE
     curr_acc = int(ex.read())
     ex.close()
 
@@ -215,8 +208,14 @@ def fill_data(pandas_csv, start_num, end_num, id_1_num):
         # going through each line of .json file 
         # filling out with info from current line of csv
         for name in jsonData:  
-
-            # normal purposes
+            # normal purposes CHANGE
+            '''
+            # for testing
+            if name == "title":
+                jsonData[name] = 'NEW ROUND TEST ACCESIONS ' + str(curr_acc)
+                title_name = jsonData[name]
+                curr_acc+=1
+            
             '''
             if (name == "title") and ((row["Collection name:"]).lower() != "nan"):
                 titlename = row["Collection name:"]
@@ -226,15 +225,9 @@ def fill_data(pandas_csv, start_num, end_num, id_1_num):
                     titlename = tmp
                 title_name = titlename 
                 jsonData[name] = titlename
-
-            '''
-            # for testing
-            if name == "title":
-                jsonData[name] = 'NEW ROUND TEST ACCESIONS ' + str(curr_acc)
-                title_name = jsonData[name]
-                curr_acc+=1
-        
             
+            
+    
             elif name == "content_description":
                 if (str(row["Descriptive summary of content:"])).lower() != "nan":
                     jsonData[name] = row["Descriptive summary of content:"]
@@ -407,7 +400,7 @@ def fill_data(pandas_csv, start_num, end_num, id_1_num):
         extents_message = ""
         lines_looped +=1
         
-    # *TEST* writing the number of tests already done in testacc_num.txt
+    # *TEST* writing the number of tests already done in testacc_num.txt CHANGE
     f = open('testacc_num.txt', 'w')
     f.seek(0)
     f.write(str(curr_acc))
@@ -444,7 +437,7 @@ def post_and_check(tmpjson, curr_row, curr_errors, curr_id, namet):
         errorlog.write("\t\t" + str(returned_out) + "\n")
     # posted successfully
     else:
-        accession_uri = returned_out['uri']
+        accession_uri = returned_out['uri'][1:]
         applog.write("ID " + str(curr_row["ID"]) + ": Posted new accession with URI " + str(accession_uri) + ".\n")
 
         # checking if repository relating to accession exists
@@ -516,9 +509,9 @@ def main():
 
     # writing new column headers to output csv's
     data_top = list(df.head())
-    data_top.insert(0, "Repo Found?")
+    data_top.insert(0, "Resource Found?")
     data_top.append("Created Accession URI:") # should i have this?
-    data_top.append("Number of found results:") # if repo for accession exists n>0
+    data_top.append("Number of found results:") # if resource for accession exists n>0
     data_top.append("Found Collection Title:") # the title of existing collection of first match 
     data_top.append("Found Collection Identifier:") # if repo exists
     data_top.append("Found Collection URI (of first match):") # if repo exists
@@ -528,10 +521,8 @@ def main():
     applog.write("\n--------------" + str(now) + "--------------\n")
 
     # finding id_1 number 
-    # newest ID_1 in 2023 is supposed to be 84 (running testing will mess this up.)
-    id_1 = functions.latest_id1("2025") # supposed to be (str_year) as parameter but testing with something else.  
-    # if you would like to manually enter id_1 write the string here:
-    # id_1 = "030" 
+    id_1 = functions.latest_id1("2025") # CHANGE supposed to be (str_year) as parameter but testing with something else.  
+
     tmp = ""
     # handling errors in finding id_1 below -- more info in functions.py
     if type(id_1) == tuple: # an error in 'get' API is the only time latest_id1 returns a tuple type

@@ -122,5 +122,15 @@ def repo_exists(name, identifier):
     elif res_object["total_hits"] == 0:
         return 0, found_issues
     
-    return res_object["results"][0]["title"], res_object["results"][0]["identifier"], res_object["results"][0]["uri"], res_object["total_hits"], found_issues
+    return res_object["results"][0]["title"], res_object["results"][0]["identifier"], res_object["results"][0]["uri"][1:], res_object["total_hits"], found_issues
     
+# get a jsondata item from an accession url
+def accget_jsondata(x):
+    '''This function gets a jsondata item for an accession from using the 'get' API on Aspace
+    to find an accession from a URL. 
+    input: x, str - url string of accession
+    output: res_object, json - json file found of accession
+    '''
+    response = client.get(x)
+    res_object = response.json()
+    return res_object

@@ -1,0 +1,450 @@
+{
+    "lock_version": 127,
+    "title": "Albert Conrad Ullman papers",
+    "publish": true,
+    "restrictions": false,
+    "ead_id": "ORU_Coll040.xml",
+    "ead_location": "http://archiveswest.orbiscascade.org/ark:/80444/xv40365",
+    "repository_processing_note": #change this - if this is here, then append it but if it isnt then make a new item and write "New Material Recieved",
+    "finding_aid_title": "Guide to the Albert Conrad Ullman papers \n",
+    "finding_aid_filing_title": "Ullman (Albert Conrad) papers",
+    "finding_aid_date": "2004",
+    "finding_aid_author": "Finding aid prepared by Vida Germano",
+    "finding_aid_language_note": "Finding aid written in English.",
+    "finding_aid_sponsor": "Funding for encoding this finding aid was provided through a grant awarded by the National Endowment for the Humanities.",
+    "created_by": "admin",
+    "last_modified_by": "amunsell",
+    "create_time": "2017-12-29T12:21:43Z",
+    "system_mtime": "2023-05-27T20:46:36Z",
+    "user_mtime": "2023-02-25T19:47:36Z",
+    "suppressed": false,
+    "is_slug_auto": false,
+    "id_0": "Coll 040",
+    "level": "collection",
+    "resource_type": "papers",
+    "finding_aid_description_rules": "dacs",
+    "finding_aid_language": "eng",
+    "finding_aid_script": "Latn",
+    "finding_aid_status": #change this - 'Revise Description',
+    "jsonmodel_type": "resource",
+    "external_ids": [
+        {
+            "external_id": "7106",
+            "source": "Archivists Toolkit Database::RESOURCE",
+            "created_by": "amunsell",
+            "last_modified_by": "amunsell",
+            "create_time": "2023-02-25T19:47:36Z",
+            "system_mtime": "2023-02-25T19:47:36Z",
+            "user_mtime": "2023-02-25T19:47:36Z",
+            "jsonmodel_type": "external_id"
+        }
+    ],
+    "subjects": [
+        {
+            "ref": "/subjects/4269"
+        },
+        {
+            "ref": "/subjects/4270"
+        },
+        {
+            "ref": "/subjects/4271"
+        },
+        {
+            "ref": "/subjects/4272"
+        },
+        {
+            "ref": "/subjects/956"
+        },
+        {
+            "ref": "/subjects/3560"
+        },
+        {
+            "ref": "/subjects/1609"
+        },
+        {
+            "ref": "/subjects/746"
+        },
+        {
+            "ref": "/subjects/3307"
+        },
+        {
+            "ref": "/subjects/3378"
+        },
+        {
+            "ref": "/subjects/5473"
+        },
+        {
+            "ref": "/subjects/4273"
+        },
+        {
+            "ref": "/subjects/3547"
+        },
+        {
+            "ref": "/subjects/3558"
+        },
+        {
+            "ref": "/subjects/3549"
+        }
+    ],
+    "linked_events": [],
+    "extents": [
+        {
+            "lock_version": 0,
+            "number": "396",
+            "container_summary": "265 containers",
+            "created_by": "amunsell",
+            "last_modified_by": "amunsell",
+            "create_time": "2023-02-25T19:47:36Z",
+            "system_mtime": "2023-02-25T19:47:36Z",
+            "user_mtime": "2023-02-25T19:47:36Z",
+            "portion": "whole",
+            "extent_type": "linear feet",
+            "jsonmodel_type": "extent"
+        }
+    ],
+    "lang_materials": [
+        {
+            "lock_version": 0,
+            "created_by": "amunsell",
+            "last_modified_by": "amunsell",
+            "create_time": "2023-02-25T19:47:36Z",
+            "system_mtime": "2023-02-25T19:47:36Z",
+            "user_mtime": "2023-02-25T19:47:36Z",
+            "jsonmodel_type": "lang_material",
+            "notes": [],
+            "language_and_script": {
+                "lock_version": 0,
+                "created_by": "amunsell",
+                "last_modified_by": "amunsell",
+                "create_time": "2023-02-25T19:47:36Z",
+                "system_mtime": "2023-02-25T19:47:36Z",
+                "user_mtime": "2023-02-25T19:47:36Z",
+                "language": "eng",
+                "script": "Latn",
+                "jsonmodel_type": "language_and_script"
+            }
+        }
+    ],
+    "dates": [
+        {
+            "lock_version": 0,
+            "expression": "1957-1980",
+            "begin": "1957",
+            "end": "1980",
+            "created_by": "amunsell",
+            "last_modified_by": "amunsell",
+            "create_time": "2023-02-25T19:47:36Z",
+            "system_mtime": "2023-02-25T19:47:36Z",
+            "user_mtime": "2023-02-25T19:47:36Z",
+            "date_type": "inclusive",
+            "label": "creation",
+            "jsonmodel_type": "date"
+        }
+    ],
+    "external_documents": [
+        {
+            "lock_version": 0,
+            "title": "Coll040 Ullman Al Scanned Finding Aid",
+            "location": "J:\\technical_services\\processing\\finding_aids\\scanned_finding_aids\\Coll040_Ullman_Al_c1984.PDF",
+            "publish": false,
+            "created_by": "amunsell",
+            "last_modified_by": "amunsell",
+            "create_time": "2023-02-25T19:47:36Z",
+            "system_mtime": "2023-02-25T19:47:36Z",
+            "user_mtime": "2023-02-25T19:47:36Z",
+            "jsonmodel_type": "external_document"
+        }
+    ],
+    "rights_statements": [
+        {
+            "lock_version": 0,
+            "identifier": "ad3fb52ee08b80877e64bd028ed700d8",
+            "created_by": "amunsell",
+            "last_modified_by": "amunsell",
+            "create_time": "2023-02-25T19:47:36Z",
+            "system_mtime": "2023-02-25T19:47:36Z",
+            "user_mtime": "2023-02-25T19:47:36Z",
+            "start_date": "2019-11-13",
+            "rights_type": "other",
+            "other_rights_basis": "policy",
+            "jsonmodel_type": "rights_statement",
+            "external_documents": [],
+            "acts": [],
+            "linked_agents": [],
+            "notes": [
+                {
+                    "jsonmodel_type": "note_rights_statement",
+                    "persistent_id": "a7fb689f4bcf37fe2e6b4dbdeaa5d638",
+                    "label": "Digitization Permission Note",
+                    "type": "additional_information",
+                    "content": [
+                        "Approved by SCUA for digitization."
+                    ],
+                    "publish": false
+                }
+            ]
+        },
+        {
+            "lock_version": 0,
+            "identifier": "3c2b960af7fb9e75ef0f1e99cb8baf28",
+            "created_by": "amunsell",
+            "last_modified_by": "amunsell",
+            "create_time": "2023-02-25T19:47:36Z",
+            "system_mtime": "2023-02-25T19:47:36Z",
+            "user_mtime": "2023-02-25T19:47:36Z",
+            "start_date": "2019-11-13",
+            "rights_type": "other",
+            "other_rights_basis": "policy",
+            "jsonmodel_type": "rights_statement",
+            "external_documents": [],
+            "acts": [],
+            "linked_agents": [],
+            "notes": [
+                {
+                    "jsonmodel_type": "note_rights_statement",
+                    "persistent_id": "c4e68da383d7d7410a032cf94a841c9f",
+                    "label": "Oregon Digital Permission Note",
+                    "type": "additional_information",
+                    "content": [
+                        "Approved by SCUA for publication to Oregon Digital."
+                    ],
+                    "publish": false
+                }
+            ]
+        }
+    ],
+    "linked_agents": [
+        {
+            "role": "subject",
+            "terms": [],
+            "ref": "/agents/corporate_entities/713"
+        },
+        {
+            "role": "creator",
+            "terms": [],
+            "ref": "/agents/people/2617"
+        }
+    ],
+    "import_previous_arks": [],
+    "revision_statements": [],
+    "instances": [],
+    "deaccessions": [],
+    "related_accessions": [],
+    "classifications": [
+        {
+            "ref": "/repositories/2/classification_terms/54"
+        },
+        {
+            "ref": "/repositories/2/classification_terms/112"
+        },
+        {
+            "ref": "/repositories/2/classification_terms/61"
+        },
+        {
+            "ref": "/repositories/2/classification_terms/106"
+        },
+        {
+            "ref": "/repositories/2/classification_terms/104"
+        },
+        {
+            "ref": "/repositories/2/classification_terms/109"
+        },
+        {
+            "ref": "/repositories/2/classification_terms/65"
+        },
+        {
+            "ref": "/repositories/2/classification_terms/66"
+        },
+        {
+            "ref": "/repositories/2/classification_terms/69"
+        },
+        {
+            "ref": "/repositories/2/classification_terms/70"
+        }
+    ],
+    "notes": [
+        {
+            "jsonmodel_type": "note_singlepart",
+            "persistent_id": "6110cd474a55d3bd77fda63930765d09",
+            "label": "baker locations",
+            "type": "physloc",
+            "content": [
+                "Baker locations are marked in instances. We did not know which boxes are where, but they should all be on those shelves. If ever requested, please double check locations and update instances."
+            ],
+            "publish": false
+        },
+        {
+            "jsonmodel_type": "note_singlepart",
+            "persistent_id": "5ce16b16f4b5e3b9d4f3f3a0b43458d2",
+            "type": "abstract",
+            "content": [
+                "Al Ullman, Democrat of Baker, Oregon, represented Oregon’s second district in the U. S. House of Representatives from 1957 to 1981. Most of his efforts focused on the development of Oregon’s water resources and the improved management of public lands and national forests. In the 1970s, he worked on tax reform, welfare reform, and national health insurance. The collection consists of correspondence, reports, legislation, published material providing background information on the issues, and other files accumulated during his twenty-four years in the U. S. House of Representatives. The collection covers all the issues which concerned Ullman and his constituents between 1957 and 1981."
+            ],
+            "publish": true
+        },
+        {
+            "jsonmodel_type": "note_singlepart",
+            "persistent_id": "f62a1dc11d58f9a44b2f42c55d84b7c3",
+            "type": "physloc",
+            "content": [
+                "There are 2 folders for Ullman in the inventory file. In NUCMC, it is under \"Democratic Party, Oregon.\""
+            ],
+            "publish": false
+        },
+        {
+            "jsonmodel_type": "note_multipart",
+            "persistent_id": "afe078f800049e172f52767e97ba91d5",
+            "type": "bioghist",
+            "subnotes": [
+                {
+                    "jsonmodel_type": "note_text",
+                    "content": "Al Ullman, Democrat of Baker, Oregon, represented Oregon’s second district in the U. S. House of Representatives from 1957 to 1981. He was born in Great Falls, Montana on March 9, 1914, and was raised in the Northwest. In 1935 he graduated from Whitman College in Walla Walla, Washington, in political science. He also earned a master’s degree in public law from Columbia University in 1939. Ullman was a high school teacher and a businessman in Baker before his election to Congress. He was also a veteran of World War II, having served with the Navy in the South Pacific.\n\nUllman was first elected to Congress in 1956, defeating incumbent Sam Coon largely on the issue concerning Hells Canyon on the Snake River. It was his second try for the second district congressional seat. Once in Washington, D. C., he devoted major attention to the development of Oregon’s water resources and the improved management of public lands and national forests. He served on the Interior and Insular Affairs Committee and was a member of the National Outdoor Recreation Resources Review Commission.\n\nIn 1961, Congressman Ullman was elected to the important Ways and Means Committee. In 1973, while serving as acting chairman in the absence of Representative Wilbur Mills, he led the committee in developing the Trade Reform Act of 1973 and guided other legislative efforts in the areas of tax reform, welfare reform, and national health insurance. He became chairman in 1975.\n\nUllman was also considered a leader throughout Congress in the effort to reform budgetary procedures. In 1973, he initiated and later co-chaired the Joint Study Committee on Budget Control, leading to major budget reforms. He also served as chairman of the new House Budget Committee in 1974.\n\nIn addition, during his tenure in Congress, Ullman served on the Judiciary Committee, the Democratic Committee on Committees, the Joint Committee on Internal Revenue Taxation, and many other joint committees and commissions.\n\nCongressman Ullman was defeated in his bid for re-election for his thirteenth term in 1980, though he remained active in Washington, D. C. until his death in 1986.\n\n",
+                    "publish": true
+                }
+            ],
+            "publish": true
+        },
+        {
+            "jsonmodel_type": "note_multipart",
+            "persistent_id": "fbb978a8f7b62c2b1cd8559eadb193e6",
+            "type": "scopecontent",
+            "subnotes": [
+                {
+                    "jsonmodel_type": "note_text",
+                    "content": "The Al Ullman Papers contain correspondence, reports, legislation, published material providing background information on the issues, and other files accumulated during his twenty-four years in the U. S. House of Representatives. The collection covers all the issues which concerned Ullman and his constituents between 1957 and 1981.\n\nThe Ullman Papers came to the University of Oregon in 1981 from the Federal Records Center in Washington, D. C., where they had been in storage. The increments that were sent to the Records Center were reassembled to create the file that would have existed had all the records remained in Ullman’s office. Thus the files, as near as possible, are arranged chronologically within each heading. The headings differ, however, because a new filing system was adopted in 1969. As a result, materials that were filed under one heading between 1957 and 1968, are found under a different, more specific, heading after that period. A researcher interested in a particular subject may need to consult several files to be certain of finding everything relating to the topic.\n\nThe Papers are organized into eight series, each also described separately in the box by box inventory. Series I covers material from 1957 through 1968 and consists of general subject files. The inventory lists the types of materials included under each heading as well as specific topics that are covered. An office index to this series can be found in Box 1.\n\nSeries II through IV contain files generated between 1969 and 1980, inclusive. This begins the new filing system so that although this material is also filed according to subject, the headings are more specific; that is, naming the departments (Series II), agencies (Series III), and House Committees (Series IV). For example, material files under Natural Resources in Series I are included under the Department of the Interior in Series II. Series V through Series VII cover the entire twenty-four years of Ullman’s career and contain specific material relating to individual bills (primarily those introduced by Ullman, Series V), Oregon projects and affairs (Series VI), and publicity and scheduling (Series VII). Series VIII, contains carbons of Ullman’s outgoing correspondence, referred to as “whites.” These can also be used as a cross-reference index to the correspondence in the files arranged by subject, as notations of other file headings appear in the upper right-hand corner of the “white.” Series IX contains several hundred images, primarily official portraits and scenes of Ullman representing his constituents, 1957 to 1981.\n\nIndividual case files have been disposed of in accordance with Mr. Ullman’s wishes.\n\n",
+                    "publish": true
+                }
+            ],
+            "publish": true
+        },
+        {
+            "jsonmodel_type": "note_multipart",
+            "persistent_id": "e9337cc09654ec0dd22ed3bd2724c5be",
+            "type": "arrangement",
+            "subnotes": [
+                {
+                    "jsonmodel_type": "note_text",
+                    "content": "Collection is organized into the following series:\n\nSeries I. Subject Files, 1957-1968\n\nSeries II. Departments, 1969-1980\n\nSeries III. Agencies, 1969-1980\n\nSeries IV. House Committees, 1969-1980\n\nSeries V. Bill File, 1957-1980\n\nSeries VI. Oregon Projects and Affairs, 1957-1980\n\nSeries VII. Publicity and Scheduling, 1957-1980\n\nSeries VIII. Whites (outgoing letters), 1957-1980\n\nSeries IX. Photographs\n\n",
+                    "publish": true
+                }
+            ],
+            "publish": true
+        },
+        {
+            "jsonmodel_type": "note_multipart",
+            "persistent_id": "cf5c4133fb649bdae55508a5c67c825c",
+            "type": "accessrestrict",
+            "rights_restriction": {
+                "local_access_restriction_type": []
+            },
+            "subnotes": [
+                {
+                    "jsonmodel_type": "note_text",
+                    "content": "Collection is open to the public. Collection must be used in Special Collections and University Archives Reading Room. Collection or parts of collection may be stored offsite. Please contact Special Collections and University Archives in advance of your visit to allow for transportation time.",
+                    "publish": true
+                }
+            ],
+            "publish": true
+        },
+        {
+            "jsonmodel_type": "note_multipart",
+            "persistent_id": "6e6eb323e896f60c716dae6916e96b0c",
+            "type": "userestrict",
+            "rights_restriction": {
+                "local_access_restriction_type": []
+            },
+            "subnotes": [
+                {
+                    "jsonmodel_type": "note_text",
+                    "content": "Property rights reside with Special Collections and University Archives, University of Oregon Libraries. Copyright resides with the creators of the documents or their heirs. All requests for permission to publish collection materials must be submitted to Special Collections and University Archives. The reader must also obtain permission of the copyright holder.",
+                    "publish": true
+                }
+            ],
+            "publish": true
+        },
+        {
+            "jsonmodel_type": "note_multipart",
+            "persistent_id": "54d8ccfe4bd9de997824c373a730d363",
+            "type": "prefercite",
+            "subnotes": [
+                {
+                    "jsonmodel_type": "note_text",
+                    "content": "[Identification of item], Alfred Conrad Ullman papers, Coll 040, Special Collections &amp; University Archives, University of Oregon Libraries, Eugene, Oregon.\n\n",
+                    "publish": true
+                }
+            ],
+            "publish": true
+        },
+        {
+            "jsonmodel_type": "note_multipart",
+            "persistent_id": "1270b32def62036e02af30efbac07a35",
+            "type": "acqinfo",
+            "subnotes": [
+                {
+                    "jsonmodel_type": "note_text",
+                    "content": "Gift of Al Ullman in 1981.\n\n",
+                    "publish": true
+                }
+            ],
+            "publish": true
+        },
+        {
+            "jsonmodel_type": "note_multipart",
+            "persistent_id": "93be68f5f2580e78c9471930da17fc74",
+            "type": "processinfo",
+            "subnotes": [
+                {
+                    "jsonmodel_type": "note_text",
+                    "content": "Collection processed by staff.\n\nThis finding aid may be updated periodically to account for new acquisitions to the collection and/or revisions in arrangement and description.",
+                    "publish": true
+                }
+            ],
+            "publish": true
+        }
+    ],
+    "metadata_rights_declarations": [],
+    "uri": "/repositories/2/resources/1964",
+    "repository": {
+        "ref": "/repositories/2"
+    },
+    "collection_management": {
+        "lock_version": 0,
+        "rights_determined": false,
+        "created_by": "amunsell",
+        "last_modified_by": "amunsell",
+        "create_time": "2023-02-25T19:47:36Z",
+        "system_mtime": "2023-02-25T19:47:36Z",
+        "user_mtime": "2023-02-25T19:47:36Z",
+        "processing_status": "Processed",
+        "jsonmodel_type": "collection_management",
+        "external_ids": [],
+        "uri": "/repositories/2/collection_management/28546",
+        "repository": {
+            "ref": "/repositories/2"
+        },
+        "parent": {
+            "ref": "/repositories/2/resources/1964"
+        }
+    },
+    "user_defined": {
+        "lock_version": 0,
+        "boolean_1": false,
+        "boolean_2": false,
+        "boolean_3": false,
+        "string_1": "54033568",
+        "string_2": "9959853101852",
+        "created_by": "amunsell",
+        "last_modified_by": "amunsell",
+        "create_time": "2023-02-25T19:47:36Z",
+        "system_mtime": "2023-02-25T19:47:36Z",
+        "user_mtime": "2023-02-25T19:47:36Z",
+        "enum_1": #change this - if theres any extent "Estimated Digital extent" if this has anny value -- then make it "To be staged, no description". If this field is empty or 0 say "No digital records",
+        "jsonmodel_type": "user_defined",
+        "repository": {
+            "ref": "/repositories/2"
+        }
+    },
+    "tree": {
+        "ref": "/repositories/2/resources/1964/tree"
+    }
+}
