@@ -1,0 +1,98 @@
+{
+    "lock_version": 0,
+    "suppressed": false,
+    "title": "Representative Al Ullman",
+    "display_string": "Representative Al Ullman",
+    "publish": false,
+    "content_description": "One photograph of Representative Ulmann standing with a large group of Native American youth on the steps of the US Capitol. ",
+    "provenance": "Gift of Matt Ely, State Historical Society of North Dakota, 2023.",
+    "general_note": "Record created by API ingest in 2024--not yet reviewed for accuracy.",
+    "accession_date": "2024-01-30",
+    "restrictions_apply": false,
+    "access_restrictions": false,
+    "use_restrictions": false,
+    "created_by": "jwallin2",
+    "last_modified_by": "jwallin2",
+    "create_time": "2024-01-30T17:56:43Z",
+    "system_mtime": "2024-01-30T17:56:43Z",
+    "user_mtime": "2024-01-30T17:56:43Z",
+    "is_slug_auto": false,
+    "id_0": "25",
+    "id_1": "003",
+    "id_2": "P",
+    "acquisition_type": "gift",
+    "resource_type": "collection",
+    "jsonmodel_type": "accession",
+    "external_ids": [],
+    "related_accessions": [],
+    "classifications": [],
+    "subjects": [],
+    "linked_events": [],
+    "extents": [
+        {
+            "lock_version": 0,
+            "number": "0.1",
+            "physical_details": "1 envelope",
+            "created_by": "jwallin2",
+            "last_modified_by": "jwallin2",
+            "create_time": "2024-01-30T17:56:43Z",
+            "system_mtime": "2024-01-30T17:56:43Z",
+            "user_mtime": "2024-01-30T17:56:43Z",
+            "portion": "whole",
+            "extent_type": "linear feet",
+            "jsonmodel_type": "extent"
+        }
+    ],
+    "lang_materials": [],
+    "dates": [
+        {
+            "lock_version": 0,
+            "expression": "1970-1980's",
+            "begin": "1970",
+            "end": "1989",
+            "created_by": "jwallin2",
+            "last_modified_by": "jwallin2",
+            "create_time": "2024-01-30T17:56:43Z",
+            "system_mtime": "2024-01-30T17:56:43Z",
+            "user_mtime": "2024-01-30T17:56:43Z",
+            "date_type": "inclusive",
+            "label": "creation",
+            "jsonmodel_type": "date"
+        }
+    ],
+    "external_documents": [],
+    "rights_statements": [],
+    "deaccessions": [],
+    "related_resources": [
+        {
+            "ref": "/repositories/2/resources/1964"
+        }
+    ],
+    "component_links": [],
+    "linked_agents": [],
+    "instances": [],
+    "metadata_rights_declarations": [],
+    "uri": "/repositories/2/accessions/8728",
+    "repository": {
+        "ref": "/repositories/2"
+    },
+    "collection_management": {
+        "lock_version": 0,
+        "rights_determined": false,
+        "created_by": "jwallin2",
+        "last_modified_by": "jwallin2",
+        "create_time": "2024-01-30T17:56:43Z",
+        "system_mtime": "2024-01-30T17:56:43Z",
+        "user_mtime": "2024-01-30T17:56:43Z",
+        "processing_status": "Unprocessed",
+        "jsonmodel_type": "collection_management",
+        "external_ids": [],
+        "uri": "/repositories/2/collection_management/31516",
+        "repository": {
+            "ref": "/repositories/2"
+        },
+        "parent": {
+            "ref": "/repositories/2/accessions/8728"
+        }
+    }
+}

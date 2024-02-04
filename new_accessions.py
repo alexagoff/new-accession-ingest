@@ -224,9 +224,7 @@ def fill_data(pandas_csv, start_num, end_num, id_1_num):
                     tmp = titlename.replace(findlist[0], '')
                     titlename = tmp
                 title_name = titlename 
-                jsonData[name] = titlename
-            
-            
+                jsonData[name] = titlename 
     
             elif name == "content_description":
                 if (str(row["Descriptive summary of content:"])).lower() != "nan":
@@ -257,7 +255,7 @@ def fill_data(pandas_csv, start_num, end_num, id_1_num):
                     jsonData[name] = True
             
             elif name == "id_0":
-                #jsonData[name] = str_year[-2:] commented out for testing files
+                #CHANGE - jsonData[name] = str_year[-2:] commented out for testing files
                 jsonData[name] = "25"
             
             elif name == "id_1":

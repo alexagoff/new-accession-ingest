@@ -18,6 +18,30 @@ def jsonpost(x):
 
     return res_object
 
+def new_event(x):
+    ''' This function posts a new event to Aspace.
+    input: x, jsondata - a jsondata object 
+    output: res_object, json file - the response to posting
+    '''
+    url = '/repositories/2/events'
+    payload = json.dumps(x)
+    response = client.post(url, json=x)
+    res_object = response.json()
+
+    return res_object
+
+def accupdate(loc, x):
+    ''' This function updates an item with new jsonData information.
+    input: loc, the url e.g. (/repositories/2/item_type/4454)
+           x, jsondata - a jsondata object
+    output: res_object, json file - the response to posting on aspace
+    '''
+    url = loc
+    payload = json.dumps(x)
+    response = client.post(url, json=x)
+    res_object = response.json()
+
+    return res_object
 
 # function to see ID_1 of latest 5 accessions
 def latest_id1(curr_yr):
@@ -126,10 +150,10 @@ def repo_exists(name, identifier):
     
 # get a jsondata item from an accession url
 def accget_jsondata(x):
-    '''This function gets a jsondata item for an accession from using the 'get' API on Aspace
-    to find an accession from a URL. 
-    input: x, str - url string of accession
-    output: res_object, json - json file found of accession
+    '''This function gets a jsondata item from using the 'get' API on Aspace
+    to find an item from a URL. 
+    input: x, str - url string 
+    output: res_object, json - json file found
     '''
     response = client.get(x)
     res_object = response.json()
