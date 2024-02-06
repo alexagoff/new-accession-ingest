@@ -3,15 +3,11 @@ import csv
 import os 
 import functions
 import sys
-#import time
 from datetime import date 
 import datetime
 import pandas as pd
-#import re
 
-# ask about what the logs are (alexa put them in) (what i should be logging in each one)
-# ask if tsst.json and example_event.json and testresource looks right (updated accession before posting)
-# tomorrow make logs
+# log for when I post new updates accessions, updated resources, updates events
 
 # edit line below to manually enter a .csv 
 filename = './out/posted_accessions.csv' 
@@ -40,6 +36,9 @@ def main():
     df = pd.read_csv(filename)
     # going through lines of input csv
     for index, row in df.iterrows():
+        # trying to only run ID 169
+        if str(row["ID"]) != '169':
+            continue
         # if a matching repository was found for this row
         if row["Resource Found?"] == "Yes":
             # get the json body for this accession
@@ -103,11 +102,16 @@ def main():
                                 successful_runs.append(str(row["ID"]))
 
         # if no matching repository was found
-        else:
-            pass     
+        else: 
+            pass
+            # notes
+            #   create a new resource record (create_resource_record template in teams)
+            #   populate new resource record with:
+            #       the things to change are in hashtags
+            #       id_0 has to be row["Found Collection Identifier"] number 
+            #       extents is the same logic as "extents" in new_accessions.py
 
-        break 
-    
+    # terminal message
     print("RAN ID's:", successful_runs, "\n\tERROR ID's:", errors_runs, "\n") 
     
     return 0
@@ -118,9 +122,3 @@ if __name__ == "__main__":
     applog.close()
     serverlog.close()
     errlog.close()
-
-# work on "yes" on the second section if done with this..
-# for the event record, do Executing program and SCUA api calls as the other one -->"role":"executing_program", "linked_records":"ref":*resource uri*
-
-# next step:
-# after making event , pull resource record and how to change this new record after getting is in notes.json

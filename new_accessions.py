@@ -176,9 +176,9 @@ def fill_data(pandas_csv, start_num, end_num, id_1_num):
         run_list: list, the row ID's of the lines in the csv that were parsed
         errors_list: list, the row ID's of lines in the csv that gave 'post' or 'get' errors
     '''
-    ex = open("testacc_num.txt", 'r') #CHANGE
-    curr_acc = int(ex.read())
-    ex.close()
+    #ex = open("testacc_num.txt", 'r') #CHANGE
+    #curr_acc = int(ex.read())
+    #ex.close()
 
     run_list = []
     errors_list = []
@@ -255,8 +255,8 @@ def fill_data(pandas_csv, start_num, end_num, id_1_num):
                     jsonData[name] = True
             
             elif name == "id_0":
-                #CHANGE - jsonData[name] = str_year[-2:] commented out for testing files
-                jsonData[name] = "25"
+                jsonData[name] = str_year[-2:] #commented out for testing files
+                #jsonData[name] = "25"
             
             elif name == "id_1":
                 jsonData[name] = id_1_num
@@ -399,11 +399,11 @@ def fill_data(pandas_csv, start_num, end_num, id_1_num):
         lines_looped +=1
         
     # *TEST* writing the number of tests already done in testacc_num.txt CHANGE
-    f = open('testacc_num.txt', 'w')
-    f.seek(0)
-    f.write(str(curr_acc))
-    f.truncate()
-    f.close()
+    #f = open('testacc_num.txt', 'w')
+    #f.seek(0)
+    #f.write(str(curr_acc))
+    #f.truncate()
+    #f.close()
 
     return lines_looped, run_list, errors_list
 
@@ -519,7 +519,8 @@ def main():
     applog.write("\n--------------" + str(now) + "--------------\n")
 
     # finding id_1 number 
-    id_1 = functions.latest_id1("2025") # CHANGE supposed to be (str_year) as parameter but testing with something else.  
+    #id_1 = functions.latest_id1("2025") # CHANGE supposed to be (str_year) as parameter but testing with something else.  
+    id_1 = functions.latest_id1(str_year)
 
     tmp = ""
     # handling errors in finding id_1 below -- more info in functions.py
