@@ -12,8 +12,6 @@ import pandas as pd
 # ask about what the logs are (alexa put them in) (what i should be logging in each one)
 # ask if tsst.json and example_event.json and testresource looks right (updated accession before posting)
 # tomorrow make logs
-# tell her i made a mistake in 8728 and linked it 6 times and also to the resource too 5x HAHAHA
-# theres also a new event
 
 # edit line below to manually enter a .csv 
 filename = './out/posted_accessions.csv' 
@@ -84,17 +82,18 @@ def main():
                             errors_runs.append(str(row["ID"]))
                         else:
                             if "repository_processing_note" in found_resource:
-                                found_resource["repository_processing_note"]+="New Material Recieved"
+                                found_resource["repository_processing_note"]+="| New Material Recieved"
                             else:
-                                found_resource["repository_processing_note"] = "New Material Recieved"
-                            found_resource["finding_aid_status"] = "Revise Description"
+                                found_resource["repository_processing_note"] = "| New Material Recieved"
+                            found_resource["finding_aid_status"] = "Revise description"
                             found_resource["user_defined"]["enum_1"] = "No digital records"
                             if (str(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"])).lower() != "nan": 
                                 # if its just a numerical string
                                 if str(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"]).replace('.', '', 1).isdigit() == True:
                                     if float(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"]) != 0:
                                         found_resource["user_defined"]["enum_1"] = "To be staged, no description"
-                            post_rec = functions.accupdate('/'+row["Found Collection URI (of first match):"], found_resouce)
+                            found_resource["collection_management"]["processing_status"] = "New material recieved"
+                            post_rec = functions.accupdate('/'+row["Found Collection URI (of first match):"], found_resource)
                             if "error" in post_rec:
                                 errlog.write("ID " + str(row["ID"]) + ": Error in using posting edited and linked resource.\n")
                                 errlog.write("\t\t" + str(post_rec) + "\n")
