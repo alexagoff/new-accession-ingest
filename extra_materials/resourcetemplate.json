@@ -1,0 +1,184 @@
+{
+    "lock_version": 0,
+    "title": "",
+    "publish": false,
+    "restrictions": false,
+    "repository_processing_note": "UNARRANGED AND UNAVAILABLE FOR USE.",
+    "ead_location": "http://archiveswest.orbiscascade.org/findaid/ark:/80444/xv[fill in ARK here]",
+    "finding_aid_title": "",
+    "finding_aid_filing_title": "",
+    "suppressed": false,
+    "is_slug_auto": false,
+    "id_0": "",
+    "level": "collection",
+    "resource_type": "collection",
+    "finding_aid_description_rules": "dacs",
+    "finding_aid_language": "eng",
+    "finding_aid_script": "Latn",
+    "jsonmodel_type": "resource",
+    "external_ids": [],
+    "subjects": [],
+    "linked_events": [],
+    "extents": [
+        {
+            "lock_version": 0,
+            "number": "",
+            "container_summary": "",
+            "physical_details": "",
+            "created_by": "scuaapi",
+            "last_modified_by": "scuaapi",
+            "create_time": "",
+            "system_mtime": "",
+            "user_mtime": "",
+            "portion": "",
+            "extent_type": "",
+            "jsonmodel_type": "extent"
+        }
+    ],
+    "lang_materials": [
+        {
+            "lock_version": 0,
+
+            "jsonmodel_type": "lang_material",
+            "notes": [],
+            "language_and_script": {
+                "lock_version": 0,
+
+                "language": "eng",
+                "script": "Latn",
+                "jsonmodel_type": "language_and_script"
+            }
+        }
+    ],
+    "dates": [
+        {
+            "lock_version": 0,
+            "expression": "",
+            "begin": "",
+            "end": "",
+            "created_by": "scuaapi",
+            "last_modified_by": "scuaapi",
+            "create_time": "",
+            "system_mtime": "",
+            "user_mtime": "",
+            "date_type": "",
+            "label": "creation",
+            "jsonmodel_type": "date"
+        }
+    ],
+    "external_documents": [],
+    "rights_statements": [],
+    "linked_agents": [],
+    "import_previous_arks": [],
+    "revision_statements": [],
+    "instances": [],
+    "deaccessions": [],
+    "related_accessions": [
+        {
+            "ref": ""
+        }
+    ],
+    "classifications": [],
+    "notes": [
+
+        
+        {
+            "jsonmodel_type": "note_multipart",
+            "type": "prefercite",
+            "subnotes": [
+                {
+                    "jsonmodel_type": "note_text",
+                    "content": "",
+                    "publish": true
+                }
+            ],
+            "publish": true
+        },
+        {
+            "jsonmodel_type": "note_singlepart",
+            "type": "abstract",
+            "content": [
+                "Add this note to meet minimum requirements."
+            ],
+            "persistent_id": "",
+            "publish": false
+        },
+        {
+            "jsonmodel_type": "note_multipart",
+            "type": "acqinfo",
+            "subnotes": [
+                {
+                    "jsonmodel_type": "note_text",
+                    "content": "Add this note to meet minimum requirements.",
+                    "publish": false
+                }
+            ],
+            "persistent_id": "",
+            "publish": false
+        },
+        {
+            "jsonmodel_type": "note_multipart",
+            "type": "bioghist",
+            "subnotes": [
+                {
+                    "jsonmodel_type": "note_text",
+                    "content": "Add this note to meet minimum requirements.",
+                    "publish": false
+                }
+            ],
+            "persistent_id": "",
+            "publish": false
+        },
+        {
+            "jsonmodel_type": "note_multipart",
+            "label": "Content Description",
+            "type": "scopecontent",
+            "subnotes": [
+                {
+                    "jsonmodel_type": "note_text",
+                    "content": "",
+                    "publish": false
+                }
+            ],
+            "persistent_id": "",
+            "publish": false
+        }
+
+    ],
+    "metadata_rights_declarations": [],
+    "uri": "",
+    "repository": {
+        "ref": "/repositories/2"
+    },
+    "collection_management": {
+        "lock_version": 0,
+        "rights_determined": false,
+
+        "processing_status": "Unprocessed",
+        "jsonmodel_type": "collection_management",
+        "external_ids": [],
+        "uri": "",
+        "repository": {
+            "ref": "/repositories/2"
+        },
+        "parent": {
+            "ref": ""
+        }
+    },
+    "user_defined": {
+        "lock_version": 0,
+        "boolean_1": false,
+        "boolean_2": false,
+        "boolean_3": false,
+        "string_1": "add OCLC",
+        "string_2": "add MMS ID",
+
+        "jsonmodel_type": "user_defined",
+        "repository": {
+            "ref": "/repositories/2"
+        }
+    },
+    "tree": {
+        "ref": ""
+    }
+}

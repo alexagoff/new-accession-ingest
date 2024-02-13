@@ -80,86 +80,6 @@ def find_inputs():
     return x, y
 
 
-def match_dates(match_string):
-    ''' attempts to find begin and end date from "estimated creation date" string.
-    Right now it only will detect 4 number years just to make sure mistakes aren't made.
-    if theres a year like "19" or "80", it will return 0. 
-    
-    input: str, the string from the csv column "Estimated creation dates:"
-    output: list, a list [start, end] of the starting and ending date in the timeframe. 
-            
-    Errors: If date could not be found from the patterns, then returns 0.
-    '''
-    # regex patterns 
-    pattern1 = "\d{4}'?\s?s.*\d{4}'?\s?s" 
-    pattern2 = "\d{4}'?\s?s.*\d{4}"
-    pattern3 = "\d{4}.*\d{4}'?\s?s"
-    pattern4 = "\d{4}.*\d{4}"
-    pattern5 = "\d{1,2}\s?\-\-?\s?[a-zA-Z]+\s?\-\-?\s?\d{4}"
-    pattern6 = "[a-zA-Z]+\s?\-+\s?\d{4}"
-    pattern7 = "\d{4}'?\s?s"
-    pattern8 = "\d{4}"
-
-    # if adding new patterns, the ORDER of these patterns is important! it goes from 
-    # most specific match to least specific (most specific being something that has to be like 2000s-3000s exactly and least specific just any four digit number)
-    patterns_list = [pattern1, pattern2, pattern3, pattern4,
-                        pattern5, pattern6, pattern7, pattern8]
-    
-    months_list = ["january", "february", "march", "april", "may", "june", "july",
-                        "august", "september", "october", "november", "december", "jan", 
-                        "feb", "mar", "apr", "jun", "jul", "aug", "sept", "sep", "oct", "nov", "dec"]
-
-    # X stands for any integer
-    # Y stands for any letter
-
-    found = False
-    # going through each regex pattern and seeing if theres a match with one of them
-    for pattern in patterns_list:
-        find_list = re.findall(pattern, match_string)
-        # if theres a match with a regex pattern 
-        # if there is a match, it will return and not keep looping
-        if len(find_list)>0:
-            found = True
-            # matched with XXXXs-XXXXs or XXXX-XXXXs
-            if (pattern == pattern1) or (pattern == pattern3):
-                # extracting the two four digit numbers
-                new_list = re.findall("\d{4}", find_list[0])
-                # check first three characters of the last four digit number to see if its in this decade
-                if new_list[-1][:3] == str_year[:3]:
-                    # returns with ending at current year
-                    return [new_list[0], str_year] 
-                # returns with ending at last four digit number but with 9 at the end
-                return [new_list[0], new_list[-1][:3]+'9'] 
-            # matched with XXXXs-XXXX or XXXX-XXXX
-            elif (pattern == pattern2) or (pattern == pattern4):
-                # returns first four and last four characters of matched string
-                return [str(find_list[0])[:4], str(find_list[0])[-4:]]
-            # matched with form 8-YYY-2019 or YYY-2019
-            elif (pattern == pattern5) or (pattern == pattern6):
-                # extracting just the letter parts
-                test_month = re.findall("[a-zA-Z]+", find_list[0])
-                # if the letters part isn't a month its not valid
-                if test_month[0].lower() not in months_list:
-                    return 0
-                # returning the last four characters
-                return [str(find_list[0])[-4:]]
-            # matched with XXXXs
-            elif pattern == pattern7:
-                # extracting just the year without 's'
-                new_year = re.findall("\d{4}", str(find_list[0]))
-                # check first three characters of the four digit number to see if its in this decade
-                if new_year[0][:3] == str_year[:3]:
-                    return [new_year[0][:3]+'0', str_year] 
-                return [new_year[0][:3]+'0', new_year[0][:3]+'9']
-            # matched with XXXX
-            elif pattern == pattern8:
-                return [find_list[0]]
-    
-    # if match_string didn't match any of the patterns
-    if found == False:
-        return 0
-
- 
 def fill_data(pandas_csv, start_num, end_num, id_1_num):
     ''' this function fills a json file for each line from 
     the input csv. 
@@ -364,7 +284,7 @@ def fill_data(pandas_csv, start_num, end_num, id_1_num):
             elif name == "dates":
                 jsonData[name][0]["expression"] = str(row["Estimated creation dates:"])
                 # making string into estimated begin and end dates
-                begin_end = match_dates(str(row["Estimated creation dates:"]))
+                begin_end = functions.match_dates(str(row["Estimated creation dates:"]), str_year)
                 if begin_end != 0:
                     if len(begin_end)==2:
                         jsonData[name][0]["begin"] = begin_end[0]
@@ -558,4 +478,3 @@ if __name__ == "__main__":
     outy.close()
     errorlog.close()
     applog.close()
-
