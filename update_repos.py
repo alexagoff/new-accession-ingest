@@ -31,6 +31,8 @@ def main():
     df = pd.read_csv(filename)
     # going through lines of input csv
     for index, row in df.iterrows():
+        if str(row["ID"]) != "168":
+            continue
         # if a matching repository was found for this row
         if row["Resource Found?"] == "Yes":
             # get the json body for this accession
@@ -85,12 +87,16 @@ def main():
                                 if str(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"]).replace('.', '', 1).isdigit() == True:
                                     if float(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"]) != 0:
                                         found_resource["user_defined"]["enum_1"] = "To be staged, no description"
-                            #with open("tester1.json", "w") as file:
-                            #    json.dump(found_resource, file, indent = 4 ) 
-                            if "collection_management" in found_resource:
-                                found_resource["collection_management"] = {}
-                            with open("tester1.json", "w") as file:
-                                json.dump(found_resource, file, indent = 4 ) 
+                            if "collection_management" not in found_resource:
+                                found_resource["collection_management"] = {
+                                                        "rights_determined": False,
+                                                        "processing_status": "Unprocessed",
+                                                        "jsonmodel_type": "collection_management",
+                                                        "external_ids": [],
+                                                        "uri": "",
+                                                        "repository": {
+                                                            "ref": "/repositories/2"
+                                                        }}
                             found_resource["collection_management"]["processing_status"] = "New material recieved"
                             post_rec = functions.accupdate('/'+row["Found Collection URI (of first match):"], found_resource)
                             if "error" in post_rec:
@@ -99,8 +105,9 @@ def main():
                                 errors_runs.append(str(row["ID"]))
                             # everything ran successfully!
                             else:
-                                #with open("tester1.json", "w") as file:
-                                #    json.dump(posted_rec, file, indent = 4 ) 
+                                test_thing = functions.accget_jsondata(row["Found Collection URI (of first match):"])
+                                with open("testbee.json", "w") as file:
+                                    json.dump(test_thing, file, indent = 4 )
                                 applog.write("ID " + str(row["ID"]) + ": Succesfully updated resource " + str(row["Found Collection URI (of first match):"])+"\n")
                                 successful_runs.append(str(row["ID"]))
 
@@ -120,65 +127,42 @@ def main():
             # acq info 
             found_accession = functions.accget_jsondata(row["Created Accession URI:"])
             if "error" in found_accession:
-                print("error in pulling")
-                continue
+                errlog.write("ID " + str(row["ID"]) + ": Error in using 'get' to find Accession information, see message below.\n")
+                errlog.write("\t\t" + str(found_accession) + "\n")
+                errors_runs.append(str(row["ID"]))
             else:
                 jsonData["notes"][2]["subnotes"][0]["content"] = found_accession["provenance"]
-            jsonData["notes"][4]["subnotes"][0]["content"] = found_accession["content_description"]
-            # 'extents' logic
-            # if its a physical item 
-            if ((str(row["Estimated physical extent (linear feet):"])).lower() != "nan"):
-                # if the string is just a numerical character
-                if str(row["Estimated physical extent (linear feet):"]).replace('.', '', 1).isdigit() == True:
-                    if float(str(row["Estimated physical extent (linear feet):"]).replace('.', '', 1)) != 0:
-                        jsonData["extents"][0]["number"] = str(row["Estimated physical extent (linear feet):"])
-                        jsonData["extents"][0]["extent_type"] = "linear feet"
-                        jsonData["extents"][0]["physical_details"] = row["Number and type of containers (e.g. 2 record storage boxes):"]
-                        jsonData["extents"][0]["portion"] = "whole"
-                # if the string is a valid non-numerical string (something like str(int) + 'linear feet')
-                elif ("linear feet" in str(row["Estimated physical extent (linear feet):"]).lower()) or ("linear foot" in str(row["Estimated physical extent (linear feet):"]).lower()) or (" lf" in str(row["Estimated physical extent (linear feet):"]).lower()) or (" ft" in str(row["Estimated physical extent (linear feet):"]).lower()):
-                    patterns = re.findall("\d\d?\,?\d?\d?\d?\.?\d?\d?\d?", str(row["Estimated physical extent (linear feet):"])) 
-                    if len(patterns) > 0:
-                        if float(patterns[0]) != 0:
-                            jsonData["extents"][0]["number"] = patterns[0]
+                jsonData["notes"][4]["subnotes"][0]["content"] = found_accession["content_description"]
+                # 'extents' logic
+                # if its a physical item 
+                if ((str(row["Estimated physical extent (linear feet):"])).lower() != "nan"):
+                    # if the string is just a numerical character
+                    if str(row["Estimated physical extent (linear feet):"]).replace('.', '', 1).isdigit() == True:
+                        if float(str(row["Estimated physical extent (linear feet):"]).replace('.', '', 1)) != 0:
+                            jsonData["extents"][0]["number"] = str(row["Estimated physical extent (linear feet):"])
                             jsonData["extents"][0]["extent_type"] = "linear feet"
                             jsonData["extents"][0]["physical_details"] = row["Number and type of containers (e.g. 2 record storage boxes):"]
                             jsonData["extents"][0]["portion"] = "whole"
-            # if its a digital item 
-            if (str(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"])).lower() != "nan": 
-                # if its just a numerical string
-                if str(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"]).replace('.', '', 1).isdigit() == True:
-                    if float(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"]) != 0:
-                        # if its also a valid physical item
-                        if jsonData["extents"][0]["number"] != "":
-                            # creating new dict item
-                            copy1 = jsonData["extents"][0].copy()
-                            jsonData["extents"].append(copy1)
-                            jsonData["extents"][1]["number"] = str(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"])
-                            jsonData["extents"][1]["extent_type"] = "megabyte(s)"
-                            # if two types, physical details for both are none
-                            jsonData["extents"][1]["physical_details"] = ""
-                            jsonData["extents"][0]["physical_details"] = ""
-                            # making both portions partial
-                            jsonData["extents"][0]["portion"] = "part"
-                            jsonData["extents"][1]["portion"] = "part"
-                        # if its only digital
-                        else:
-                            jsonData["extents"][0]["number"] = str(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"])
-                            jsonData["extents"][0]["extent_type"] = "megabyte(s)"
-                            jsonData["extents"][0]["physical_details"] = str(row["Number and type of containers (e.g. 2 record storage boxes):"])
-                            jsonData["extents"][0]["portion"] = "whole"
-                # if its a valid non-numerical string (something like str(int) + "MB")
-                elif (" mb" in str(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"]).lower()) or ("megabytes" in str(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"]).lower()) or ("megabyte" in str(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"]).lower()):
-                    patterns = re.findall("\d\d?\,?\d?\d?\d?\.?\d?\d?\d?", str(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"]))
-                    if len(patterns) > 0:
-                        if float(patterns[0]) != 0:
+                    # if the string is a valid non-numerical string (something like str(int) + 'linear feet')
+                    elif ("linear feet" in str(row["Estimated physical extent (linear feet):"]).lower()) or ("linear foot" in str(row["Estimated physical extent (linear feet):"]).lower()) or (" lf" in str(row["Estimated physical extent (linear feet):"]).lower()) or (" ft" in str(row["Estimated physical extent (linear feet):"]).lower()):
+                        patterns = re.findall("\d\d?\,?\d?\d?\d?\.?\d?\d?\d?", str(row["Estimated physical extent (linear feet):"])) 
+                        if len(patterns) > 0:
+                            if float(patterns[0]) != 0:
+                                jsonData["extents"][0]["number"] = patterns[0]
+                                jsonData["extents"][0]["extent_type"] = "linear feet"
+                                jsonData["extents"][0]["physical_details"] = row["Number and type of containers (e.g. 2 record storage boxes):"]
+                                jsonData["extents"][0]["portion"] = "whole"
+                # if its a digital item 
+                if (str(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"])).lower() != "nan": 
+                    # if its just a numerical string
+                    if str(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"]).replace('.', '', 1).isdigit() == True:
+                        if float(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"]) != 0:
                             # if its also a valid physical item
                             if jsonData["extents"][0]["number"] != "":
                                 # creating new dict item
                                 copy1 = jsonData["extents"][0].copy()
                                 jsonData["extents"].append(copy1)
-                                jsonData["extents"][1]["number"] = str(patterns[0])
+                                jsonData["extents"][1]["number"] = str(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"])
                                 jsonData["extents"][1]["extent_type"] = "megabyte(s)"
                                 # if two types, physical details for both are none
                                 jsonData["extents"][1]["physical_details"] = ""
@@ -188,47 +172,69 @@ def main():
                                 jsonData["extents"][1]["portion"] = "part"
                             # if its only digital
                             else:
-                                jsonData["extents"][0]["number"] = str(patterns[0])
+                                jsonData["extents"][0]["number"] = str(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"])
                                 jsonData["extents"][0]["extent_type"] = "megabyte(s)"
                                 jsonData["extents"][0]["physical_details"] = str(row["Number and type of containers (e.g. 2 record storage boxes):"])
                                 jsonData["extents"][0]["portion"] = "whole"
+                    # if its a valid non-numerical string (something like str(int) + "MB")
+                    elif (" mb" in str(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"]).lower()) or ("megabytes" in str(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"]).lower()) or ("megabyte" in str(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"]).lower()):
+                        patterns = re.findall("\d\d?\,?\d?\d?\d?\.?\d?\d?\d?", str(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"]))
+                        if len(patterns) > 0:
+                            if float(patterns[0]) != 0:
+                                # if its also a valid physical item
+                                if jsonData["extents"][0]["number"] != "":
+                                    # creating new dict item
+                                    copy1 = jsonData["extents"][0].copy()
+                                    jsonData["extents"].append(copy1)
+                                    jsonData["extents"][1]["number"] = str(patterns[0])
+                                    jsonData["extents"][1]["extent_type"] = "megabyte(s)"
+                                    # if two types, physical details for both are none
+                                    jsonData["extents"][1]["physical_details"] = ""
+                                    jsonData["extents"][0]["physical_details"] = ""
+                                    # making both portions partial
+                                    jsonData["extents"][0]["portion"] = "part"
+                                    jsonData["extents"][1]["portion"] = "part"
+                                # if its only digital
+                                else:
+                                    jsonData["extents"][0]["number"] = str(patterns[0])
+                                    jsonData["extents"][0]["extent_type"] = "megabyte(s)"
+                                    jsonData["extents"][0]["physical_details"] = str(row["Number and type of containers (e.g. 2 record storage boxes):"])
+                                    jsonData["extents"][0]["portion"] = "whole"
 
-            # if neither could be filled (physical or digital)
-            if jsonData["extents"][0]["number"] == "":
-                errlog.write("ID " + str(row["ID"]) + ": Neither Physical or digital extents are valid. Physical: '" + str(row["Estimated physical extent (linear feet):"]) + "', Digital: '" + str(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"]) + "'")
-                errors_runs.append(row["ID"])
-            else:
-                # 'dates' logic
-                jsonData["dates"][0]["expression"] = str(row["Estimated creation dates:"])
-                # making string into estimated begin and end dates
-                curr_year = date.today()
-                begin_end = functions.match_dates(str(row["Estimated creation dates:"]), str(curr_year.year))
-                if begin_end != 0:
-                    if len(begin_end)==2:
-                        jsonData["dates"][0]["begin"] = begin_end[0]
-                        jsonData["dates"][0]["end"] = begin_end[1]
-                        jsonData["dates"][0]["date_type"] = "inclusive"
-                    elif len(begin_end)==1:
-                        jsonData["dates"][0]["begin"] = begin_end[0]
-                        jsonData["dates"][0]["date_type"] = "single"
-                # could not separate into start and end dates
-                else:
-                    jsonData["dates"][0]["date_type"] = "inclusive"  
-                    errlog.write("ID " + str(row["ID"]) + ": Unable to match date.\n")
-
-                with open("tester.json", "w") as file:
-                    json.dump(jsonData, file, indent = 4 ) 
-                # posting new resource to Aspace
-                posted_rec = functions.new_resource(jsonData)
-                if "error" in posted_rec:
+                # if neither could be filled (physical or digital)
+                if jsonData["extents"][0]["number"] == "":
+                    errlog.write("ID " + str(row["ID"]) + ": Neither Physical or digital extents are valid. Physical: '" + str(row["Estimated physical extent (linear feet):"]) + "', Digital: '" + str(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"]) + "'")
                     errors_runs.append(row["ID"])
-                    errlog.write("ID " + str(row["ID"]) + ": Unable to post new resource. Error message below:\n")
-                    errlog.write("\t\t" + str(posted_rec) + "\n")
-                # posted successfully
                 else:
-                    resource_uri = posted_rec['uri'][1:]
-                    applog.write("ID " + str(row["ID"]) + ": Posted new resource with URI " + str(resource_uri) + ".\n")
-                    successful_runs.append(row["ID"])
+                    # 'dates' logic
+                    jsonData["dates"][0]["expression"] = str(row["Estimated creation dates:"])
+                    # making string into estimated begin and end dates
+                    curr_year = date.today()
+                    begin_end = functions.match_dates(str(row["Estimated creation dates:"]), str(curr_year.year))
+                    if begin_end != 0:
+                        if len(begin_end)==2:
+                            jsonData["dates"][0]["begin"] = begin_end[0]
+                            jsonData["dates"][0]["end"] = begin_end[1]
+                            jsonData["dates"][0]["date_type"] = "inclusive"
+                        elif len(begin_end)==1:
+                            jsonData["dates"][0]["begin"] = begin_end[0]
+                            jsonData["dates"][0]["date_type"] = "single"
+                    # could not separate into start and end dates
+                    else:
+                        jsonData["dates"][0]["date_type"] = "inclusive"  
+                        errlog.write("ID " + str(row["ID"]) + ": Unable to match date.\n")
+
+                    # posting new resource to Aspace
+                    posted_rec = functions.new_resource(jsonData)
+                    if "error" in posted_rec:
+                        errors_runs.append(row["ID"])
+                        errlog.write("ID " + str(row["ID"]) + ": Unable to post new resource. Error message below:\n")
+                        errlog.write("\t\t" + str(posted_rec) + "\n")
+                    # posted successfully
+                    else:
+                        resource_uri = posted_rec['uri'][1:]
+                        applog.write("ID " + str(row["ID"]) + ": Posted new resource with URI " + str(resource_uri) + ".\n")
+                        successful_runs.append(row["ID"])
 
     # terminal message
     print("\nRan program successfully!\n\tLook for more information on this run in app_updates.txt and found_errors.txt\n\n\tRAN ID's:", successful_runs, "\n\tERROR ID's:", errors_runs, "\n") 
