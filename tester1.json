@@ -1,0 +1,422 @@
+{
+    "lock_version": 26,
+    "title": "Rockey, Cady Family missionary papers",
+    "publish": true,
+    "restrictions": false,
+    "ead_id": "ORU_Coll460.xml",
+    "ead_location": "http://archiveswest.orbiscascade.org/ark:/80444/xv96432",
+    "finding_aid_title": "Guide to the Rockey, Cady Family Missionary Papers\n",
+    "finding_aid_filing_title": "Rockey, Cady Family missionary papers",
+    "finding_aid_date": "2015",
+    "finding_aid_author": "Austin Munsell",
+    "finding_aid_language_note": "Finding aid is written in English",
+    "created_by": "admin",
+    "last_modified_by": "alexmueller",
+    "create_time": "2017-12-30T04:51:02Z",
+    "system_mtime": "2024-02-13T17:55:32Z",
+    "user_mtime": "2020-05-07T23:05:03Z",
+    "suppressed": false,
+    "is_slug_auto": false,
+    "id_0": "Coll 460",
+    "level": "collection",
+    "resource_type": "papers",
+    "finding_aid_description_rules": "dacs",
+    "finding_aid_language": "eng",
+    "finding_aid_script": "Latn",
+    "finding_aid_status": "Revise description",
+    "jsonmodel_type": "resource",
+    "external_ids": [
+        {
+            "external_id": "9257",
+            "source": "Archivists Toolkit Database::RESOURCE",
+            "created_by": "alexmueller",
+            "last_modified_by": "alexmueller",
+            "create_time": "2020-05-07T23:05:08Z",
+            "system_mtime": "2020-05-07T23:05:08Z",
+            "user_mtime": "2020-05-07T23:05:08Z",
+            "jsonmodel_type": "external_id"
+        }
+    ],
+    "subjects": [
+        {
+            "ref": "/subjects/6513"
+        },
+        {
+            "ref": "/subjects/4975"
+        },
+        {
+            "ref": "/subjects/10418"
+        },
+        {
+            "ref": "/subjects/2339"
+        },
+        {
+            "ref": "/subjects/3492"
+        },
+        {
+            "ref": "/subjects/4869"
+        },
+        {
+            "ref": "/subjects/3605"
+        }
+    ],
+    "linked_events": [
+        {
+            "ref": "/repositories/2/events/46874"
+        },
+        {
+            "ref": "/repositories/2/events/46877"
+        },
+        {
+            "ref": "/repositories/2/events/46882"
+        },
+        {
+            "ref": "/repositories/2/events/46886"
+        },
+        {
+            "ref": "/repositories/2/events/46889"
+        },
+        {
+            "ref": "/repositories/2/events/46892"
+        }
+    ],
+    "extents": [
+        {
+            "lock_version": 0,
+            "number": "12",
+            "container_summary": "8 boxes",
+            "physical_details": "7 record storage boxes, 1 oversize flat box",
+            "created_by": "alexmueller",
+            "last_modified_by": "alexmueller",
+            "create_time": "2020-05-07T23:05:08Z",
+            "system_mtime": "2020-05-07T23:05:08Z",
+            "user_mtime": "2020-05-07T23:05:08Z",
+            "portion": "whole",
+            "extent_type": "linear feet",
+            "jsonmodel_type": "extent"
+        }
+    ],
+    "lang_materials": [
+        {
+            "lock_version": 0,
+            "created_by": "alexmueller",
+            "last_modified_by": "alexmueller",
+            "create_time": "2020-05-07T23:05:08Z",
+            "system_mtime": "2020-05-07T23:05:08Z",
+            "user_mtime": "2020-05-07T23:05:08Z",
+            "jsonmodel_type": "lang_material",
+            "notes": [],
+            "language_and_script": {
+                "lock_version": 0,
+                "created_by": "alexmueller",
+                "last_modified_by": "alexmueller",
+                "create_time": "2020-05-07T23:05:08Z",
+                "system_mtime": "2020-05-07T23:05:08Z",
+                "user_mtime": "2020-05-07T23:05:08Z",
+                "language": "eng",
+                "script": "Latn",
+                "jsonmodel_type": "language_and_script"
+            }
+        }
+    ],
+    "dates": [
+        {
+            "lock_version": 0,
+            "expression": "1887-2005",
+            "begin": "1887",
+            "end": "2005",
+            "created_by": "alexmueller",
+            "last_modified_by": "alexmueller",
+            "create_time": "2020-05-07T23:05:08Z",
+            "system_mtime": "2020-05-07T23:05:08Z",
+            "user_mtime": "2020-05-07T23:05:08Z",
+            "date_type": "inclusive",
+            "label": "creation",
+            "jsonmodel_type": "date"
+        },
+        {
+            "lock_version": 0,
+            "begin": "1887",
+            "end": "1970",
+            "created_by": "alexmueller",
+            "last_modified_by": "alexmueller",
+            "create_time": "2020-05-07T23:05:08Z",
+            "system_mtime": "2020-05-07T23:05:08Z",
+            "user_mtime": "2020-05-07T23:05:08Z",
+            "date_type": "bulk",
+            "label": "creation",
+            "jsonmodel_type": "date"
+        }
+    ],
+    "external_documents": [],
+    "rights_statements": [
+        {
+            "lock_version": 0,
+            "identifier": "b0edb9c38276f9addb01aa10d832c97e",
+            "created_by": "alexmueller",
+            "last_modified_by": "alexmueller",
+            "create_time": "2020-05-07T23:05:08Z",
+            "system_mtime": "2020-05-07T23:05:08Z",
+            "user_mtime": "2020-05-07T23:05:08Z",
+            "start_date": "2019-11-13",
+            "rights_type": "other",
+            "other_rights_basis": "policy",
+            "jsonmodel_type": "rights_statement",
+            "external_documents": [],
+            "acts": [],
+            "linked_agents": [],
+            "notes": [
+                {
+                    "jsonmodel_type": "note_rights_statement",
+                    "persistent_id": "6ab85a4d752fb80f97e5c738f8a7cf5b",
+                    "label": "Digitization Permission Note",
+                    "type": "additional_information",
+                    "content": [
+                        "Approved by SCUA for digitization."
+                    ],
+                    "publish": false
+                }
+            ]
+        },
+        {
+            "lock_version": 0,
+            "identifier": "a3310e1fc7225eae1a6dd8a1533e2b56",
+            "created_by": "alexmueller",
+            "last_modified_by": "alexmueller",
+            "create_time": "2020-05-07T23:05:08Z",
+            "system_mtime": "2020-05-07T23:05:08Z",
+            "user_mtime": "2020-05-07T23:05:08Z",
+            "start_date": "2019-11-13",
+            "rights_type": "other",
+            "other_rights_basis": "policy",
+            "jsonmodel_type": "rights_statement",
+            "external_documents": [],
+            "acts": [],
+            "linked_agents": [],
+            "notes": [
+                {
+                    "jsonmodel_type": "note_rights_statement",
+                    "persistent_id": "d2e1bd3c7d25e9f79a9696cafa49833a",
+                    "label": "Oregon Digital Permission Note",
+                    "type": "additional_information",
+                    "content": [
+                        "Approved by SCUA for publication to Oregon Digital."
+                    ],
+                    "publish": false
+                }
+            ]
+        }
+    ],
+    "linked_agents": [
+        {
+            "role": "creator",
+            "terms": [],
+            "ref": "/agents/people/3457"
+        },
+        {
+            "role": "creator",
+            "terms": [],
+            "ref": "/agents/people/8242"
+        },
+        {
+            "role": "creator",
+            "terms": [],
+            "ref": "/agents/people/33104"
+        },
+        {
+            "role": "creator",
+            "terms": [],
+            "ref": "/agents/people/33106"
+        },
+        {
+            "role": "source",
+            "relator": "dnr",
+            "terms": [],
+            "ref": "/agents/people/33105"
+        }
+    ],
+    "import_previous_arks": [],
+    "revision_statements": [],
+    "instances": [],
+    "deaccessions": [],
+    "related_accessions": [
+        {
+            "ref": "/repositories/2/accessions/4182"
+        },
+        {
+            "ref": "/repositories/2/accessions/8763"
+        }
+    ],
+    "classifications": [
+        {
+            "ref": "/repositories/2/classification_terms/32"
+        },
+        {
+            "ref": "/repositories/2/classification_terms/35"
+        },
+        {
+            "ref": "/repositories/2/classification_terms/30"
+        }
+    ],
+    "notes": [
+        {
+            "jsonmodel_type": "note_singlepart",
+            "persistent_id": "29a409893518cb04704c11f7f9756fad",
+            "type": "abstract",
+            "content": [
+                "The Rockey and Cady families were American Methodist missionaries to India and China, respectively.  The collection consists of a small section of manuscripts and correspondence of both the Cady and Rockey families and a larger collection of published materials about India and China.  \n"
+            ],
+            "publish": true
+        },
+        {
+            "jsonmodel_type": "note_multipart",
+            "persistent_id": "72cdd76a5d6d2cd546ee306b0be66cf0",
+            "type": "relatedmaterial",
+            "subnotes": [
+                {
+                    "jsonmodel_type": "note_text",
+                    "content": "Other collections relating to Henry Olin Cady at Special Collections and University Archives include: \nHenry Olin Cady letters from China, A 194.\n\n\n",
+                    "publish": true
+                }
+            ],
+            "publish": true
+        },
+        {
+            "jsonmodel_type": "note_multipart",
+            "persistent_id": "74c05244fa747e84d25469f179aa3e37",
+            "type": "arrangement",
+            "subnotes": [
+                {
+                    "jsonmodel_type": "note_text",
+                    "content": "Collection is organized into the following series: \n\nSeries I: Correspondence and Manuscripts\nSeries II: Published Materials  \n\n",
+                    "publish": true
+                }
+            ],
+            "publish": true
+        },
+        {
+            "jsonmodel_type": "note_multipart",
+            "persistent_id": "353bfc6242ba374361fcab5697faa2f3",
+            "type": "processinfo",
+            "subnotes": [
+                {
+                    "jsonmodel_type": "note_text",
+                    "content": "Collection processed by processing staff, 2015.\n\nThis collection received a basic level of processing including minimal to no organization and rehousing.\n\nDescription information is drawn in part from information supplied with the collection and initial surveys of the contents. Box lists are generalizations and should be used as a starting point to locate materials. For example, a box labeled \u201ccorrespondence\u201d may contain mostly correspondence, but other materials such as meeting minutes or speeches may be found in the same box. Folder titles are based on those created by the creators or previous custodians. Titles have not all been verified against the contents of the folders. In some cases, staff supplied folder titles during initial processing.\n\nThis finding aid may be updated periodically to account for new acquisitions to the collection and/or revisions in arrangement and description.",
+                    "publish": true
+                }
+            ],
+            "publish": true
+        },
+        {
+            "jsonmodel_type": "note_multipart",
+            "persistent_id": "1708bee610f78c1dee2771646f79e79d",
+            "type": "prefercite",
+            "subnotes": [
+                {
+                    "jsonmodel_type": "note_text",
+                    "content": "[Identification of item], Rockey, Cady Family Missionary papers, Coll 460, Special Collections &amp; University Archives, University of Oregon Libraries, Eugene, Oregon.",
+                    "publish": true
+                }
+            ],
+            "publish": true
+        },
+        {
+            "jsonmodel_type": "note_multipart",
+            "persistent_id": "d34d3dad75356376e864b811443697cb",
+            "type": "acqinfo",
+            "subnotes": [
+                {
+                    "jsonmodel_type": "note_text",
+                    "content": "Donated by Harold (Hal) Rockey, 2006.",
+                    "publish": true
+                }
+            ],
+            "publish": true
+        },
+        {
+            "jsonmodel_type": "note_multipart",
+            "persistent_id": "88e9daf1e2373cac002ec22f45bf1c5e",
+            "type": "userestrict",
+            "rights_restriction": {
+                "local_access_restriction_type": []
+            },
+            "subnotes": [
+                {
+                    "jsonmodel_type": "note_text",
+                    "content": "Property rights reside with Special Collections and University Archives, University of Oregon Libraries. Copyright resides with the creators of the documents or their heirs. All requests for permission to publish collection materials must be submitted to Special Collections and University Archives. The reader must also obtain permission of the copyright holder.",
+                    "publish": true
+                }
+            ],
+            "publish": true
+        },
+        {
+            "jsonmodel_type": "note_multipart",
+            "persistent_id": "6fb3c40fa8bbf7dd107bc66d4d02a3df",
+            "type": "accessrestrict",
+            "rights_restriction": {
+                "local_access_restriction_type": []
+            },
+            "subnotes": [
+                {
+                    "jsonmodel_type": "note_text",
+                    "content": "Collection is open to the public. Collection must be used in Special Collections and University Archives Reading Room. Collection or parts of collection may be stored offsite. Please contact Special Collections and University Archives in advance of your visit to allow for transportation time.",
+                    "publish": true
+                }
+            ],
+            "publish": true
+        },
+        {
+            "jsonmodel_type": "note_multipart",
+            "persistent_id": "f3f960c37bf5d8d88fe14ebad7a9609e",
+            "type": "scopecontent",
+            "subnotes": [
+                {
+                    "jsonmodel_type": "note_text",
+                    "content": "The collection consists of a small section of manuscripts and correspondence, including transcriptions and synopses, of both the Cady and Rockey families as well as a larger collection of published materials collected by the Cady and Rockey families.  The collection was gathered by Harold \"Hal\" Rockey.\n\n\n",
+                    "publish": true
+                }
+            ],
+            "publish": true
+        },
+        {
+            "jsonmodel_type": "note_multipart",
+            "persistent_id": "0437bcd050c84a2b3d136ae5eff34c3d",
+            "type": "bioghist",
+            "subnotes": [
+                {
+                    "jsonmodel_type": "note_text",
+                    "content": "The Rockey and Cady families were American Methodist missionaries to India and China, respectively.  The marriage of Clement Rockey (1889-1975) to Helen Cady links the two families.  Clement Rockey was born in India to Noble Lee Rockey, another Methodist missionary.  He served as a missionary in India before being electing to the Episcopacy of the North India Annual Conference of the Methodist Episcopal Church in 1914.  \n\nHelen Cady was the daughter of Henry Olin Cady (1856-1916) and Hattie Yates, American Methodist Missionaries to China. She is the author of stories and books including The Promise, a collection of stories adapted from the Souther Asia Methosidst Centenary Celebrations pageant of 1956.\n\nClement and Helen Cady Rockey had three sons, Harold \"Hal\" Rockey (1927-2009), Kenneth Rockey, and Lee Rockey. ",
+                    "publish": true
+                }
+            ],
+            "publish": true
+        }
+    ],
+    "metadata_rights_declarations": [],
+    "uri": "/repositories/2/resources/3593",
+    "repository": {
+        "ref": "/repositories/2"
+    },
+    "user_defined": {
+        "lock_version": 0,
+        "boolean_1": false,
+        "boolean_2": false,
+        "boolean_3": false,
+        "string_1": "983765186",
+        "string_2": "99900416484301852",
+        "created_by": "alexmueller",
+        "last_modified_by": "alexmueller",
+        "create_time": "2020-05-07T23:05:08Z",
+        "system_mtime": "2020-05-07T23:05:08Z",
+        "user_mtime": "2020-05-07T23:05:08Z",
+        "jsonmodel_type": "user_defined",
+        "repository": {
+            "ref": "/repositories/2"
+        },
+        "enum_1": "No digital records"
+    },
+    "tree": {
+        "ref": "/repositories/2/resources/3593/tree"
+    },
+    "repository_processing_note": "| New Material Recieved"
+}

@@ -131,7 +131,7 @@
         },
         {
             "jsonmodel_type": "note_multipart",
-            "label": "Content Description",
+            "label": "",
             "type": "scopecontent",
             "subnotes": [
                 {

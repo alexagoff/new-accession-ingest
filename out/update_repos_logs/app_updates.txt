@@ -1,2 +1,87 @@
 line #'s and ID #'s are reffering to input csv lines.
 
+
+--------------2024-02-13 09:18:23.491907--------------
+
+--------------2024-02-13 09:22:12.694386--------------
+
+--------------2024-02-13 09:22:50.828619--------------
+
+--------------2024-02-13 09:24:02.599264--------------
+ID 169: Posted new resource with URI repositories/2/resources/9641.
+
+--------------2024-02-13 09:29:19.134478--------------
+
+--------------2024-02-13 09:36:38.266322--------------
+
+--------------2024-02-13 09:36:55.154435--------------
+
+--------------2024-02-13 09:37:38.322697--------------
+ID 169: Posted new resource with URI repositories/2/resources/9642.
+
+--------------2024-02-13 09:40:14.817854--------------
+ID 169: Posted new resource with URI repositories/2/resources/9643.
+
+--------------2024-02-13 09:42:35.556924--------------
+ID 166: Succesfully updated accession repositories/2/accessions/8761, linking it with resource repositories/2/resources/1964.
+ID 166: Created an event.
+ID 166: Succesfully updated resource repositories/2/resources/1964
+ID 167: Succesfully updated accession repositories/2/accessions/8762, linking it with resource repositories/2/resources/9537.
+ID 167: Created an event.
+ID 167: Succesfully updated resource repositories/2/resources/9537
+ID 168: Succesfully updated accession repositories/2/accessions/8763, linking it with resource repositories/2/resources/3593.
+ID 168: Created an event.
+
+--------------2024-02-13 09:43:50.995526--------------
+ID 166: Succesfully updated accession repositories/2/accessions/8761, linking it with resource repositories/2/resources/1964.
+ID 166: Created an event.
+ID 166: Succesfully updated resource repositories/2/resources/1964
+ID 167: Succesfully updated accession repositories/2/accessions/8762, linking it with resource repositories/2/resources/9537.
+ID 167: Created an event.
+ID 167: Succesfully updated resource repositories/2/resources/9537
+ID 168: Succesfully updated accession repositories/2/accessions/8763, linking it with resource repositories/2/resources/3593.
+ID 168: Created an event.
+
+--------------2024-02-13 09:46:27.170073--------------
+ID 166: Succesfully updated accession repositories/2/accessions/8761, linking it with resource repositories/2/resources/1964.
+ID 166: Created an event.
+ID 166: Succesfully updated resource repositories/2/resources/1964
+ID 167: Succesfully updated accession repositories/2/accessions/8762, linking it with resource repositories/2/resources/9537.
+ID 167: Created an event.
+ID 167: Succesfully updated resource repositories/2/resources/9537
+ID 168: Succesfully updated accession repositories/2/accessions/8763, linking it with resource repositories/2/resources/3593.
+ID 168: Created an event.
+
+--------------2024-02-13 09:53:38.555777--------------
+ID 166: Succesfully updated accession repositories/2/accessions/8761, linking it with resource repositories/2/resources/1964.
+ID 166: Created an event.
+
+--------------2024-02-13 09:53:51.859220--------------
+ID 166: Succesfully updated accession repositories/2/accessions/8761, linking it with resource repositories/2/resources/1964.
+ID 166: Created an event.
+ID 166: Succesfully updated resource repositories/2/resources/1964
+ID 167: Succesfully updated accession repositories/2/accessions/8762, linking it with resource repositories/2/resources/9537.
+ID 167: Created an event.
+ID 167: Succesfully updated resource repositories/2/resources/9537
+ID 168: Succesfully updated accession repositories/2/accessions/8763, linking it with resource repositories/2/resources/3593.
+ID 168: Created an event.
+
+--------------2024-02-13 09:54:58.155202--------------
+ID 166: Succesfully updated accession repositories/2/accessions/8761, linking it with resource repositories/2/resources/1964.
+ID 166: Created an event.
+ID 166: Succesfully updated resource repositories/2/resources/1964
+ID 167: Succesfully updated accession repositories/2/accessions/8762, linking it with resource repositories/2/resources/9537.
+ID 167: Created an event.
+ID 167: Succesfully updated resource repositories/2/resources/9537
+ID 168: Succesfully updated accession repositories/2/accessions/8763, linking it with resource repositories/2/resources/3593.
+ID 168: Created an event.
+
+--------------2024-02-13 09:55:29.959973--------------
+ID 166: Succesfully updated accession repositories/2/accessions/8761, linking it with resource repositories/2/resources/1964.
+ID 166: Created an event.
+ID 166: Succesfully updated resource repositories/2/resources/1964
+ID 167: Succesfully updated accession repositories/2/accessions/8762, linking it with resource repositories/2/resources/9537.
+ID 167: Created an event.
+ID 167: Succesfully updated resource repositories/2/resources/9537
+ID 168: Succesfully updated accession repositories/2/accessions/8763, linking it with resource repositories/2/resources/3593.
+ID 168: Created an event.

@@ -115,7 +115,7 @@ def latest_id1(curr_yr):
 
 # check if repository exists with info from an accession
 def repo_exists(name, identifier):
-    ''' This function identifies if a repository exists matching the keywords from an 
+    ''' This function identifies if a resource exists matching the keywords from an 
     accession.
     input: name, str - the title of an accession
            identifier, str - the identifier (like 'coll 122') of an accession

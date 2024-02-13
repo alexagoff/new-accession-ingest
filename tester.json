@@ -73,7 +73,7 @@
     "deaccessions": [],
     "related_accessions": [
         {
-            "ref": "/repositories/2/accessions/8756"
+            "ref": "/repositories/2/accessions/8764"
         }
     ],
     "classifications": [],
@@ -84,7 +84,7 @@
             "subnotes": [
                 {
                     "jsonmodel_type": "note_text",
-                    "content": "",
+                    "content": "[Identification of item], Anarchist publications, ephemera, and AV material, Coll 999, Special Collections and University Archives, University of Oregon Libraries, Eugene, Oregon.",
                     "publish": true
                 }
             ],
@@ -105,7 +105,7 @@
             "subnotes": [
                 {
                     "jsonmodel_type": "note_text",
-                    "content": "Add this note to meet minimum requirements.",
+                    "content": "Gift of Otte, Cooper, 2023.",
                     "publish": false
                 }
             ],
@@ -127,12 +127,12 @@
         },
         {
             "jsonmodel_type": "note_multipart",
-            "label": "Content Description",
+            "label": "",
             "type": "scopecontent",
             "subnotes": [
                 {
                     "jsonmodel_type": "note_text",
-                    "content": "",
+                    "content": "Journals and newsletters such as Earth First! (we'll need to check against our holdings in the Oregon Collection), ephemeral newsletters, booklets, book, published music in cassette, CD, video in DVD. Music may be scarce. ",
                     "publish": false
                 }
             ],
@@ -173,5 +173,6 @@
     },
     "tree": {
         "ref": ""
-    }
+    },
+    "finding_aid_status": "in_progress"
 }

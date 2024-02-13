@@ -8,6 +8,7 @@ import datetime
 import pandas as pd
 
 # log for when I post new updates accessions, updated resources, updates events
+# if I want to run update id_0 to different things (except 1000)if I want to run
 
 # edit line below to manually enter a .csv 
 filename = './out/posted_accessions.csv' 
@@ -30,9 +31,6 @@ def main():
     df = pd.read_csv(filename)
     # going through lines of input csv
     for index, row in df.iterrows():
-        # trying to only run ID 169
-        if str(row["ID"]) != '169':
-            continue
         # if a matching repository was found for this row
         if row["Resource Found?"] == "Yes":
             # get the json body for this accession
@@ -87,6 +85,12 @@ def main():
                                 if str(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"]).replace('.', '', 1).isdigit() == True:
                                     if float(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"]) != 0:
                                         found_resource["user_defined"]["enum_1"] = "To be staged, no description"
+                            #with open("tester1.json", "w") as file:
+                            #    json.dump(found_resource, file, indent = 4 ) 
+                            if "collection_management" in found_resource:
+                                found_resource["collection_management"] = {}
+                            with open("tester1.json", "w") as file:
+                                json.dump(found_resource, file, indent = 4 ) 
                             found_resource["collection_management"]["processing_status"] = "New material recieved"
                             post_rec = functions.accupdate('/'+row["Found Collection URI (of first match):"], found_resource)
                             if "error" in post_rec:
@@ -95,6 +99,8 @@ def main():
                                 errors_runs.append(str(row["ID"]))
                             # everything ran successfully!
                             else:
+                                #with open("tester1.json", "w") as file:
+                                #    json.dump(posted_rec, file, indent = 4 ) 
                                 applog.write("ID " + str(row["ID"]) + ": Succesfully updated resource " + str(row["Found Collection URI (of first match):"])+"\n")
                                 successful_runs.append(str(row["ID"]))
 
@@ -107,10 +113,18 @@ def main():
             jsonData["title"] = row["Collection name:"]
             jsonData["finding_aid_title"] = "Guide to the " + row["Collection name:"]
             jsonData["finding_aid_filing_title"] = row["Collection name:"]
+            jsonData["finding_aid_status"] = "in_progress"
             jsonData["id_0"] = row["Found Collection Identifier:"]
             jsonData["related_accessions"][0]["ref"] = '/' + row["Created Accession URI:"]
-            jsonData["notes"][0]["subnotes"][0]["content"] = "" #ASK
-            jsonData["notes"][4]["subnotes"][0]["content"] = ""
+            jsonData["notes"][0]["subnotes"][0]["content"] = "[Identification of item], " + row["Collection name:"]+ ", " + row["Found Collection Identifier:"]+", Special Collections and University Archives, University of Oregon Libraries, Eugene, Oregon." 
+            # acq info 
+            found_accession = functions.accget_jsondata(row["Created Accession URI:"])
+            if "error" in found_accession:
+                print("error in pulling")
+                continue
+            else:
+                jsonData["notes"][2]["subnotes"][0]["content"] = found_accession["provenance"]
+            jsonData["notes"][4]["subnotes"][0]["content"] = found_accession["content_description"]
             # 'extents' logic
             # if its a physical item 
             if ((str(row["Estimated physical extent (linear feet):"])).lower() != "nan"):
