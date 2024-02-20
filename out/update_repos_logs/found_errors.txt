@@ -76,3 +76,15 @@ ID 169: Unable to post new resource. Error message below:
 --------------2024-02-13 10:44:53.256529--------------
 
 --------------2024-02-13 10:45:03.479904--------------
+
+--------------2024-02-19 14:54:43.404826--------------
+
+--------------2024-02-19 14:55:11.144446--------------
+
+--------------2024-02-19 15:01:01.801934--------------
+ID 177: Unable to post new resource. Error message below:
+		{'error': {'id_0': ['That ID is already in use']}}
+ID 178: Unable to post new resource. Error message below:
+		{'error': {'id_0': ['That ID is already in use']}}
+ID 179: Unable to post new resource. Error message below:
+		{'error': {'id_0': ['That ID is already in use']}}

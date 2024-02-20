@@ -28,6 +28,7 @@ How To Use:
 - you will need to install openpyxl if you intend to use .xlsx file as input instead of .csv for new_accessions.py
 - go onto UO vpn
 - run new_accessions.py ('input' can be .csv or .xlsx type)
+  (it might take a couple minutes to run)
   - do either:
     - python new_accessions.py ~/path/to/input (e.g. ~/Desktop/folder/input)
     - python new_accessions.py (without argument) if path to input is manually entered in new_accessions.py (line 15).

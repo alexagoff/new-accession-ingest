@@ -203,3 +203,43 @@ ID 168: Created an event.
 ID 168: Succesfully updated accession repositories/2/accessions/8763, linking it with resource repositories/2/resources/3593.
 ID 168: Created an event.
 ID 168: Succesfully updated resource repositories/2/resources/3593
+
+--------------2024-02-19 14:54:43.404826--------------
+
+--------------2024-02-19 14:55:11.144446--------------
+ID 170: Succesfully updated accession repositories/2/accessions/8766, linking it with resource repositories/2/resources/3284.
+ID 170: Created an event.
+ID 170: Succesfully updated resource repositories/2/resources/3284
+ID 171: Succesfully updated accession repositories/2/accessions/8767, linking it with resource repositories/2/resources/2621.
+ID 171: Created an event.
+ID 171: Succesfully updated resource repositories/2/resources/2621
+ID 172: Succesfully updated accession repositories/2/accessions/8768, linking it with resource repositories/2/resources/3525.
+ID 172: Created an event.
+ID 172: Succesfully updated resource repositories/2/resources/3525
+ID 173: Succesfully updated accession repositories/2/accessions/8769, linking it with resource repositories/2/resources/3383.
+ID 173: Created an event.
+ID 173: Succesfully updated resource repositories/2/resources/3383
+
+--------------2024-02-19 15:01:01.801934--------------
+ID 170: Succesfully updated accession repositories/2/accessions/8766, linking it with resource repositories/2/resources/3284.
+ID 170: Created an event.
+ID 170: Succesfully updated resource repositories/2/resources/3284
+ID 171: Succesfully updated accession repositories/2/accessions/8767, linking it with resource repositories/2/resources/2621.
+ID 171: Created an event.
+ID 171: Succesfully updated resource repositories/2/resources/2621
+ID 172: Succesfully updated accession repositories/2/accessions/8768, linking it with resource repositories/2/resources/3525.
+ID 172: Created an event.
+ID 172: Succesfully updated resource repositories/2/resources/3525
+ID 173: Succesfully updated accession repositories/2/accessions/8769, linking it with resource repositories/2/resources/3383.
+ID 173: Created an event.
+ID 173: Succesfully updated resource repositories/2/resources/3383
+ID 174: Posted new resource with URI repositories/2/resources/9645.
+ID 175: Succesfully updated accession repositories/2/accessions/8771, linking it with resource repositories/2/resources/9582.
+ID 175: Created an event.
+ID 175: Succesfully updated resource repositories/2/resources/9582
+ID 176: Succesfully updated accession repositories/2/accessions/8772, linking it with resource repositories/2/resources/9313.
+ID 176: Created an event.
+ID 176: Succesfully updated resource repositories/2/resources/9313
+ID 180: Succesfully updated accession repositories/2/accessions/8776, linking it with resource repositories/2/resources/3329.
+ID 180: Created an event.
+ID 180: Succesfully updated resource repositories/2/resources/3329

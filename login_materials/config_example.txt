@@ -1,5 +1,5 @@
 username = ""
 password = ""
-aspacebaseurl = ""
+aspacebaseurl = "https://archives.uoregon.edu/api/"
 almabaseurl = ""
 almaapikey = ""

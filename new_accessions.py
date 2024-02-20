@@ -45,40 +45,6 @@ str_day = str(todays_date.day)
 
 # send output csv to alexa through email (i don't know if this is something I want to do atm) - later
 
-def find_inputs():
-    ''' this function takes inputs dictating the constraints of what 
-    ID's in the input csv will be run.
-
-    Input: none
-    output:
-        x = the lower constraint x <= lowest ID #
-        y = the higher constraint y >= highest ID #
-    '''
-    x = 0
-    y = 0
-
-    print("\nThis program runs any amount of *consecutive* IDs on an inputted 'new accessions' form file.\n\n   ----->  If start = 150 and end = 151, only ID # 150 and 151 will be ran.\n")
-    while(1):
-        begin = input("\nStart ID: ")
-        if not begin.strip().isdigit():
-            print("please enter a number containing characters 1-9.")
-        else:
-            x = int(begin.strip())
-            break
-        
-    while(1):
-        endd = input("\nEnd ID: ")
-        if not endd.strip().isdigit():
-            print("please enter a number containing characters 1-9.")
-        elif int(endd.strip()) < int(begin.strip()):
-            print("ending ID must be greater or equal to beginning ID.")
-        else:
-            y = int(endd.strip())
-            break
-    print("\n\n")
-
-    return x, y
-
 
 def fill_data(pandas_csv, start_num, end_num, id_1_num):
     ''' this function fills a json file for each line from 
@@ -175,8 +141,8 @@ def fill_data(pandas_csv, start_num, end_num, id_1_num):
                     jsonData[name] = True
             
             elif name == "id_0":
-                jsonData[name] = str_year[-2:] #commented out for testing files
-                #jsonData[name] = "25"
+                #jsonData[name] = str_year[-2:] #commented out for testing files
+                jsonData[name] = "25"
             
             elif name == "id_1":
                 jsonData[name] = id_1_num
@@ -414,7 +380,7 @@ def main():
     Errors: exit with failure if id_1 number can't be found.  
     '''
     # input loop for asking user what ID they would like to start and end on. 
-    retstartend = find_inputs()
+    retstartend = functions.find_inputs("\nThis program runs any amount of *consecutive* IDs on an inputted 'new accessions' form file.\n\n   ----->  If start = 150 and end = 151, only ID # 150 and 151 will be ran.\n")
     start, end = retstartend
 
     # checking if input file is .xlsx type
@@ -424,23 +390,26 @@ def main():
         df1.to_csv('./newfile.csv', index=False)
         filename = './newfile.csv'
     df = pd.read_csv(filename)
+    # deleting temporary file
+    if os.path.exists('./newfile.csv'):
+        os.remove('./newfile.csv')
 
     # writing new column headers to output csv's
     data_top = list(df.head())
     data_top.insert(0, "Resource Found?")
-    data_top.append("Created Accession URI:") # should i have this?
-    data_top.append("Number of found results:") # if resource for accession exists n>0
-    data_top.append("Found Collection Title:") # the title of existing collection of first match 
-    data_top.append("Found Collection Identifier:") # if repo exists
-    data_top.append("Found Collection URI (of first match):") # if repo exists
+    data_top.append("Created Accession URI:") 
+    data_top.append("Number of found results:")
+    data_top.append("Found Collection Title:") 
+    data_top.append("Found Collection Identifier:") 
+    data_top.append("Found Collection URI (of first match):")
     csv_writer.writerow(data_top)
     now = datetime.datetime.now()
     errorlog.write("\n--------------" + str(now) + "--------------\n")
     applog.write("\n--------------" + str(now) + "--------------\n")
 
     # finding id_1 number 
-    #id_1 = functions.latest_id1("2025") # CHANGE supposed to be (str_year) as parameter but testing with something else.  
-    id_1 = functions.latest_id1(str_year)
+    id_1 = functions.latest_id1("2025") # CHANGE supposed to be (str_year) as parameter but testing with something else.  
+    #id_1 = functions.latest_id1(str_year)
 
     tmp = ""
     # handling errors in finding id_1 below -- more info in functions.py
@@ -465,9 +434,9 @@ def main():
     else:
         run_list.sort()
         if len(errorlis) != 0:
-            print("\nRan program successfully!\n\tLook for more information on this run in accessions_no.csv, accessions_yes.csv, errorlog.txt and applog.txt.\n\n\tRAN ID's:", run_list, "\n\tERROR ID's (not on output csv's):", errorlis, "\n")
+            print("\nRan program successfully!\n\tLook for more information on this run in out/posted_accessions.csv, out/new_accessions_logs/errorlog.txt and out/new_accessions_logs/applog.txt.\n\n\tSUCCESSFUL RUNS:", run_list, "\n\tERROR RUNS (not on output csv's):", errorlis, "\n")
         else:
-            print("\nRan program successfully!\n\tLook for more information on this run in accessions_no.csv, accessions_yes.csv, errorlog.txt and applog.txt.\n\n\tRAN ID's:", run_list, "\n\tNo errors in posting or getting.\n")
+            print("\nRan program successfully!\n\tLook for more information on this run in out/posted_accessions.csv, out/new_accessions_logs/errorlog.txt and out/new_accessions_logs/applog.txt.\n\n\tSUCCESSFUL RUNS:", run_list, "\n\tNo errors in posting or getting.\n")
     
     return 0
 

@@ -25,14 +25,18 @@ def main():
     errlog.write("\n--------------" + str(now) + "--------------\n")
     applog.write("\n--------------" + str(now) + "--------------\n")
 
+    check = input("\nWould you like to run all ID's? (yes/no): ")
+    if check.strip().lower() == "yes":
+        
+    retstartend = functions.find_inputs("\nThis runs any number of consecutive ID's from out/posted_accessions.csv\n")
+    start, end = retstartend
+
     successful_runs = []
     errors_runs = []
 
     df = pd.read_csv(filename)
     # going through lines of input csv
     for index, row in df.iterrows():
-        if str(row["ID"]) != "168":
-            continue
         # if a matching repository was found for this row
         if row["Resource Found?"] == "Yes":
             # get the json body for this accession
@@ -105,9 +109,6 @@ def main():
                                 errors_runs.append(str(row["ID"]))
                             # everything ran successfully!
                             else:
-                                test_thing = functions.accget_jsondata(row["Found Collection URI (of first match):"])
-                                with open("testbee.json", "w") as file:
-                                    json.dump(test_thing, file, indent = 4 )
                                 applog.write("ID " + str(row["ID"]) + ": Succesfully updated resource " + str(row["Found Collection URI (of first match):"])+"\n")
                                 successful_runs.append(str(row["ID"]))
 
@@ -117,13 +118,13 @@ def main():
             with open("./extra_materials/resourcetemplate.json", "r") as file:
                 jsonData = json.load(file)
             # filling with data from csv
-            jsonData["title"] = row["Collection name:"]
-            jsonData["finding_aid_title"] = "Guide to the " + row["Collection name:"]
-            jsonData["finding_aid_filing_title"] = row["Collection name:"]
+            jsonData["title"] = str(row["Collection name:"])
+            jsonData["finding_aid_title"] = "Guide to the " + str(row["Collection name:"])
+            jsonData["finding_aid_filing_title"] = str(row["Collection name:"])
             jsonData["finding_aid_status"] = "in_progress"
-            jsonData["id_0"] = row["Found Collection Identifier:"]
-            jsonData["related_accessions"][0]["ref"] = '/' + row["Created Accession URI:"]
-            jsonData["notes"][0]["subnotes"][0]["content"] = "[Identification of item], " + row["Collection name:"]+ ", " + row["Found Collection Identifier:"]+", Special Collections and University Archives, University of Oregon Libraries, Eugene, Oregon." 
+            jsonData["id_0"] = str(row["Found Collection Identifier:"])
+            jsonData["related_accessions"][0]["ref"] = '/' + str(row["Created Accession URI:"])
+            jsonData["notes"][0]["subnotes"][0]["content"] = "[Identification of item], " + str(row["Collection name:"]) + ", " + str(row["Found Collection Identifier:"]) +", Special Collections and University Archives, University of Oregon Libraries, Eugene, Oregon." 
             # acq info 
             found_accession = functions.accget_jsondata(row["Created Accession URI:"])
             if "error" in found_accession:
@@ -131,8 +132,8 @@ def main():
                 errlog.write("\t\t" + str(found_accession) + "\n")
                 errors_runs.append(str(row["ID"]))
             else:
-                jsonData["notes"][2]["subnotes"][0]["content"] = found_accession["provenance"]
-                jsonData["notes"][4]["subnotes"][0]["content"] = found_accession["content_description"]
+                jsonData["notes"][2]["subnotes"][0]["content"] = str(found_accession["provenance"])
+                jsonData["notes"][4]["subnotes"][0]["content"] = str(found_accession["content_description"])
                 # 'extents' logic
                 # if its a physical item 
                 if ((str(row["Estimated physical extent (linear feet):"])).lower() != "nan"):
@@ -237,7 +238,7 @@ def main():
                         successful_runs.append(row["ID"])
 
     # terminal message
-    print("\nRan program successfully!\n\tLook for more information on this run in app_updates.txt and found_errors.txt\n\n\tRAN ID's:", successful_runs, "\n\tERROR ID's:", errors_runs, "\n") 
+    print("\nRan program successfully!\n\tLook for more information on this run in out/update_repos_logs/app_updates.txt and out/update_repos_logs/found_errors.txt\n\n\tSUCCESSFUL RUNS:", successful_runs, "\n\tERROR RUNS:", errors_runs, "\n") 
     
     return 0
 

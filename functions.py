@@ -251,3 +251,37 @@ def match_dates(match_string, str_year):
     if found == False:
         return 0
 
+# find inputs for begin and end ID's
+def find_inputs(string_print):
+    ''' this function takes inputs dictating the constraints of what 
+    ID's in the input csv will be run.
+
+    Input: none
+    output:
+        x = the lower constraint x <= lowest ID #
+        y = the higher constraint y >= highest ID #
+    '''
+    x = 0
+    y = 0
+
+    print(string_print)
+    while(1):
+        begin = input("\nStart ID: ")
+        if not begin.strip().isdigit():
+            print("please enter a number containing characters 1-9.")
+        else:
+            x = int(begin.strip())
+            break
+        
+    while(1):
+        endd = input("\nEnd ID: ")
+        if not endd.strip().isdigit():
+            print("please enter a number containing characters 1-9.")
+        elif int(endd.strip()) < int(begin.strip()):
+            print("ending ID must be greater or equal to beginning ID.")
+        else:
+            y = int(endd.strip())
+            break
+    print("\n\n")
+
+    return x, y
