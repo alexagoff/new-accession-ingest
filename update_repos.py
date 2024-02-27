@@ -20,23 +20,44 @@ err = "./out/update_repos_logs/found_errors.txt"
 applog = open(app, "a")
 errlog = open(err, "a")
 
-def main():
-    now = str(datetime.datetime.now())
-    errlog.write("\n--------------" + str(now) + "--------------\n")
-    applog.write("\n--------------" + str(now) + "--------------\n")
 
-    check = input("\nWould you like to run all ID's? (yes/no): ")
-    if check.strip().lower() == "yes":
-        
-    retstartend = functions.find_inputs("\nThis runs any number of consecutive ID's from out/posted_accessions.csv\n")
-    start, end = retstartend
+def check_update_input():
+    yes_run = True
+    start = 0
+    end = 0
 
+    while(1):
+        check = input("\nWould you like to run all ID's? (yes/no): ")
+        if check.strip().lower() == "no":    
+            start, end = functions.find_inputs("\nThis runs any number of consecutive ID's from out/posted_accessions.csv\n")
+            yes_run = False
+            break
+        elif check.strip().lower() == "yes":
+            break
+        # invalid input
+        else:
+            print("\ninvalid input. try again.\n")
+    
+    return start, end, yes_run
+     
+                
+def acc_to_resource(if_run_all, now, start=None, end=None,):
+    '''
+    start and end are optional parameters
+    '''
     successful_runs = []
     errors_runs = []
 
     df = pd.read_csv(filename)
     # going through lines of input csv
     for index, row in df.iterrows():
+        # checking if within frame
+        if if_run_all == False:
+            if int(row["ID"]) < start:
+                continue  
+            elif int(row["ID"]) > end:
+                continue
+
         # if a matching repository was found for this row
         if row["Resource Found?"] == "Yes":
             # get the json body for this accession
@@ -236,6 +257,22 @@ def main():
                         resource_uri = posted_rec['uri'][1:]
                         applog.write("ID " + str(row["ID"]) + ": Posted new resource with URI " + str(resource_uri) + ".\n")
                         successful_runs.append(row["ID"])
+    
+    return errors_runs, successful_runs
+
+
+def main():
+    now = str(datetime.datetime.now())
+    errlog.write("\n--------------" + str(now) + "--------------\n")
+    applog.write("\n--------------" + str(now) + "--------------\n")
+
+    start, end, if_run_all = check_update_input()
+
+    # calling function to put each accession into a resource
+    if if_run_all == False:
+        errors_runs, successful_runs = acc_to_resource(if_run_all, now, start, end)
+    else:
+        errors_runs, successful_runs = acc_to_resource(if_run_all, now)
 
     # terminal message
     print("\nRan program successfully!\n\tLook for more information on this run in out/update_repos_logs/app_updates.txt and out/update_repos_logs/found_errors.txt\n\n\tSUCCESSFUL RUNS:", successful_runs, "\n\tERROR RUNS:", errors_runs, "\n") 

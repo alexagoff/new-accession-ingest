@@ -12,7 +12,7 @@ import re
 
 
 # edit line below to manually enter a .csv 
-filename = './test2.csv' 
+filename = "~/Desktop/Form.xlsx" 
 if len(sys.argv) > 1:
     filename = sys.argv[1]
 csvOut = "./out/posted_accessions.csv"
