@@ -243,3 +243,6 @@ ID 176: Succesfully updated resource repositories/2/resources/9313
 ID 180: Succesfully updated accession repositories/2/accessions/8776, linking it with resource repositories/2/resources/3329.
 ID 180: Created an event.
 ID 180: Succesfully updated resource repositories/2/resources/3329
+
+--------------2024-02-27 10:16:43.349170--------------
+ID 181: Posted new resource with URI repositories/2/resources/9646.

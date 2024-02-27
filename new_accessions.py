@@ -12,7 +12,7 @@ import re
 
 
 # edit line below to manually enter a .csv 
-filename = './test2.csv' 
+filename = '~/Desktop/new_accns/upload.csv' 
 if len(sys.argv) > 1:
     filename = sys.argv[1]
 csvOut = "./out/posted_accessions.csv"
@@ -389,7 +389,7 @@ def main():
         df1 = pd.read_excel(filename, sheet_name=0, header=0)
         df1.to_csv('./newfile.csv', index=False)
         filename = './newfile.csv'
-    df = pd.read_csv(filename)
+    df = pd.read_csv(filename, encoding='mac_roman')
     # deleting temporary file
     if os.path.exists('./newfile.csv'):
         os.remove('./newfile.csv')
@@ -435,9 +435,9 @@ def main():
         run_list.sort()
         if len(errorlis) != 0:
             print("\nRan program successfully!\n\tLook for more information on this run in out/posted_accessions.csv, out/new_accessions_logs/errorlog.txt and out/new_accessions_logs/applog.txt.\n\n\tSUCCESSFUL RUNS:", run_list, "\n\tERROR RUNS (not on output csv's):", errorlis, "\n")
-            print("TODO : update 'Found Collection Indentifier' column in posted_accessions.csv)
         else:
             print("\nRan program successfully!\n\tLook for more information on this run in out/posted_accessions.csv, out/new_accessions_logs/errorlog.txt and out/new_accessions_logs/applog.txt.\n\n\tSUCCESSFUL RUNS:", run_list, "\n\tNo errors in posting or getting.\n")
+            print("TODO : update 'Found Collection Indentifier' column in posted_accessions.csv")
     
     return 0
 
