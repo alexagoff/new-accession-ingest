@@ -118,9 +118,3 @@ ID 177: Posted new accession with URI repositories/2/accessions/8773.
 ID 178: Posted new accession with URI repositories/2/accessions/8774.
 ID 179: Posted new accession with URI repositories/2/accessions/8775.
 ID 180: Posted new accession with URI repositories/2/accessions/8776.
-
---------------2024-02-23 00:03:14.391924--------------
-ID 166: Posted new accession with URI repositories/2/accessions/8777.
-ID 167: Posted new accession with URI repositories/2/accessions/8778.
-ID 168: Posted new accession with URI repositories/2/accessions/8779.
-ID 169: Posted new accession with URI repositories/2/accessions/8780.
