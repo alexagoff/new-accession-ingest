@@ -25,6 +25,7 @@ How To Use:
   updating with your own information 
 - you will need the pandas module, so if you haven't installed it already,
   you can by following the instructions here https://pandas.pydata.org/docs/getting_started/install.html
+- you will need to also install asnake and regex
 - you will need to install openpyxl if you intend to use .xlsx file as input instead of .csv for new_accessions.py
 - go onto UO vpn
 - run new_accessions.py ('input' can be .csv or .xlsx type)
