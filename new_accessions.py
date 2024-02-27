@@ -435,6 +435,7 @@ def main():
         run_list.sort()
         if len(errorlis) != 0:
             print("\nRan program successfully!\n\tLook for more information on this run in out/posted_accessions.csv, out/new_accessions_logs/errorlog.txt and out/new_accessions_logs/applog.txt.\n\n\tSUCCESSFUL RUNS:", run_list, "\n\tERROR RUNS (not on output csv's):", errorlis, "\n")
+            print("TODO : update 'Found Collection Indentifier' column in posted_accessions.csv)
         else:
             print("\nRan program successfully!\n\tLook for more information on this run in out/posted_accessions.csv, out/new_accessions_logs/errorlog.txt and out/new_accessions_logs/applog.txt.\n\n\tSUCCESSFUL RUNS:", run_list, "\n\tNo errors in posting or getting.\n")
     
