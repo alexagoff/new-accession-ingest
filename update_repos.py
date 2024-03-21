@@ -1,6 +1,14 @@
-import json 
-import csv
-import os 
+################################################
+# update_repos.py                              #
+#                                              #
+# This file is ran after the new_accessions    #
+# file. It goes through the posted_accesssions #
+# file and connects accessions to existing or  #
+# created resources.                           #
+#                                              #
+################################################
+
+import json  
 import re
 import functions
 import sys
@@ -8,13 +16,9 @@ from datetime import date
 import datetime
 import pandas as pd
 
-# log for when I post new updates accessions, updated resources, updates events
-# if I want to run update id_0 to different things (except 1000)if I want to run
 
 # edit line below to manually enter a .csv 
 filename = './out/posted_accessions.csv' 
-if len(sys.argv) > 1:
-    filename = sys.argv[1]
 app = "./out/update_repos_logs/app_updates.txt"
 err = "./out/update_repos_logs/found_errors.txt"
 

@@ -28,7 +28,7 @@ if not os.path.exists(app):
 
 errorlog = open(err, "a")
 applog = open(app, "a")
-outy = open(csvOut, 'w')
+outy = open(csvOut, 'w', encoding="utf-8")
 csv_writer = csv.writer(outy)
 
 # writing first lines of app and err logs if new
@@ -66,9 +66,10 @@ def fill_data(pandas_csv, start_num, end_num, id_1_num):
     #curr_acc = int(ex.read())
     #ex.close()
 
-    run_list = []
-    errors_list = []
-    lines_looped = 0
+    run_list = [] # successful runs
+    err_lis = [] # errors in successful runs
+    errors_list = [] # error runs
+    lines_looped = 0 # the amount of lines looped
     extents_message = ""
 
     # going through each line of csv
@@ -80,10 +81,6 @@ def fill_data(pandas_csv, start_num, end_num, id_1_num):
         elif int(row["ID"]) > end_num:
             continue
         
-        run_list.append(int(row["ID"]))
-        # copying old .json template to new .json file that we are editing
-        #shutil.copy('./extra_materials/jsontemplate.json', 'newaccession.json')
-        
         # getting jsonData from template .json file
         jsonData = None
         title_name = '' # stores title name 
@@ -94,15 +91,15 @@ def fill_data(pandas_csv, start_num, end_num, id_1_num):
         # going through each line of .json file 
         # filling out with info from current line of csv
         for name in jsonData:  
-            # normal purposes CHANGE
+            # TESTING PURPOSES
             '''
             # for testing
             if name == "title":
-                jsonData[name] = 'NEW ROUND TEST ACCESIONS ' + str(curr_acc)
+                jsonData[name] = 'NEW ROUND TEST ACCESIONS'
                 title_name = jsonData[name]
-                curr_acc+=1
             
             '''
+            # normal purposes
             if (name == "title") and ((row["Collection name:"]).lower() != "nan"):
                 titlename = row["Collection name:"]
                 # hard-code getting rid of possible parenthesis in title
@@ -153,8 +150,8 @@ def fill_data(pandas_csv, start_num, end_num, id_1_num):
                     jsonData[name] = True
             
             elif name == "id_0":
-                #jsonData[name] = str_year[-2:] #commented out for testing files
-                jsonData[name] = "25"
+                #jsonData[name] = str_year[-2:] # normal purposes
+                jsonData[name] = "25" # TESTING PURPOSES
             
             elif name == "id_1":
                 jsonData[name] = id_1_num
@@ -275,16 +272,12 @@ def fill_data(pandas_csv, start_num, end_num, id_1_num):
                 else:
                     jsonData[name][0]["date_type"] = "inclusive"  
                     errorlog.write("ID " + str(row["ID"]) + ": Unable to match date.\n")
-        
-        # copying to new .json file - not necessary, just post it onto aspace. 
-        #with open("newaccession.json", "w") as file:
-        #    json.dump(jsonData, file, indent = 4 ) 
 
         # checking if it won't be able to post because of 'extents'field
         if extents_message != "":
             errorlog.write("ID " + str(row["ID"]) + ": " + extents_message + "\n")
-        errors_list, id_1_num = post_and_check(jsonData, row, errors_list, int(id_1_num), title_name)
-        
+        errors_list, run_list, id_1_num, err_lis = post_and_check(jsonData, row, errors_list, int(id_1_num), title_name, run_list, err_lis)
+
         # making id_1 a str again
         tmp_id_1 = id_1_num
         if 10 <= tmp_id_1 < 999:
@@ -295,18 +288,11 @@ def fill_data(pandas_csv, start_num, end_num, id_1_num):
         time.sleep(1)
         extents_message = ""
         lines_looped +=1
-        
-    # *TEST* writing the number of tests already done in testacc_num.txt CHANGE
-    #f = open('testacc_num.txt', 'w')
-    #f.seek(0)
-    #f.write(str(curr_acc))
-    #f.truncate()
-    #f.close()
 
-    return lines_looped, run_list, errors_list
+    return lines_looped, run_list, errors_list, err_lis
 
 
-def post_and_check(tmpjson, curr_row, curr_errors, curr_id, namet):
+def post_and_check(tmpjson, curr_row, curr_errors, curr_id, namet, run_lis, err_lis):
     ''' this function posts a jsonData variable of an accession into Aspace and checks if the
     repository connected to the accession exists. This function also writes to the 
     output "yes" and "no" csv's as well as the output logs. 
@@ -346,6 +332,7 @@ def post_and_check(tmpjson, curr_row, curr_errors, curr_id, namet):
         if repo_true != -1:
             tmprow = curr_row.tolist()
             tmprow.append(str(accession_uri))
+            run_lis.append(curr_row["ID"])
 
             # if repo was able to search 
             if type(repo_true) == tuple:
@@ -361,12 +348,12 @@ def post_and_check(tmpjson, curr_row, curr_errors, curr_id, namet):
                 # if totalhits == 0
                 elif len(repo_true) == 2:
                     totalhits, foundissues = repo_true
-                    tmprow.append(str(totalhits))
                     tmprow.insert(0, "No")
                     csv_writer.writerow(tmprow)
                 # if errors in coll name or coll id
                 if foundissues == True:
                     errorlog.write("ID " + str(curr_row["ID"]) + ": Repo searched with only collection name. Error in collection identifier.\n")
+                    err_lis.append(curr_row["ID"])
 
             # if error in coll name or coll id and couldn't search repo
             else:
@@ -374,6 +361,7 @@ def post_and_check(tmpjson, curr_row, curr_errors, curr_id, namet):
                 tmprow.append("0")
                 tmprow.insert(0, "No")
                 csv_writer.writerow(tmprow)
+                err_lis.append(curr_row["ID"])
 
         # if using "get" failed (system error)
         else:
@@ -381,7 +369,7 @@ def post_and_check(tmpjson, curr_row, curr_errors, curr_id, namet):
             errorlog.write("ID " + str(curr_row["ID"]) + ": Error in trying to use 'get' to find repo. Error message below:\n")
             errorlog.write("\t\t" + str(repo_true) + "\n")
 
-    return curr_errors, curr_id
+    return curr_errors, run_lis, curr_id, err_lis
 
 
 def main():
@@ -435,7 +423,7 @@ def main():
     
     # running program that fills and posts json data, updates csv and checks if repo exists
     final_returns = fill_data(df, start, end, id_1)
-    lines_looped, run_list, errorlis = final_returns
+    lines_looped, run_list, errorlis, errlist = final_returns
 
     # print output statements
     if lines_looped == 0:
@@ -443,10 +431,10 @@ def main():
     else:
         run_list.sort()
         if len(errorlis) != 0:
-            print("\nAll ID's have been run\n\tLook for more information on this run in out/posted_accessions.csv, out/new_accessions_logs/errorlog.txt and out/new_accessions_logs/applog.txt.\n\n\tSUCCESSFUL IDs:", run_list, "\n\tERROR IDs (not on output csv's):", errorlis, "\n")
+            print("\nAll ID's have been run\n\tLook for more information on this run in out/posted_accessions.csv, out/new_accessions_logs/errorlog.txt and out/new_accessions_logs/applog.txt.\n\n\tSUCCESSFUL IDs:", run_list, "\t successful ID's with errors:", errlist,"\n\tERROR IDs (not in posted_accessions):", errorlis, "\n")
         else:
-            print("\nAll ID's have been run\n\tLook for more information on this run in out/posted_accessions.csv, out/new_accessions_logs/errorlog.txt and out/new_accessions_logs/applog.txt.\n\n\tSUCCESSFUL IDs:", run_list, "\n\tNo errors in posting or getting.\n")
-            print("TODO : update 'Found Collection Indentifier' column in posted_accessions.csv\n\t\t--only for Accessions without a matching Resource")
+            print("\nAll ID's have been run\n\tLook for more information on this run in out/posted_accessions.csv, out/new_accessions_logs/errorlog.txt and out/new_accessions_logs/applog.txt.\n\n\tSUCCESSFUL IDs:", run_list, "\t successful ID's with errors:", errlist,"\n\tAll Ran ID's in posted_accessions.\n")
+            print("TODO : update 'Found Collection Indentifier' column in posted_accessions.csv\n\t\t--only for Accessions without a matching Resource\n")
     
     return 0
 

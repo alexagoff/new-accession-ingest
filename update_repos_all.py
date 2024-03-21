@@ -1,8 +1,7 @@
 # update_repos.py code with running all ID's rather than choosing a range.
+# use when running with the 'run' button instead of through terminal.
 
 import json 
-import csv
-import os 
 import re
 import functions
 import sys
@@ -12,8 +11,6 @@ import pandas as pd
 
 # edit line below to manually enter a .csv 
 filename = './out/posted_accessions.csv' 
-if len(sys.argv) > 1:
-    filename = sys.argv[1]
 app = "./out/update_repos_logs/app_updates.txt"
 err = "./out/update_repos_logs/found_errors.txt"
 

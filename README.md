@@ -26,14 +26,13 @@ How To Use:
 - you will need to also install asnake and regex if not installed already
 - you will need to install openpyxl if you intend to use .xlsx file as input instead of .csv for new_accessions.py
 - go onto UO vpn
-- run new_accessions.py ('input' can be .csv or .xlsx type)
+- run new_accessions.py or new_accessions_all.py ('input' can be .csv or .xlsx type)
   (it might take a couple minutes to run)
   - do either:
-    - python new_accessions.py ~/path/to/input (e.g. ~/Desktop/folder/input)
-    - python new_accessions.py (without argument) if path to input is manually entered in new_accessions.py (line 15).
+    - python file.py ~/path/to/input (e.g. ~/Desktop/folder/input)
+    - python file.py (without argument) if path to input is manually entered in new_accessions.py (line 26).
   - output: posted_accessions.csv, stored in the out folder. Also two logs of errors and updates in out/new_accessions_logs.
-- run update_repos.py ('input' can only be .csv type)
-  - do either: 
-    - python update_repos.py ~/path/to/input.csv (e.g. ~/Desktop/folder/input.csv)
-    - python update_repos.py (no arguments) if paths to csv is already manually entered in update_repos.py.
+- run update_repos.py or update_repos_all.py ('input' can only be .csv type)
+  - run:
+    - python file.py 
   - output: logs in out/update_repos_logs.
