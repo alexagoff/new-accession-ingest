@@ -46,7 +46,7 @@ str_day = str(todays_date.day)
 # send output csv to alexa through email (i don't know if this is something I want to do atm) - later
 
 
-def fill_data(pandas_csv, start_num, end_num, id_1_num):
+def fill_data(pandas_csv, id_1_num):
     ''' this function fills a json file for each line from 
     the input csv. 
     For each json file that has been filled it
@@ -73,13 +73,6 @@ def fill_data(pandas_csv, start_num, end_num, id_1_num):
 
     # going through each line of csv
     for index, row in pandas_csv.iterrows():
-        # checking if start_num < visiting < end_num
-        if int(row["ID"]) < start_num:
-            continue
-        
-        elif int(row["ID"]) > end_num:
-            continue
-        
         run_list.append(int(row["ID"]))
         # copying old .json template to new .json file that we are editing
         #shutil.copy('./extra_materials/jsontemplate.json', 'newaccession.json')
@@ -391,9 +384,6 @@ def main():
 
     Errors: exit with failure if id_1 number can't be found.  
     '''
-    # input loop for asking user what ID they would like to start and end on. 
-    retstartend = functions.find_inputs("\nThis program runs any amount of *consecutive* IDs on an inputted 'new accessions' form file.\n\n   ----->  If start = 150 and end = 151, only ID # 150 and 151 will be ran.\n")
-    start, end = retstartend
 
     # checking if input file is .xlsx type
     global filename
@@ -434,7 +424,7 @@ def main():
         exit(1)
     
     # running program that fills and posts json data, updates csv and checks if repo exists
-    final_returns = fill_data(df, start, end, id_1)
+    final_returns = fill_data(df, id_1)
     lines_looped, run_list, errorlis = final_returns
 
     # print output statements

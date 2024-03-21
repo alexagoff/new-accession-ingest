@@ -1,0 +1,3 @@
+username = ""
+password = ""
+aspacebaseurl = "https://archives.uoregon.edu/api"

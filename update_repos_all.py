@@ -1,3 +1,5 @@
+# update_repos.py code with running all ID's rather than choosing a range.
+
 import json 
 import csv
 import os 
@@ -7,9 +9,6 @@ import sys
 from datetime import date 
 import datetime
 import pandas as pd
-
-# log for when I post new updates accessions, updated resources, updates events
-# if I want to run update id_0 to different things (except 1000)if I want to run
 
 # edit line below to manually enter a .csv 
 filename = './out/posted_accessions.csv' 
@@ -21,31 +20,12 @@ err = "./out/update_repos_logs/found_errors.txt"
 applog = open(app, "a")
 errlog = open(err, "a")
 
-def check_update_input():
-    yes_run = True
-    start = 0
-    end = 0
-
-    while(1):
-        check = input("\nWould you like to run all ID's? (yes/no): ")
-        if check.strip().lower() == "no":    
-            start, end = functions.find_inputs("\nThis runs any number of consecutive ID's from out/posted_accessions.csv\n")
-            yes_run = False
-            break
-        elif check.strip().lower() == "yes":
-            break
-        # invalid input
-        else:
-            print("\ninvalid input. try again.\n")
-
-    return start, end, yes_run
 
 def main():
     now = str(datetime.datetime.now())
     errlog.write("\n--------------" + str(now) + "--------------\n")
     applog.write("\n--------------" + str(now) + "--------------\n")
     
-    start, end, if_run_all = check_update_input()
 
     successful_runs = []
     errors_runs = []
@@ -53,12 +33,6 @@ def main():
     df = pd.read_csv(filename)
     # going through lines of input csv
     for index, row in df.iterrows():
-        if if_run_all == False:
-            if int(row["ID"]) < start:
-                continue  
-            elif int(row["ID"]) > end:
-                continue
-
         # if a matching repository was found for this row
         if row["Resource Found?"] == "Yes":
             # get the json body for this accession

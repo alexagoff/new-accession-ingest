@@ -70,3 +70,12 @@ Error finding id_1 from last five accessions. The last five id_1's from this yea
 
 --------------2024-02-27 10:08:02.860999--------------
 ID 181: Unable to match date.
+
+--------------2024-03-20 16:35:31.347437--------------
+Error finding id_1 from last five accessions. Using 'get' method failed. Error message below:		{'status': 404, 'error': 'Not Found'}
+
+--------------2024-03-20 16:36:30.916588--------------
+Error finding id_1 from last five accessions. Using 'get' method failed. Error message below:
+		{'status': 404, 'error': 'Not Found'}
+
+--------------2024-03-20 17:11:17.826611--------------

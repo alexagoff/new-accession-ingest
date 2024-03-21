@@ -91,3 +91,27 @@ ID 179: Unable to post new resource. Error message below:
 
 --------------2024-02-27 10:16:43.349170--------------
 ID 181: Unable to match date.
+
+--------------2024-03-20 17:13:06.979005--------------
+ID 182: Unable to post new resource. Error message below:
+		{'error': {'id_0': ['That ID is already in use']}}
+ID 183: Unable to post new resource. Error message below:
+		{'error': {'id_0': ['That ID is already in use']}}
+
+--------------2024-03-20 17:14:06.396110--------------
+ID 181: Unable to post new resource. Error message below:
+		{'error': {'id_0': ['That ID is already in use']}}
+ID 182: Unable to post new resource. Error message below:
+		{'error': {'id_0': ['That ID is already in use']}}
+ID 183: Unable to post new resource. Error message below:
+		{'error': {'id_0': ['That ID is already in use']}}
+
+--------------2024-03-20 17:22:06.892755--------------
+
+--------------2024-03-20 17:26:47.969300--------------
+ID 181: Unable to post new resource. Error message below:
+		{'error': {'id_0': ['That ID is already in use']}}
+ID 182: Unable to post new resource. Error message below:
+		{'error': {'id_0': ['That ID is already in use']}}
+ID 183: Unable to post new resource. Error message below:
+		{'error': {'id_0': ['That ID is already in use']}}
