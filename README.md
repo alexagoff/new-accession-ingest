@@ -15,6 +15,7 @@ from each json file and checking if a corresponding repository exists in Aspace.
 - update_repositories.py:
 
 IMPORTANT NOTES:
+- The _all versions of new_accessions and update_repos run all ID's without being able to filter which ID's to run
 - The title/column header line on the input .csv file must all be on the first line/one line! If its spread into two lines the program will error.
 - Start and end only relate to the range of ID's (not lines) that will run. If start = 166 and end = 168, then only 166, 167 and 168 will run. This applies *even if the csv is unordered by ID number*.
 
@@ -26,13 +27,18 @@ How To Use:
 - you will need to also install asnake and regex if not installed already
 - you will need to install openpyxl if you intend to use .xlsx file as input instead of .csv for new_accessions.py
 - go onto UO vpn
-- run new_accessions.py or new_accessions_all.py ('input' can be .csv or .xlsx type)
-  (it might take a couple minutes to run)
-  - do either:
-    - python file.py ~/path/to/input (e.g. ~/Desktop/folder/input)
-    - python file.py (without argument) if path to input is manually entered in new_accessions.py (line 26).
+- STEP 1: note--input can be .csv or .xlsx type
+  - either run: 
+    - terminal:
+      - *python new_accessions.py ~/path/to/input* (e.g. ~/Desktop/folder/input)
+      - *python new_accessions.py* (if path to input file is manually entered in line 26).
+    - or the ▶ (run) button:
+      - *new_accessions_all.py* (if path of input filel is manually entered in line 17).
   - output: posted_accessions.csv, stored in the out folder. Also two logs of errors and updates in out/new_accessions_logs.
-- run update_repos.py or update_repos_all.py ('input' can only be .csv type)
-  - run:
-    - python file.py 
+- STEP 2: 
+  - either run:
+    - terminal: 
+      - *python update_repos.py* 
+    - or the ▶ (run) button:
+      - *update_repos_all.py* 
   - output: logs in out/update_repos_logs.
