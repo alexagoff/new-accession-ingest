@@ -8,37 +8,48 @@ Working files and outlines for creating automating new accessions in ArchivesSpa
 This program creates accessions, posts them onto Aspace, and creates corresponding repositories
 or updates existing repositories with new accssions.
 It has two parts: 
-- new_accessions.py: goes through lines of an input csv of new acceession forms 
+
+- new_accessions.py: goes through lines of an input csv/xlsx of new acceessions
 and creates a json file for each line, then posting a new accession to Aspace
 from each json file and checking if a corresponding repository exists in Aspace. 
 
-- update_repositories.py:
+- update_repositories.py: goes through lines of the updated csv/xlsx of new
+accessions, and links those accessions to either a new or existing resource.
 
-IMPORTANT NOTES:
+# IMPORTANT NOTES:
 - The _all versions of new_accessions and update_repos run all ID's without being able to filter which ID's to run
-- The title/column header line on the input .csv file must all be on the first line/one line! If its spread into two lines the program will error.
-- Start and end only relate to the range of ID's (not lines) that will run. If start = 166 and end = 168, then only 166, 167 and 168 will run. This applies *even if the csv is unordered by ID number*.
+- The column headers on the input .csv or .xlsx file for new_accessions must be on one line! If its spread into two lines the program will error.
+- 'start' and 'end' only relate to the range of ID's (not lines) that will run. 
+- IF TESTING new_accessions: go onto the file and 'Ctrl F' to find comments that say 'TESTING PURPOSES'. Uncomment the lines/blocks of code
+  that it pertains to and comment out the lines/blocks of code that are by the comment that says 'nomal purposes'.
 
--------------------------------------------------------
-How To Use:
------------
-- in the folder login_materials, duplicate the file config.txt and rename it 'config.py', then replace the 'username' and 'password' sections with your own information in the new file.  
-- you will need the pandas module, so if you haven't installed it already, you can by following the instructions here https://pandas.pydata.org/docs/getting_started/install.html
-- you will need to also install asnake and regex if not installed already
-- you will need to install openpyxl if you intend to use .xlsx file as input instead of .csv for new_accessions.py
+--------------------------------------------------------------------------------
+Setup:
+------
+- you will need the following imports/modules:
+  - python
+  - pandas
+  - ArchivesSnake
+  - regex
+  - openpyxl (if you intend to use .xlsx as input for new_accessions.py)
+
+Instructions for Use:
+---------------------
+- in the folder login_materials, create a new file 'config.py' that contains the same contents of the file 'config.py.example.txt'
+but with your Aspace username and password in the corresponding fields. 
 - go onto UO vpn
 - STEP 1: note--input can be .csv or .xlsx type
   - either run: 
-    - terminal:
-      - *python new_accessions.py ~/path/to/input* (e.g. ~/Desktop/folder/input)
+    - through terminal -- for processing a specific range of ID's:
+      - *python new_accessions.py ~/path/to/input* (e.g. path could be ~/Desktop/foldered_materials/input.csv)
       - *python new_accessions.py* (if path to input file is manually entered in line 26).
-    - or the ▶ (run) button:
-      - *new_accessions_all.py* (if path of input filel is manually entered in line 17).
+    - or through the ▶ (run) button -- for running all ID's:
+      - *new_accessions_all.py* (path of input file must be manually entered in line 26).
   - output: posted_accessions.csv, stored in the out folder. Also two logs of errors and updates in out/new_accessions_logs.
 - STEP 2: 
   - either run:
-    - terminal: 
+    - through terminal -- for processing a specific range of ID's: 
       - *python update_repos.py* 
-    - or the ▶ (run) button:
+    - or through the ▶ (run) button -- for running all ID's:
       - *update_repos_all.py* 
   - output: logs in out/update_repos_logs.

@@ -1,10 +1,17 @@
-# update_repos.py code with running all ID's rather than choosing a range.
-# use when running with the 'run' button instead of through terminal.
+################################################
+# update_repos.py                              #
+# running all ID's                             #
+#                                              #
+# This file is ran after the new_accessions    #
+# file. It goes through the posted_accesssions #
+# file and connects accessions to existing or  #
+# created resources.                           #
+#                                              #
+################################################
 
 import json 
 import re
 import functions
-import sys
 from datetime import date 
 import datetime
 import pandas as pd
@@ -29,7 +36,7 @@ def main():
 
     df = pd.read_csv(filename)
     # going through lines of input csv
-    for index, row in df.iterrows():
+    for _, row in df.iterrows():
         # if a matching repository was found for this row
         if row["Resource Found?"] == "Yes":
             # get the json body for this accession

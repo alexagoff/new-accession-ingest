@@ -1,5 +1,14 @@
-# new_accessions except it runs all ID's and not sort through
-# use for when running with 'run' button instead of through terminal.
+##############################################
+# new_accessions_all.py                      #
+# running all ID's                           #
+#                                            #
+# This file goes through new accessions and  #
+# posts them onto Aspace as well as checking #
+# if these accessions have related resources #
+# on Aspace already.                         #
+# output is out/posted_accessions.py         #
+#                                            #
+##############################################
 
 import json 
 import csv
@@ -10,11 +19,13 @@ import time
 from datetime import date 
 import datetime
 import pandas as pd
-import shutil
 import re
 
+
 # edit line below to manually enter a .csv 
-filename = '~/Desktop/test.xlsx' 
+filename = '' 
+if len(sys.argv) > 1:
+    filename = sys.argv[1]
 csvOut = "./out/posted_accessions.csv"
 err = "./out/new_accessions_logs/errorlog.txt"
 app = "./out/new_accessions_logs/applog.txt"
@@ -28,7 +39,7 @@ if not os.path.exists(app):
 
 errorlog = open(err, "a")
 applog = open(app, "a")
-outy = open(csvOut, 'w')
+outy = open(csvOut, 'w', encoding="utf-8")
 csv_writer = csv.writer(outy)
 
 # writing first lines of app and err logs if new
@@ -55,28 +66,21 @@ def fill_data(pandas_csv, id_1_num):
     
     Input:
         pandas_csv: file, the input csv
-        start_num, end_num: int, the constraints for what ID's to run
         id_1_num: int, the starting id_1 number
     Output: 
         lines_looped: int, the amount of lines in the input csv that were parsed
-        run_list: list, the row ID's of the lines in the csv that were parsed
+        run_list: list, the row ID's of the lines in the csv that had successful posts and gets
         errors_list: list, the row ID's of lines in the csv that gave 'post' or 'get' errors
+        err_lis: list, the row ID's of the lines in the csv that had successful posts and gets but with errors
     '''
-    #ex = open("testacc_num.txt", 'r') #CHANGE
-    #curr_acc = int(ex.read())
-    #ex.close()
-
-    run_list = []
-    errors_list = []
-    lines_looped = 0
+    run_list = [] # successful runs
+    err_lis = [] # errors in successful runs
+    errors_list = [] # error runs
+    lines_looped = 0 # the amount of lines looped
     extents_message = ""
 
     # going through each line of csv
-    for index, row in pandas_csv.iterrows():
-        run_list.append(int(row["ID"]))
-        # copying old .json template to new .json file that we are editing
-        #shutil.copy('./extra_materials/jsontemplate.json', 'newaccession.json')
-        
+    for _, row in pandas_csv.iterrows():
         # getting jsonData from template .json file
         jsonData = None
         title_name = '' # stores title name 
@@ -87,15 +91,14 @@ def fill_data(pandas_csv, id_1_num):
         # going through each line of .json file 
         # filling out with info from current line of csv
         for name in jsonData:  
-            # normal purposes CHANGE
+            # TESTING PURPOSES
             '''
-            # for testing
             if name == "title":
-                jsonData[name] = 'NEW ROUND TEST ACCESIONS ' + str(curr_acc)
+                jsonData[name] = 'NEW ROUND TEST ACCESIONS'
                 title_name = jsonData[name]
-                curr_acc+=1
             
             '''
+            # normal purposes
             if (name == "title") and ((row["Collection name:"]).lower() != "nan"):
                 titlename = row["Collection name:"]
                 # hard-code getting rid of possible parenthesis in title
@@ -146,8 +149,8 @@ def fill_data(pandas_csv, id_1_num):
                     jsonData[name] = True
             
             elif name == "id_0":
-                #jsonData[name] = str_year[-2:] #commented out for testing files
-                jsonData[name] = "25"
+                jsonData[name] = str_year[-2:] # normal purposes
+                #jsonData[name] = "25" # TESTING PURPOSES
             
             elif name == "id_1":
                 jsonData[name] = id_1_num
@@ -268,10 +271,6 @@ def fill_data(pandas_csv, id_1_num):
                 else:
                     jsonData[name][0]["date_type"] = "inclusive"  
                     errorlog.write("ID " + str(row["ID"]) + ": Unable to match date.\n")
-        
-        # copying to new .json file - not necessary, just post it onto aspace. 
-        #with open("newaccession.json", "w") as file:
-        #    json.dump(jsonData, file, indent = 4 ) 
 
         # checking if it won't be able to post because of 'extents'field
         if extents_message != "":
@@ -303,9 +302,13 @@ def post_and_check(tmpjson, curr_row, curr_errors, curr_id, namet, run_lis, err_
         curr_errors: list, a list of ID's of the row's with errors.
         curr_id: int, the current id_1 number.
         namet: str, the current title name
+        run_lis: list, the list of ID's of the successful rows.
+        err_lis: list, the list of ID's of the successful rows but with errors.
     Output:
         curr_errors: list, updated curr_errors
+        run_lis: list, updated run_lis
         curr_id: int, updated id_1 number (if there was issues posting, subtract 1)
+        err_lis: list, updated err_lis
     '''
     # post jsonData to Aspace
     returned_out = functions.jsonpost(tmpjson)
@@ -348,6 +351,7 @@ def post_and_check(tmpjson, curr_row, curr_errors, curr_id, namet, run_lis, err_
                 # if totalhits == 0
                 elif len(repo_true) == 2:
                     totalhits, foundissues = repo_true
+                    tmprow.append(str(totalhits))
                     tmprow.insert(0, "No")
                     csv_writer.writerow(tmprow)
                 # if errors in coll name or coll id
@@ -379,12 +383,14 @@ def main():
 
     Errors: exit with failure if id_1 number can't be found.  
     '''
-    # input loop for asking user what ID they would like to start and end on. 
-    retstartend = functions.find_inputs("\nThis program runs any amount of *consecutive* IDs on an inputted 'new accessions' form file.\n\n   ----->  If start = 150 and end = 151, only ID # 150 and 151 will be ran.\n")
-    start, end = retstartend
 
     # checking if input file is .xlsx type
     global filename
+    # if theres no input
+    if filename == '':
+        print("please input a file path in line 26.")
+        exit(1)
+    # if input file is .xlsx type
     if (filename)[-4:] == 'xlsx':
         df1 = pd.read_excel(filename, sheet_name=0, header=0)
         df1.to_csv('./newfile.csv', index=False)
@@ -405,8 +411,8 @@ def main():
     applog.write("\n--------------" + str(now) + "--------------\n")
 
     # finding id_1 number 
-    id_1 = functions.latest_id1("2025") # CHANGE supposed to be (str_year) as parameter but testing with something else.  
-    #id_1 = functions.latest_id1(str_year)
+    #id_1 = functions.latest_id1("2025") # TESTING PURPOSES 
+    id_1 = functions.latest_id1(str_year) # normal purposes
 
     tmp = ""
     # handling errors in finding id_1 below -- more info in functions.py
@@ -422,7 +428,7 @@ def main():
         exit(1)
     
     # running program that fills and posts json data, updates csv and checks if repo exists
-    final_returns = fill_data(df, start, end, id_1)
+    final_returns = fill_data(df, id_1)
     lines_looped, run_list, errorlis, errlist = final_returns
 
     # print output statements

@@ -1,2 +1,1 @@
-line #'s and ID #'s are reffering to input csv lines.
-
+line #'s and ID #'s are referring to input csv lines.

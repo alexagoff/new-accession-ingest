@@ -1,6 +1,21 @@
+##########################################
+# functions.py                           #
+#                                        #
+# functions used by new_accesions and    #
+# update_repos programs.                 #
+# functions in file:                     #
+# jsonpost                               #
+# new_event                              #
+# new_resource                           #
+# accupdate                              #
+# latest_id1                             #
+# repo_exists                            #
+# accget_jsondata                        #
+# match_dates                            #
+# find_inputs                            #
+##########################################
+
 import json
-from login_materials import config
-from asnake.client import ASnakeClient
 from aspace_sess import client
 import re
 
@@ -12,7 +27,6 @@ def jsonpost(x):
     output: res_object, json file - the response to posting on aspace
     '''
     url = '/repositories/2/accessions'
-    payload = json.dumps(x)
     response = client.post(url, json=x)
     res_object = response.json()
 
@@ -24,7 +38,6 @@ def new_event(x):
     output: res_object, json file - the response to posting
     '''
     url = '/repositories/2/events'
-    payload = json.dumps(x)
     response = client.post(url, json=x)
     res_object = response.json()
 
@@ -36,7 +49,6 @@ def new_resource(x):
     output: res_object, json file - the response to posting
     '''
     url = '/repositories/2/resources'
-    payload = json.dumps(x)
     response = client.post(url, json=x)
     res_object = response.json()
 
@@ -49,7 +61,6 @@ def accupdate(loc, x):
     output: res_object, json file - the response to posting on aspace
     '''
     url = loc
-    payload = json.dumps(x)
     response = client.post(url, json=x)
     res_object = response.json()
 
@@ -135,7 +146,7 @@ def repo_exists(name, identifier):
     found_issues = False # to check for errors in "name" and "identifier" fields.
     if (str(name).lower() != "nan") and (str(identifier).lower() != "nan"):
         # extracting only something like "coll 188" 
-        patternmatch = re.findall("[a-zA-Z]{2,4}\s\s?\d{3}", identifier)
+        patternmatch = re.findall(r"[a-zA-Z]{2,4}\s\s?\d{3}", identifier)
         if len(patternmatch) == 0:
             finder = name
             found_issues = True
@@ -183,14 +194,14 @@ def match_dates(match_string, str_year):
     Errors: If date could not be found from the patterns, then returns 0.
     '''
     # regex patterns 
-    pattern1 = "\d{4}'?\s?s.*\d{4}'?\s?s" 
-    pattern2 = "\d{4}'?\s?s.*\d{4}"
-    pattern3 = "\d{4}.*\d{4}'?\s?s"
-    pattern4 = "\d{4}.*\d{4}"
-    pattern5 = "\d{1,2}\s?\-\-?\s?[a-zA-Z]+\s?\-\-?\s?\d{4}"
-    pattern6 = "[a-zA-Z]+\s?\-+\s?\d{4}"
-    pattern7 = "\d{4}'?\s?s"
-    pattern8 = "\d{4}"
+    pattern1 = r"\d{4}'?\s?s.*\d{4}'?\s?s" 
+    pattern2 = r"\d{4}'?\s?s.*\d{4}"
+    pattern3 = r"\d{4}.*\d{4}'?\s?s"
+    pattern4 = r"\d{4}.*\d{4}"
+    pattern5 = r"\d{1,2}\s?\-\-?\s?[a-zA-Z]+\s?\-\-?\s?\d{4}"
+    pattern6 = r"[a-zA-Z]+\s?\-+\s?\d{4}"
+    pattern7 = r"\d{4}'?\s?s"
+    pattern8 = r"\d{4}"
 
     # if adding new patterns, the ORDER of these patterns is important! it goes from 
     # most specific match to least specific (most specific being something that has to be like 2000s-3000s exactly and least specific just any four digit number)
@@ -215,7 +226,7 @@ def match_dates(match_string, str_year):
             # matched with XXXXs-XXXXs or XXXX-XXXXs
             if (pattern == pattern1) or (pattern == pattern3):
                 # extracting the two four digit numbers
-                new_list = re.findall("\d{4}", find_list[0])
+                new_list = re.findall(r"\d{4}", find_list[0])
                 # check first three characters of the last four digit number to see if its in this decade
                 if new_list[-1][:3] == str_year[:3]:
                     # returns with ending at current year
@@ -229,7 +240,7 @@ def match_dates(match_string, str_year):
             # matched with form 8-YYY-2019 or YYY-2019
             elif (pattern == pattern5) or (pattern == pattern6):
                 # extracting just the letter parts
-                test_month = re.findall("[a-zA-Z]+", find_list[0])
+                test_month = re.findall(r"[a-zA-Z]+", find_list[0])
                 # if the letters part isn't a month its not valid
                 if test_month[0].lower() not in months_list:
                     return 0
@@ -238,7 +249,7 @@ def match_dates(match_string, str_year):
             # matched with XXXXs
             elif pattern == pattern7:
                 # extracting just the year without 's'
-                new_year = re.findall("\d{4}", str(find_list[0]))
+                new_year = re.findall(r"\d{4}", str(find_list[0]))
                 # check first three characters of the four digit number to see if its in this decade
                 if new_year[0][:3] == str_year[:3]:
                     return [new_year[0][:3]+'0', str_year] 

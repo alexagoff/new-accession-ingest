@@ -1,5 +1,6 @@
 ################################################
 # update_repos.py                              #
+# can run a specific range of ID's             #
 #                                              #
 # This file is ran after the new_accessions    #
 # file. It goes through the posted_accesssions #
@@ -11,7 +12,6 @@
 import json  
 import re
 import functions
-import sys
 from datetime import date 
 import datetime
 import pandas as pd
@@ -56,7 +56,7 @@ def main():
 
     df = pd.read_csv(filename)
     # going through lines of input csv
-    for index, row in df.iterrows():
+    for _, row in df.iterrows():
         if if_run_all == False:
             if int(row["ID"]) < start:
                 continue  

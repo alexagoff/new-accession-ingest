@@ -1,3 +1,15 @@
+##############################################
+# new_accessions.py                          #
+# running specific ranges of ID's            #
+#                                            #
+# This file goes through new accessions and  #
+# posts them onto Aspace as well as checking #
+# if these accessions have related resources #
+# on Aspace already.                         #
+# output is out/posted_accessions.py         #
+#                                            #
+##############################################
+
 import json 
 import csv
 import os 
@@ -7,12 +19,11 @@ import time
 from datetime import date 
 import datetime
 import pandas as pd
-import shutil
 import re
 
 
 # edit line below to manually enter a .csv 
-filename = '~/Desktop/test.xlsx' 
+filename = '' 
 if len(sys.argv) > 1:
     filename = sys.argv[1]
 csvOut = "./out/posted_accessions.csv"
@@ -59,13 +70,10 @@ def fill_data(pandas_csv, start_num, end_num, id_1_num):
         id_1_num: int, the starting id_1 number
     Output: 
         lines_looped: int, the amount of lines in the input csv that were parsed
-        run_list: list, the row ID's of the lines in the csv that were parsed
+        run_list: list, the row ID's of the lines in the csv that had successful posts and gets
         errors_list: list, the row ID's of lines in the csv that gave 'post' or 'get' errors
+        err_lis: list, the row ID's of the lines in the csv that had successful posts and gets but with errors
     '''
-    #ex = open("testacc_num.txt", 'r') #CHANGE
-    #curr_acc = int(ex.read())
-    #ex.close()
-
     run_list = [] # successful runs
     err_lis = [] # errors in successful runs
     errors_list = [] # error runs
@@ -73,7 +81,7 @@ def fill_data(pandas_csv, start_num, end_num, id_1_num):
     extents_message = ""
 
     # going through each line of csv
-    for index, row in pandas_csv.iterrows():
+    for _, row in pandas_csv.iterrows():
         # checking if start_num < visiting < end_num
         if int(row["ID"]) < start_num:
             continue
@@ -93,7 +101,6 @@ def fill_data(pandas_csv, start_num, end_num, id_1_num):
         for name in jsonData:  
             # TESTING PURPOSES
             '''
-            # for testing
             if name == "title":
                 jsonData[name] = 'NEW ROUND TEST ACCESIONS'
                 title_name = jsonData[name]
@@ -150,8 +157,8 @@ def fill_data(pandas_csv, start_num, end_num, id_1_num):
                     jsonData[name] = True
             
             elif name == "id_0":
-                #jsonData[name] = str_year[-2:] # normal purposes
-                jsonData[name] = "25" # TESTING PURPOSES
+                jsonData[name] = str_year[-2:] # normal purposes
+                #jsonData[name] = "25" # TESTING PURPOSES
             
             elif name == "id_1":
                 jsonData[name] = id_1_num
@@ -303,9 +310,13 @@ def post_and_check(tmpjson, curr_row, curr_errors, curr_id, namet, run_lis, err_
         curr_errors: list, a list of ID's of the row's with errors.
         curr_id: int, the current id_1 number.
         namet: str, the current title name
+        run_lis: list, the list of ID's of the successful rows.
+        err_lis: list, the list of ID's of the successful rows but with errors.
     Output:
         curr_errors: list, updated curr_errors
+        run_lis: list, updated run_lis
         curr_id: int, updated id_1 number (if there was issues posting, subtract 1)
+        err_lis: list, updated err_lis
     '''
     # post jsonData to Aspace
     returned_out = functions.jsonpost(tmpjson)
@@ -348,6 +359,7 @@ def post_and_check(tmpjson, curr_row, curr_errors, curr_id, namet, run_lis, err_
                 # if totalhits == 0
                 elif len(repo_true) == 2:
                     totalhits, foundissues = repo_true
+                    tmprow.append(str(totalhits))
                     tmprow.insert(0, "No")
                     csv_writer.writerow(tmprow)
                 # if errors in coll name or coll id
@@ -379,12 +391,14 @@ def main():
 
     Errors: exit with failure if id_1 number can't be found.  
     '''
-    # input loop for asking user what ID they would like to start and end on. 
-    retstartend = functions.find_inputs("\nThis program runs any amount of *consecutive* IDs on an inputted 'new accessions' form file.\n\n   ----->  If start = 150 and end = 151, only ID # 150 and 151 will be ran.\n")
-    start, end = retstartend
 
     # checking if input file is .xlsx type
     global filename
+    # if no file path inputted
+    if filename == '':
+        print("\nplease input a file path in line 26 or run the program with the file path as an argument:\n\te.g. python new_accessions.py ~/path/to/file\n")
+        exit(1)
+    # if input file is .xlsx type
     if (filename)[-4:] == 'xlsx':
         df1 = pd.read_excel(filename, sheet_name=0, header=0)
         df1.to_csv('./newfile.csv', index=False)
@@ -405,8 +419,8 @@ def main():
     applog.write("\n--------------" + str(now) + "--------------\n")
 
     # finding id_1 number 
-    id_1 = functions.latest_id1("2025") # CHANGE supposed to be (str_year) as parameter but testing with something else.  
-    #id_1 = functions.latest_id1(str_year)
+    #id_1 = functions.latest_id1("2025") # TESTING PURPOSES 
+    id_1 = functions.latest_id1(str_year) # normal purposes
 
     tmp = ""
     # handling errors in finding id_1 below -- more info in functions.py
@@ -421,6 +435,10 @@ def main():
             errorlog.write("Error finding id_1 from last five accessions. Using 'get' method failed. Error message below:\n\t\t" + str(tmp[1]) + "\n")
         exit(1)
     
+    # input loop for asking user what ID they would like to start and end on. 
+    retstartend = functions.find_inputs("\nThis program runs any amount of *consecutive* IDs on an inputted 'new accessions' form file.\n\n   ----->  If start = 150 and end = 151, only ID # 150 and 151 will be ran.\n")
+    start, end = retstartend
+
     # running program that fills and posts json data, updates csv and checks if repo exists
     final_returns = fill_data(df, start, end, id_1)
     lines_looped, run_list, errorlis, errlist = final_returns

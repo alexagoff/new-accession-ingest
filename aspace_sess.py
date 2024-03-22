@@ -7,9 +7,9 @@ client = ASnakeClient(baseurl=config.aspacebaseurl,
                         username=config.username,
                         password=config.password)
 
-sess = client.authorize()
+sess = client.authorize() # this will not work if the aspacebaseurl is wrong
 
-#records the session token for use in other tools
+#records the session token (not necessary with Asnake)
 with open ('login_materials/current_sess.txt', 'w') as c:
   c.write(sess)
   c.close()
