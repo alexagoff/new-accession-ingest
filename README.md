@@ -31,7 +31,6 @@ Setup:
   - python
   - pandas
   - ArchivesSnake
-  - regex
   - openpyxl (if you intend to use .xlsx as input for new_accessions.py)
 
 Instructions for Use:
