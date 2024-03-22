@@ -16,7 +16,8 @@ from each json file and checking if a corresponding repository exists in Aspace.
 - update_repositories.py: goes through lines of the updated csv/xlsx of new
 accessions, and links those accessions to either a new or existing resource.
 
-# Important Notes:
+Important Notes:
+----------------
 - The _all versions of new_accessions and update_repos run all ID's without being able to filter which ID's to run
 - The column headers on the input .csv or .xlsx file for new_accessions must be on one line! If its spread into two lines the program will error.
 - 'start' and 'end' only relate to the range of ID's (not lines) that will run. 
