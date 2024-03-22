@@ -44,12 +44,12 @@ but with your Aspace username and password in the corresponding fields.
       - *python new_accessions.py ~/path/to/input* (e.g. path could be ~/Desktop/foldered_materials/input.csv)
       - *python new_accessions.py* (if path to input file is manually entered in line 26).
     - or through the ▶ (run) button -- for running all ID's:
-      - *new_accessions_all.py* (path of input file must be manually entered in line 26).
+      - new_accessions_all.py (path of input file must be manually entered in line 26).
   - output: posted_accessions.csv, stored in the out folder. Also two logs of errors and updates in out/new_accessions_logs.
 - STEP 2: 
   - either run:
     - through terminal -- for processing a specific range of ID's: 
       - *python update_repos.py* 
     - or through the ▶ (run) button -- for running all ID's:
-      - *update_repos_all.py* 
+      - update_repos_all.py 
   - output: logs in out/update_repos_logs.
