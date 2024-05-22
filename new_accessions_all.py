@@ -21,6 +21,7 @@ import datetime
 import pandas as pd
 import re
 
+# CODE EVOLUTION: send output to alexa via email 
 
 # edit line below to manually enter a .csv 
 filename = '' 
@@ -53,8 +54,6 @@ todays_date = date.today()
 str_year = str(todays_date.year)
 str_month = str(todays_date.month)
 str_day = str(todays_date.day)
-
-# send output csv to alexa through email (i don't know if this is something I want to do atm) - later
 
 
 def fill_data(pandas_csv, id_1_num):
@@ -227,7 +226,7 @@ def fill_data(pandas_csv, id_1_num):
                                 jsonData[name][0]["physical_details"] = str(row["Number and type of containers (e.g. 2 record storage boxes):"])
                                 jsonData[name][0]["portion"] = "whole"
                     # if its a valid non-numerical string (something like str(int) + "MB")
-                    elif (" mb" in str(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"]).lower()) or ("megabytes" in str(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"]).lower()) or ("megabyte" in str(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"]).lower()):
+                    elif (" mb" in str(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"]).lower()) or ("megabytes" in str(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"]).lower()) or ("megabyte" in str(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"]).lower()):
                         patterns = re.findall(r"\d\d?\,?\d?\d?\d?\.?\d?\d?\d?", str(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"]))
                         if len(patterns) > 0:
                             if float(patterns[0]) != 0:
@@ -253,7 +252,7 @@ def fill_data(pandas_csv, id_1_num):
 
                 # if neither could be filled (physical or digital)
                 if jsonData[name][0]["number"] == "":
-                    extents_message = "Neither Physical or digital extents are valid. Physical: '" + str(row["Estimated physical extent (linear feet):"]) + "', Digital: '" + str(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"]) + "'"
+                    extents_message = "Could not fill extents value. Neither Physical or digital extents are valid. Physical: '" + str(row["Estimated physical extent (linear feet):"]) + "', Digital: '" + str(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"]) + "'"
             
             elif name == "dates":
                 jsonData[name][0]["expression"] = str(row["Estimated creation dates:"])
@@ -438,6 +437,7 @@ def main():
         run_list.sort()
         if len(errorlis) != 0:
             print("\nAll ID's have been run\n\tLook for more information on this run in out/posted_accessions.csv, out/new_accessions_logs/errorlog.txt and out/new_accessions_logs/applog.txt.\n\n\tSUCCESSFUL IDs:", run_list, "\t successful ID's with errors:", errlist,"\n\tERROR IDs (not in posted_accessions):", errorlis, "\n")
+            print("TODO : update 'Found Collection Indentifier' column in posted_accessions.csv\n\t\t--only for Accessions without a matching Resource\n")
         else:
             print("\nAll ID's have been run\n\tLook for more information on this run in out/posted_accessions.csv, out/new_accessions_logs/errorlog.txt and out/new_accessions_logs/applog.txt.\n\n\tSUCCESSFUL IDs:", run_list, "\t successful ID's with errors:", errlist,"\n\tAll Ran ID's in posted_accessions.\n")
             print("TODO : update 'Found Collection Indentifier' column in posted_accessions.csv\n\t\t--only for Accessions without a matching Resource\n")

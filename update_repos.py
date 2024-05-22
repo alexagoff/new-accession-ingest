@@ -204,7 +204,7 @@ def main():
                                 jsonData["extents"][0]["physical_details"] = str(row["Number and type of containers (e.g. 2 record storage boxes):"])
                                 jsonData["extents"][0]["portion"] = "whole"
                     # if its a valid non-numerical string (something like str(int) + "MB")
-                    elif (" mb" in str(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"]).lower()) or ("megabytes" in str(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"]).lower()) or ("megabyte" in str(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"]).lower()):
+                    elif (" mb" in str(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"]).lower()) or ("megabytes" in str(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"]).lower()) or ("megabyte" in str(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"]).lower()):
                         patterns = re.findall(r"\d\d?\,?\d?\d?\d?\.?\d?\d?\d?", str(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"]))
                         if len(patterns) > 0:
                             if float(patterns[0]) != 0:
@@ -230,7 +230,7 @@ def main():
 
                 # if neither could be filled (physical or digital)
                 if jsonData["extents"][0]["number"] == "":
-                    errlog.write("ID " + str(row["ID"]) + ": Neither Physical or digital extents are valid. Physical: '" + str(row["Estimated physical extent (linear feet):"]) + "', Digital: '" + str(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"]) + "'")
+                    errlog.write("ID " + str(row["ID"]) + ": Neither Physical or digital extents are valid. Physical: '" + str(row["Estimated physical extent (linear feet):"]) + "', Digital: '" + str(row["Estimated digital extent (MB): Unit Converter: https://www.unitconverters.net/data-storage-converter.html"]) + "'")
                     errors_runs.append(row["ID"])
                 else:
                     # 'dates' logic

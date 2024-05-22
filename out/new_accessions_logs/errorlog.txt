@@ -1,1 +1,22 @@
 line #'s and ID #'s are referring to input csv lines.
+
+--------------2024-05-22 14:17:27.736759--------------
+
+--------------2024-05-22 14:17:40.554819--------------
+ID 98: Unable to match date.
+
+--------------2024-05-22 14:19:10.602024--------------
+
+--------------2024-05-22 14:20:33.496295--------------
+ID 100: Neither Physical or digital extents are valid. Physical: '1 item', Digital: '0'
+ID 100: Unable to post. Error message below:
+		{'error': {'extents/0/portion': ['Property is required but was missing'], 'extents/0/number': ['Property is required but was missing'], 'extents/0/extent_type': ['Property is required but was missing']}, 'warning': {}, 'invalid_object': '#<JSONModel(:accession) {"title"=>"Townsend Recovery Certificate, 1937", "publish"=>false, "content_description"=>"Townsend Pension Plan certificate, 1937", "provenance"=>"Gift/Purchase/Transfer of Watkins-Cline, Toni, 2020.", "accession_date"=>"2024-5-22", "restrictions_apply"=>false, "access_restrictions"=>false, "use_restrictions"=>false, "is_slug_auto"=>false, "id_0"=>"24", "id_1"=>"081", "id_2"=>"M", "general_note"=>"Record created by API ingest in 2024--not yet reviewed for accuracy.", "jsonmodel_type"=>"accession", "external_ids"=>[], "related_accessions"=>[], "classifications"=>[], "subjects"=>[], "extents"=>[{"lock_version"=>0, "jsonmodel_type"=>"extent"}], "lang_materials"=>[], "dates"=>[{"lock_version"=>0, "expression"=>"1937", "begin"=>"1937", "date_type"=>"single", "label"=>"creation", "jsonmodel_type"=>"date"}], "external_documents"=>[], "rights_statements"=>[], "deaccessions"=>[], "related_resources"=>[], "component_links"=>[], "linked_agents"=>[], "instances"=>[], "metadata_rights_declarations"=>[], "collection_management"=>{"lock_version"=>0, "rights_determined"=>false, "processing_status"=>"Unprocessed", "jsonmodel_type"=>"collection_management", "external_ids"=>[]}, "linked_events"=>[]}>'}
+
+--------------2024-05-22 14:16:11.419821--------------
+
+--------------2024-05-22 14:38:10.493001--------------
+ID 100: Neither Physical or digital extents are valid. Physical: '1 item', Digital: '0'
+ID 100: Unable to post. Error message below:
+		{'error': {'extents/0/portion': ['Property is required but was missing'], 'extents/0/number': ['Property is required but was missing'], 'extents/0/extent_type': ['Property is required but was missing']}, 'warning': {}, 'invalid_object': '#<JSONModel(:accession) {"title"=>"Townsend Recovery Certificate, 1937", "publish"=>false, "content_description"=>"Townsend Pension Plan certificate, 1937", "provenance"=>"Gift/Purchase/Transfer of Watkins-Cline, Toni, 2020.", "accession_date"=>"2024-5-22", "restrictions_apply"=>false, "access_restrictions"=>false, "use_restrictions"=>false, "is_slug_auto"=>false, "id_0"=>"24", "id_1"=>"079", "id_2"=>"M", "general_note"=>"Record created by API ingest in 2024--not yet reviewed for accuracy.", "jsonmodel_type"=>"accession", "external_ids"=>[], "related_accessions"=>[], "classifications"=>[], "subjects"=>[], "extents"=>[{"lock_version"=>0, "jsonmodel_type"=>"extent"}], "lang_materials"=>[], "dates"=>[{"lock_version"=>0, "expression"=>"1937", "begin"=>"1937", "date_type"=>"single", "label"=>"creation", "jsonmodel_type"=>"date"}], "external_documents"=>[], "rights_statements"=>[], "deaccessions"=>[], "related_resources"=>[], "component_links"=>[], "linked_agents"=>[], "instances"=>[], "metadata_rights_declarations"=>[], "collection_management"=>{"lock_version"=>0, "rights_determined"=>false, "processing_status"=>"Unprocessed", "jsonmodel_type"=>"collection_management", "external_ids"=>[]}, "linked_events"=>[]}>'}
+
+--------------2024-05-22 14:38:25.914192--------------
